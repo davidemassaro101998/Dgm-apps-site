@@ -1,0 +1,8 @@
+{
+  "name": "sito davide",
+  "description": "DGM Apps - Soluzioni e app utili per la vita di tutti i giorni",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

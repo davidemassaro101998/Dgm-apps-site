@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+
+@theme {
+  --color-ink-950: #07070B;
+  --color-ink-900: #0B0B12;
+  --color-mist-400: #8B8B9E;
+  --color-mist-200: #C7C7D6;
+  --color-mist-50: #F5F5F9;
+  --color-violet-500: #8B5CF6;
+  --color-violet-400: #A78BFA;
+  --color-cyan-300: #67E8F9;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: Inter, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: pan-y;
+  background-color: #07070b;
+  color: #f5f5f9;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+[data-overlay="true"],
+[role="dialog"] {
+  touch-action: auto !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+
+::selection {
+  background: #8b5cf6;
+  color: #07070b;
+}
+
+.bg-aurora {
+  background-image: linear-gradient(120deg, #8B5CF6 0%, #22D3EE 50%, #8B5CF6 100%);
+}
