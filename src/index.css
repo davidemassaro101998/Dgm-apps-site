@@ -47,11 +47,15 @@ html, body {
 }
 
 /* The hero background video is driven entirely by scroll (currentTime),
-   never meant to be tapped and "played" by the visitor -- but Android
-   Chrome/WebView draws its own big native play-button overlay on any
-   paused <video> without `controls`, regardless of `autoplay`/`muted`.
-   Hide that native affordance everywhere it can appear. */
+   never meant to be tapped and "played" by the visitor -- but WebKit
+   browsers draw their own big native play-button overlay on a paused
+   <video poster> without `controls`, regardless of `autoplay`/`muted`.
+   The one actually seen on real iOS Safari is the *overlay* play button
+   (-webkit-media-controls-overlay-play-button), distinct from the small
+   in-bar play button and from Android/WebView's start-playback-button --
+   hide all of them everywhere they can appear. */
 .hero-scrub-video::-webkit-media-controls,
+.hero-scrub-video::-webkit-media-controls-overlay-play-button,
 .hero-scrub-video::-webkit-media-controls-start-playback-button,
 .hero-scrub-video::-webkit-media-controls-play-button,
 .hero-scrub-video::-webkit-media-controls-panel {
