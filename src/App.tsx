@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { MotionConfig, useMotionValue } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { MotionConfig } from "framer-motion";
 import { Header } from "./components/Header";
-import { SpotlightHero } from "./components/ui/spotlight-hero";
+import { HeroScrub } from "./components/ui/hero-scrub";
 import { Story } from "./components/Story";
 import { AppGrid } from "./components/AppGrid";
 import { Footer } from "./components/Footer";
@@ -13,27 +13,6 @@ function MainContent() {
   const { t } = useLanguage();
   const [selectedAppIdFromHeader, setSelectedAppIdFromHeader] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState(0);
-
-  const heroRef = useRef<HTMLElement>(null);
-  const heroProgress = useMotionValue(0);
-
-  // Drives the hero's 3D background parallax/fade as the user scrolls it out of view.
-  useEffect(() => {
-    let raf = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const heroHeight = heroRef.current?.offsetHeight || window.innerHeight;
-        heroProgress.set(Math.min(1, Math.max(0, window.scrollY / heroHeight)));
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, [heroProgress]);
 
   // Scrollspy for the side nav dots — tracks whichever section covers the viewport midpoint.
   useEffect(() => {
@@ -79,19 +58,13 @@ function MainContent() {
     <div className="relative min-h-screen w-full bg-ink-950 font-body">
       <Header onSelectApp={handleSelectApp} onNavigateSection={goToSection} />
 
-      <div id="top">
-        <SpotlightHero
-          tagline={t.heroTagline}
-          title={t.heroTitle}
-          description={t.heroDescription}
-          ctaText={t.heroCta}
-          onCtaClick={() => goToSection(2)}
-          secondaryCtaText={t.heroSecondaryCta}
-          onSecondaryCtaClick={() => goToSection(1)}
-          sectionRef={heroRef}
-          progress={heroProgress}
-        />
-      </div>
+      <HeroScrub
+        videoSrc="/videos/hero-brand.mp4"
+        titleTop="DGM"
+        titleBottom="APPS"
+        ctaLabel={t.heroCta}
+        onCta={() => goToSection(2)}
+      />
 
       <Story />
 

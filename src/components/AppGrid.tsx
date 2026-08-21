@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { apps, type AppEntry } from "../data/apps";
-import { CardCarousel, type CarouselAppItem } from "./ui/card-carousel";
+import { AppBentoGrid, type BentoAppItem } from "./ui/app-bento-grid";
 import { AppIconExpand, type AppDetail } from "./ui/app-icon-expand";
 import { photoUrl, getStatusLabel } from "../lib/appPhoto";
 import { useLanguage } from "../context/LanguageContext";
@@ -11,25 +11,29 @@ interface AppGridProps {
   onClearSelectedApp?: () => void;
 }
 
+// One brand colour per app, reused from each app's own coral/orange/green
+// palette so the catalog visually foreshadows what you get inside.
+const ACCENTS: Record<string, string> = {
+  kado: "#FF4D6D",
+  bricolo: "#E8590C",
+  forma: "#0EA968",
+};
+
 export function AppGrid({ selectedAppIdFromHeader, onClearSelectedApp }: AppGridProps) {
   const [expanded, setExpanded] = useState<AppDetail | null>(null);
   const { language, t } = useLanguage();
 
-  const items: CarouselAppItem[] = useMemo(() => {
+  const items: BentoAppItem[] = useMemo(() => {
     return apps.map((app) => ({
       id: app.id,
       title: app.name[language],
       subtitle: app.tagline[language],
       badge: getStatusLabel(app.status, t),
       imageUrl: photoUrl(app),
-      href: app.href,
+      accentFrom: ACCENTS[app.id] ?? "#FF4D6D",
+      accentTo: ACCENTS[app.id] ?? "#FF4D6D",
     }));
   }, [language, t]);
-
-  // With only a handful of apps, show them all at once statically instead of
-  // an auto-rotating loop -- once more apps ship this naturally reverts to
-  // looping/autoplay on its own.
-  const isStatic = items.length <= 3;
 
   function openApp(id: string) {
     const app = apps.find((a: AppEntry) => a.id === id);
@@ -76,15 +80,7 @@ export function AppGrid({ selectedAppIdFromHeader, onClearSelectedApp }: AppGrid
         transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         className="mx-auto mt-10 w-full max-w-5xl"
       >
-        <CardCarousel
-          items={items}
-          onItemClick={openApp}
-          autoplayDelay={4500}
-          expandedId={expanded?.id ?? null}
-          loop={!isStatic}
-          showPagination={!isStatic}
-          showNavigation={!isStatic}
-        />
+        <AppBentoGrid items={items} onItemClick={openApp} comingSoonLabel={t.statusPresto} />
       </motion.div>
 
       <AppIconExpand app={expanded} onClose={() => setExpanded(null)} />

@@ -77,10 +77,10 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menu",
     closeMenu: "Chiudi menu",
     
-    heroTagline: "Hai un problema di tutti i giorni?",
+    heroTagline: "Basta scrollare. Inizia a scegliere.",
     heroTitle: "DGM APPS",
-    heroDescription: "App utili e semplici, pensate per farti risparmiare tempo. Sfoglia le soluzioni qui sotto.",
-    heroCta: "Scopri le soluzioni",
+    heroDescription: "Tre app AI, un solo gesto: dicci cosa ti serve — un regalo, un attrezzo, l'attrezzatura giusta — e troviamo il prodotto perfetto su Amazon. Niente recensioni infinite, niente dieci tab aperte.",
+    heroCta: "Prova le app",
     heroSecondaryCta: "Chi siamo",
 
     storyBadge: "Chi siamo",
@@ -107,7 +107,7 @@ const translations: Record<Language, Translations> = {
 
     catalogBadge: "Catalogo Soluzioni DGM",
     catalogTitle: "Il Catalogo delle Soluzioni",
-    catalogSubtitle: "Sfoglia le nostre app, gioca con il carosello e seleziona una card per aprirla.",
+    catalogSubtitle: "Tocca un'app per scoprirla e aprirla.",
     statusLive: "Disponibile",
     statusBeta: "Beta",
     statusPresto: "Presto disponibile",
@@ -141,10 +141,10 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menu",
     closeMenu: "Close menu",
 
-    heroTagline: "Got an everyday problem?",
+    heroTagline: "Stop scrolling. Start choosing.",
     heroTitle: "DGM APPS",
-    heroDescription: "Useful and simple apps designed to save you time. Explore our solutions below.",
-    heroCta: "Explore Solutions",
+    heroDescription: "Three AI apps, one gesture: tell us what you need — a gift, a tool, the right gear — and we find the perfect product on Amazon. No endless reviews, no ten open tabs.",
+    heroCta: "Try the apps",
     heroSecondaryCta: "About Us",
 
     storyBadge: "About Us",
@@ -171,7 +171,7 @@ const translations: Record<Language, Translations> = {
 
     catalogBadge: "DGM Solutions Catalog",
     catalogTitle: "Our Solutions Catalog",
-    catalogSubtitle: "Browse our apps, swipe through the carousel, and select any card to view details.",
+    catalogSubtitle: "Tap an app to discover it and open it.",
     statusLive: "Available",
     statusBeta: "Beta",
     statusPresto: "Coming Soon",
@@ -205,10 +205,10 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menú",
     closeMenu: "Cerrar menú",
 
-    heroTagline: "¿Tienes un problema del día a día?",
+    heroTagline: "Basta de scroll infinito.",
     heroTitle: "DGM APPS",
-    heroDescription: "Apps útiles y simples, pensadas para ahorrarte tiempo. Explora las soluciones aquí abajo.",
-    heroCta: "Explorar soluciones",
+    heroDescription: "Tres apps con IA, un solo gesto: dinos qué necesitas — un regalo, una herramienta, el equipo justo — y encontramos el producto perfecto en Amazon. Sin reseñas infinitas, sin diez pestañas abiertas.",
+    heroCta: "Prueba las apps",
     heroSecondaryCta: "Sobre Nosotros",
 
     storyBadge: "Sobre Nosotros",
@@ -235,7 +235,7 @@ const translations: Record<Language, Translations> = {
 
     catalogBadge: "Catálogo de Soluciones DGM",
     catalogTitle: "El Catálogo de Soluciones",
-    catalogSubtitle: "Explora nuestras apps, juega con el carrusel y selecciona una para abrirla.",
+    catalogSubtitle: "Toca una app para descubrirla y abrirla.",
     statusLive: "Disponible",
     statusBeta: "Beta",
     statusPresto: "Próximamente",
@@ -269,10 +269,10 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menu",
     closeMenu: "Fermer le menu",
 
-    heroTagline: "Un problème du quotidien ?",
+    heroTagline: "Fini le scroll infini.",
     heroTitle: "DGM APPS",
-    heroDescription: "Des applications utiles et simples, pensées pour vous faire gagner du temps. Découvrez les solutions ci-dessous.",
-    heroCta: "Découvrir les solutions",
+    heroDescription: "Trois apps IA, un seul geste : dites-nous ce qu'il vous faut — un cadeau, un outil, le bon équipement — et on trouve le produit parfait sur Amazon. Sans avis interminables, sans dix onglets ouverts.",
+    heroCta: "Essayer les apps",
     heroSecondaryCta: "À Propos",
 
     storyBadge: "À Propos",
@@ -299,7 +299,7 @@ const translations: Record<Language, Translations> = {
 
     catalogBadge: "Catalogue de Solutions DGM",
     catalogTitle: "Le Catalogue de Solutions",
-    catalogSubtitle: "Parcourez nos apps, jouez avec le carrousel et sélectionnez une carte pour l'ouvrir.",
+    catalogSubtitle: "Touchez une app pour la découvrir et l'ouvrir.",
     statusLive: "Disponible",
     statusBeta: "Bêta",
     statusPresto: "Bientôt disponible",
@@ -333,10 +333,10 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menü",
     closeMenu: "Menü schließen",
 
-    heroTagline: "Ein alltägliches Problem?",
+    heroTagline: "Schluss mit endlosem Scrollen.",
     heroTitle: "DGM APPS",
-    heroDescription: "Nützliche und einfache Apps, die dir Zeit sparen. Entdecke die Lösungen weiter unten.",
-    heroCta: "Lösungen entdecken",
+    heroDescription: "Drei KI-Apps, eine Geste: Sag uns, was du brauchst — ein Geschenk, ein Werkzeug, die richtige Ausrüstung — und wir finden das perfekte Produkt auf Amazon. Keine endlosen Bewertungen, keine zehn offenen Tabs.",
+    heroCta: "Apps ausprobieren",
     heroSecondaryCta: "Über Uns",
 
     storyBadge: "Über Uns",
@@ -363,7 +363,7 @@ const translations: Record<Language, Translations> = {
 
     catalogBadge: "DGM Lösungskatalog",
     catalogTitle: "Der Lösungskatalog",
-    catalogSubtitle: "Durchstöbere unsere Apps, spiel mit dem Karussell und wähle eine Karte zum Öffnen.",
+    catalogSubtitle: "Tippe auf eine App, um sie zu entdecken und zu öffnen.",
     statusLive: "Verfügbar",
     statusBeta: "Beta",
     statusPresto: "Demnächst verfügbar",
