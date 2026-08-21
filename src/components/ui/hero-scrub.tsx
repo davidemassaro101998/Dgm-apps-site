@@ -154,33 +154,38 @@ export function HeroScrub({
 
   // Every layer is a smooth, continuous fade over its own slice of the
   // scroll range -- nothing snaps in or out on a single scroll tick.
-  // Rebalanced to roughly a 4:3 split: ~4 scroll gestures to get the hero
-  // out and "chi siamo" fully in (progress up to ~0.55), then ~3 more to
-  // get through "chi siamo", the transition, and land on the icons already
-  // in place (progress ~0.55 to 1) -- not evenly spread across the whole
-  // range.
-  const taglineOpacity = useTransform(scrollYProgress, [0, 0.06, 0.2, 0.34], [1, 1, 1, 0]);
-  const ctaOpacity = useTransform(scrollYProgress, [0, 0.06, 0.2, 0.34], [0, 1, 1, 0]);
-  const ctaY = useTransform(scrollYProgress, [0, 0.06], [16, 0]);
+  // Timing is pinned to explicit checkpoints on the 0-1 progress scale:
+  // "chi siamo" fully open exactly at the midpoint (0.5), the real icons
+  // coming out at 0.7 (right as the video's own drawn objects are settled),
+  // holding from there to the end.
+  const taglineOpacity = useTransform(scrollYProgress, [0, 0.08, 0.26, 0.4], [1, 1, 1, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0, 0.08, 0.26, 0.4], [0, 1, 1, 0]);
+  const ctaY = useTransform(scrollYProgress, [0, 0.08], [16, 0]);
   // "Chi siamo" rises in from below the frame with a fade, holds, then sinks
   // back down out of view as it fades -- never a flat cross-fade in place.
-  const aboutOpacity = useTransform(scrollYProgress, [0.34, 0.55, 0.68, 0.8], [0, 1, 1, 0]);
-  const aboutY = useTransform(scrollYProgress, [0.34, 0.55, 0.68, 0.8], [48, 0, 0, 48]);
+  // Fully open (opacity 1) right at progress 0.5, the halfway point.
+  const aboutOpacity = useTransform(scrollYProgress, [0.38, 0.5, 0.6, 0.68], [0, 1, 1, 0]);
+  const aboutY = useTransform(scrollYProgress, [0.38, 0.5, 0.6, 0.68], [48, 0, 0, 48]);
+  // The about window spans right across progress ~0.59, which is exactly
+  // when the video's own drawn gift/wrench/dumbbell finish forming and sit
+  // fully visible -- so without this, they show directly behind the "chi
+  // siamo" text. Own faster ramp finishing well before the text is at full
+  // opacity, so the darkening is already there once the text peaks.
+  const aboutScrimOpacity = useTransform(scrollYProgress, [0.4, 0.48, 0.62, 0.68], [0, 1, 1, 0]);
   // The video's own drawn gift/wrench/dumbbell finish forming around
-  // progress ~0.59 and then just sit there, fully settled, until the real
-  // icons take over -- but that hand-off itself now happens a bit earlier
-  // (0.86 instead of 0.9) to fit the tighter back third of the sequence.
-  const iconsOpacity = useTransform(scrollYProgress, [0.86, 0.97], [0, 1]);
-  const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > 0.93 ? "auto" : "none"));
+  // progress ~0.59 and hold, fully settled, until the real icons take
+  // over -- centered on 0.7 (not starting there) so they're clearly
+  // already "coming out" right at that checkpoint, not still at zero.
+  const iconsOpacity = useTransform(scrollYProgress, [0.64, 0.78], [0, 1]);
+  const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > 0.72 ? "auto" : "none"));
   // The video itself never stops showing its own drawn objects once
   // they've formed -- this scrim (sitting between the video and the real
-  // icons) is what erases them from view. It has its own faster ramp,
-  // finishing (0.82 -> 0.9) just as the icons start becoming legible
-  // (0.86), so the background is already fully dark by the time there's
-  // anything to compare it against -- tying it 1:1 to iconsOpacity instead
-  // left it barely-dark while icons were still faint, letting the drawn
-  // objects bleed through underneath them.
-  const iconScrimOpacity = useTransform(scrollYProgress, [0.82, 0.9], [0, 1]);
+  // icons) is what erases them from view. Its own faster ramp finishes
+  // right as the icons start becoming legible, so the background is
+  // already fully dark by the time there's anything to compare it against
+  // -- tying it 1:1 to iconsOpacity instead left it barely-dark while icons
+  // were still faint, letting the drawn objects bleed through underneath.
+  const iconScrimOpacity = useTransform(scrollYProgress, [0.56, 0.65], [0, 1]);
 
   const handleCtaClick = () => {
     const section = sectionRef.current;
@@ -200,15 +205,15 @@ export function HeroScrub({
           not of the scrollable pin range (height - viewport) that scroll
           progress is measured against -- the two only line up at the very
           top. Recompute both whenever PIN_VH or the opacity windows below
-          change: top-[51%] here lands around progress ~0.615, inside the
-          [0.55, 0.68] hold of the about window (based on a ~844px reference
-          viewport). */}
-      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[51%] h-px w-full" />
+          change: top-[41%] here lands right at progress 0.5, the exact
+          midpoint where "chi siamo" is fully open (based on a ~844px
+          reference viewport). */}
+      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[41%] h-px w-full" />
       {/* Anchor for the "Catalogo" nav item: the real catalog is the 3 real
           app icons that take the video's own drawn icons' place below --
-          there is no separate catalog section any more. top-[75%] lands
-          around progress ~0.915, inside the [0.86, 0.97] icon fade-in window. */}
-      <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[75%] h-px w-full" />
+          there is no separate catalog section any more. top-[58%] lands
+          around progress 0.71, inside the [0.64, 0.78] icon fade-in window. */}
+      <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[58%] h-px w-full" />
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden" style={{ perspective: "1400px" }}>
         <div className="absolute inset-0 z-0">
           {videoSrc ? (
@@ -222,7 +227,7 @@ export function HeroScrub({
               disablePictureInPicture
               preload="auto"
               tabIndex={-1}
-              className="hero-scrub-video pointer-events-none h-full w-full object-cover object-center sm:object-[center_40%]"
+              className="hero-scrub-video h-full w-full object-cover object-center sm:object-[center_40%]"
               aria-hidden
             />
           ) : (
@@ -265,6 +270,20 @@ export function HeroScrub({
             {ctaLabel}
           </motion.button>
         </motion.div>
+
+        {/* Darkens the video behind the "chi siamo" text -- without it the
+            video's own drawn objects (fully formed by progress ~0.59, right
+            in the middle of this text's on-screen window) show directly
+            behind the words. */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-x-0 top-[30%] bottom-0 z-[2]"
+          style={{
+            opacity: aboutScrimOpacity,
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 20%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0.92) 100%)",
+          }}
+        />
 
         {/* "Chi siamo": rises from below into the middle-lower part of the
             screen, holds, then sinks back out -- never a flat cross-fade.
