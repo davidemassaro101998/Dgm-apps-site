@@ -80,7 +80,8 @@ function MainContent() {
       <Header onNavigateSection={goToSection} />
 
       <HeroScrub
-        videoSrc="/videos/hero-brand.mp4"
+        framesBaseUrl="/videos/hero-frames"
+        frameCount={188}
         taglineLine1={t.heroScrubTaglineLine1}
         taglineLine2={t.heroScrubTaglineLine2}
         ctaLabel={t.heroCta}

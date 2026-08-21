@@ -19,9 +19,13 @@ export interface HeroScrubIcon {
 }
 
 export interface HeroScrubProps {
-  /** Scroll-scrubbed brand video: currentTime tracks scroll position 1:1,
-   *  it never plays on its own. */
-  videoSrc?: string;
+  /** Scroll-scrubbed brand sequence: a directory of pre-extracted frames
+   *  (f000.webp, f001.webp, ...) drawn to a canvas in lockstep with scroll
+   *  position -- no <video> element, so there is never a native play/pause
+   *  affordance for a mobile browser to show, and no per-scroll video
+   *  decode stalls. */
+  framesBaseUrl?: string;
+  frameCount?: number;
   taglineLine1: string;
   taglineLine2: string;
   ctaLabel: string;
@@ -55,7 +59,8 @@ const PHYSICAL_TEXT_SHADOW = [
 const ENTRANCE_TRANSITION = { delay: 0.5, duration: 0.7, ease: [0.16, 1, 0.3, 1] as const };
 
 export function HeroScrub({
-  videoSrc,
+  framesBaseUrl,
+  frameCount = 0,
   taglineLine1,
   taglineLine2,
   ctaLabel,
@@ -66,56 +71,73 @@ export function HeroScrub({
   icons,
 }: HeroScrubProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduced = useReducedMotion();
 
   // Manual scroll tracking: framer's useScroll({ target }) was silently
   // falling back to whole-document scroll instead of this section's own
   // range (progress only reached 1 at the very bottom of the page). This
   // computes progress directly off the section's own bounding rect.
-  //
-  // The video's own currentTime is a straight linear map of that progress
-  // (video.duration * p) -- the footage already has its own natural pacing
-  // (spheres merge, light burst, ribbons form, a brief lull, then the
-  // gift/wrench/dumbbell appear and settle), so scroll just scrubs through
-  // it as-is rather than distorting it to force particular content beats to
-  // line up with particular scroll checkpoints. It's the on-screen text/icon
-  // windows below that are tuned to match the video's real timing, not the
-  // other way around.
   const scrollYProgress = useMotionValue(0);
+
+  // Pre-extracted frame sequence drawn straight to a <canvas>, instead of
+  // scrubbing a <video> element's currentTime. Two problems that repeated
+  // attempts couldn't fully fix on a real <video> are structurally gone
+  // with this approach: (1) mobile browsers show a native tap-to-play
+  // affordance on a video element that's paused/never confirmed "playing"
+  // -- a canvas has no such element-level UI, ever; (2) seeking a video's
+  // currentTime forces a real decode of a keyframe on every call, which is
+  // what was producing the reported scroll lag -- drawing a already-decoded
+  // Image bitmap to canvas is comparatively free.
   useEffect(() => {
     const section = sectionRef.current;
-    const video = videoRef.current;
-    if (!section) return;
+    const canvas = canvasRef.current;
+    if (!section || !canvas || !framesBaseUrl || frameCount <= 0) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    // Every real seek forces the decoder to locate and paint a keyframe --
-    // real work even on an all-intra file. Skip it when the target time is
-    // close enough to what's already painted (sub-frame at this video's
-    // framerate) to be visually identical; this is what was producing the
-    // reported scroll lag on mobile, where scroll fires far more often than
-    // the resulting frame actually changes.
-    const MIN_SEEK_DELTA = 1 / 48; // half a frame at 24fps
-    let lastSeekedTime = -1;
+    let cancelled = false;
+    const images: HTMLImageElement[] = new Array(frameCount);
+    let loadedCount = 0;
+    let currentFrame = -1;
+
+    function drawFrame(index: number) {
+      const img = images[index];
+      if (!img || !img.complete || img.naturalWidth === 0) return;
+      if (index === currentFrame) return;
+      currentFrame = index;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const cw = canvas!.clientWidth;
+      const ch = canvas!.clientHeight;
+      if (canvas!.width !== Math.round(cw * dpr) || canvas!.height !== Math.round(ch * dpr)) {
+        canvas!.width = Math.round(cw * dpr);
+        canvas!.height = Math.round(ch * dpr);
+      }
+      const cwPx = canvas!.width;
+      const chPx = canvas!.height;
+      // object-fit: cover, with a focal point that shifts lower on wider
+      // (sm+) viewports to match the CSS the <video> element used to have.
+      const focalY = window.innerWidth >= 640 ? 0.4 : 0.5;
+      const scale = Math.max(cwPx / img.naturalWidth, chPx / img.naturalHeight);
+      const drawW = img.naturalWidth * scale;
+      const drawH = img.naturalHeight * scale;
+      const dx = (cwPx - drawW) / 2;
+      const dy = (chPx - drawH) * focalY;
+      ctx!.clearRect(0, 0, cwPx, chPx);
+      ctx!.drawImage(img, dx, dy, drawW, drawH);
+    }
+
     function applyProgress() {
       const rect = section!.getBoundingClientRect();
       const total = rect.height - window.innerHeight;
       const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
       scrollYProgress.set(p);
-      if (video && video.duration && !reduced) {
-        // Never let this collapse to exactly 0 -- assigning the value the
-        // element already holds is a silent no-op seek that paints nothing.
-        const target = Math.max(0.001, Math.min(video.duration, p * video.duration));
-        if (Math.abs(target - lastSeekedTime) >= MIN_SEEK_DELTA) {
-          video.currentTime = target;
-          lastSeekedTime = target;
-        }
-      }
+      const index = Math.min(frameCount - 1, Math.max(0, Math.round(p * (frameCount - 1))));
+      drawFrame(index);
     }
 
     // Scroll events can fire far more often than the screen actually
-    // repaints -- seeking the video on every single one (rather than once
-    // per animation frame) was producing visible jank. Coalesce with rAF so
-    // at most one seek happens per rendered frame.
+    // repaints -- coalesce with rAF so at most one draw happens per frame.
     let rafId = 0;
     function onScroll() {
       if (rafId) return;
@@ -125,97 +147,18 @@ export function HeroScrub({
       });
     }
 
-    let cancelled = false;
-    if (video) {
-      // React sets `muted`/`autoPlay` as DOM *properties* during commit, not
-      // as the literal HTML attributes -- some mobile browsers only check
-      // the attribute at parse time when deciding whether to honor
-      // autoplay, so the JSX props alone aren't reliable. Force both as real
-      // attributes too, redundantly with the JSX props above.
-      video.muted = true;
-      video.setAttribute("muted", "");
-      video.setAttribute("autoplay", "");
-
-      // Safari specifically checks prefers-reduced-motion before honoring
-      // autoplay on a <video> -- if the visitor has that OS accessibility
-      // setting on, calling play() ourselves fights it and Safari shows its
-      // native tap-to-play affordance as the (correct, by design) fallback.
-      // So under reduced motion, never call play() at all: just seek once to
-      // paint a single still frame. Text/icons still reveal normally on
-      // scroll via applyProgress below (it only skips the video's own
-      // currentTime updates when reduced, not scrollYProgress itself) --
-      // reduced motion means the video stops scrubbing, not that the page
-      // stops responding to scroll.
-      if (reduced) {
-        if (video.readyState >= 1) video.currentTime = 0.001;
-        else video.addEventListener("loadedmetadata", () => (video.currentTime = 0.001), { once: true });
-        applyProgress();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", onScroll);
-        return () => {
-          cancelled = true;
-          if (rafId) cancelAnimationFrame(rafId);
-          window.removeEventListener("scroll", onScroll);
-          window.removeEventListener("resize", onScroll);
-        };
-      }
-
-      // A <video> driven only by currentTime seeks (never actually played)
-      // stays visually black on real Safari/Chrome mobile until it has been
-      // through one real playback start. Two independent attempts:
-      //  1) on mount, via the native `autoplay` attribute + an explicit
-      //     play() call, which covers the common muted-autoplay case;
-      //  2) as a fallback, on the visitor's very first real touch/scroll/
-      //     wheel gesture, since some autoplay policies specifically
-      //     require actual user activation and don't honor attribute-only
-      //     autoplay at all. This can't do anything about iOS Low Power
-      //     Mode specifically -- that blocks all video autoplay at the OS
-      //     level with no override, by design -- but covers other stricter
-      //     contexts (some in-app/WebView browsers) that aren't that.
-      // Either way, once playback actually starts, wait for the real
-      // "playing" event (pausing the instant play() resolves only means
-      // playback *started*, not that a frame has painted) then immediately
-      // resync to the true scroll-derived frame, so priming never leaves
-      // the video ahead of where the user has actually scrolled.
-      const settleAfterPlay = () => {
+    for (let i = 0; i < frameCount; i++) {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = `${framesBaseUrl}/f${String(i).padStart(3, "0")}.webp`;
+      img.onload = () => {
+        loadedCount++;
         if (cancelled) return;
-        const onPlaying = () => {
-          video.pause();
-          applyProgress();
-          video.removeEventListener("playing", onPlaying);
-        };
-        video.addEventListener("playing", onPlaying);
-        setTimeout(() => {
-          video.removeEventListener("playing", onPlaying);
-          if (!video.paused) video.pause();
-          applyProgress();
-        }, 250);
-      };
-      const primeDecoder = () => {
-        if (cancelled) return;
+        // Paint as soon as the frame the visitor is currently scrolled to
+        // becomes available, rather than waiting for the whole sequence.
         applyProgress();
-        video.play().then(settleAfterPlay).catch(() => {});
       };
-      if (video.readyState >= 1) primeDecoder();
-      else video.addEventListener("loadedmetadata", primeDecoder, { once: true });
-
-      const gestureRetry = () => {
-        if (cancelled || !video.paused) return;
-        video.play().then(settleAfterPlay).catch(() => {});
-      };
-      const gestureEvents = ["touchstart", "pointerdown", "wheel"] as const;
-      gestureEvents.forEach((evt) => window.addEventListener(evt, gestureRetry, { once: true, passive: true }));
-
-      applyProgress();
-      window.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", onScroll);
-      return () => {
-        cancelled = true;
-        if (rafId) cancelAnimationFrame(rafId);
-        window.removeEventListener("scroll", onScroll);
-        window.removeEventListener("resize", onScroll);
-        gestureEvents.forEach((evt) => window.removeEventListener(evt, gestureRetry));
-      };
+      images[i] = img;
     }
 
     applyProgress();
@@ -227,7 +170,7 @@ export function HeroScrub({
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [reduced, videoSrc]);
+  }, [reduced, framesBaseUrl, frameCount]);
 
   // The video's own real content beats, measured directly from the file
   // (public/videos/hero-brand.mp4, 188 frames @ 24fps): the gift/wrench/
@@ -252,11 +195,17 @@ export function HeroScrub({
   // -- and right as each iris shuts, the matching real icon grows outward
   // from that same point, reading as "the drawing became the icon."
   const IRIS_CLOSE_START = VIDEO_SETTLE_PROGRESS; // 0.835
-  const IRIS_CLOSE_END = VIDEO_SETTLE_PROGRESS + 0.035; // 0.87
+  const IRIS_CLOSE_END = VIDEO_SETTLE_PROGRESS + 0.045; // 0.88
+  const FLASH_PEAK = IRIS_CLOSE_END; // the exact instant of hand-off
   const ICONS_POP_START = IRIS_CLOSE_END;
-  const ICONS_POP_END = VIDEO_SETTLE_PROGRESS + 0.135; // 0.97
+  const ICONS_POP_MID = VIDEO_SETTLE_PROGRESS + 0.105; // overshoot peak
+  const ICONS_POP_END = VIDEO_SETTLE_PROGRESS + 0.15; // 0.985
   const irisRadiusPct = useTransform(scrollYProgress, [IRIS_CLOSE_START, IRIS_CLOSE_END], [46, 0]);
-  const irisEdgePct = useTransform(irisRadiusPct, (r) => r + 8);
+  // A soft, feathered falloff (three stops instead of a hard edge two
+  // percentage points apart) reads as the object dissolving away rather
+  // than being cut out with a knife -- closer to "real" than a crisp wipe.
+  const irisMidPct = useTransform(irisRadiusPct, (r) => r + 6);
+  const irisEdgePct = useTransform(irisRadiusPct, (r) => r + 16);
   // A circle inscribed at 46% radius never reaches a square box's corners
   // (they sit at ~70.7% distance from center), so the iris divs render
   // permanent black corner triangles for every scroll position before the
@@ -268,7 +217,7 @@ export function HeroScrub({
   // Solid opaque black (not a translucent rgba) so the square edge of this
   // div never shows as a seam against the surrounding scrim below, however
   // their opacities happen to line up at a given scroll position.
-  const irisBackground = useMotionTemplate`radial-gradient(circle, transparent ${irisRadiusPct}%, rgba(0,0,0,1) ${irisEdgePct}%, rgba(0,0,0,1) 100%)`;
+  const irisBackground = useMotionTemplate`radial-gradient(circle, transparent ${irisRadiusPct}%, rgba(0,0,0,0.55) ${irisMidPct}%, rgba(0,0,0,1) ${irisEdgePct}%, rgba(0,0,0,1) 100%)`;
   // Darkens everything outside the three irises -- and critically, snaps to
   // fully opaque almost instantly (a 0.01-wide ramp) right as the irises
   // start closing, rather than fading in gradually over the same window
@@ -282,8 +231,24 @@ export function HeroScrub({
   // object," which is the actual "outside to inside" effect that was asked
   // for -- not two independently-timed darkenings that drift apart.
   const iconScrimOpacity = useTransform(scrollYProgress, [IRIS_CLOSE_START, IRIS_CLOSE_START + 0.01], [0, 1]);
-  const iconsOpacity = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [0, 1]);
-  const iconsScale = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [0.05, 1]);
+  // A brief bright burst right at the exact hand-off instant -- the object
+  // doesn't just vanish into a dark dot, it flashes into light and the icon
+  // condenses out of that light, which is what actually reads as "real"
+  // materialization instead of a wipe/mask trick.
+  const flashOpacity = useTransform(
+    scrollYProgress,
+    [FLASH_PEAK - 0.02, FLASH_PEAK, FLASH_PEAK + 0.05],
+    [0, 0.9, 0]
+  );
+  const iconsOpacity = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_START + 0.02], [0, 1]);
+  // A slight overshoot (grows past full size, then eases back down) instead
+  // of a linear scale-up -- the small bit of "bounce" is what sells it as a
+  // physical thing settling into place rather than a flat CSS tween.
+  const iconsScale = useTransform(
+    scrollYProgress,
+    [ICONS_POP_START, ICONS_POP_MID, ICONS_POP_END],
+    [0.1, 1.12, 1]
+  );
   const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > ICONS_POP_END ? "auto" : "none"));
 
   const handleCtaClick = () => {
@@ -312,19 +277,8 @@ export function HeroScrub({
       <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[76%] h-px w-full" />
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden" style={{ perspective: "1400px" }}>
         <div className="absolute inset-0 z-0">
-          {videoSrc ? (
-            <video
-              ref={videoRef}
-              src={videoSrc}
-              muted
-              autoPlay
-              playsInline
-              disablePictureInPicture
-              preload="auto"
-              tabIndex={-1}
-              className="hero-scrub-video h-full w-full object-cover object-center sm:object-[center_40%]"
-              aria-hidden
-            />
+          {framesBaseUrl ? (
+            <canvas ref={canvasRef} className="pointer-events-none h-full w-full" aria-hidden />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-black">
               <span className="text-xs font-semibold uppercase tracking-widest text-white/40">
@@ -443,6 +397,32 @@ export function HeroScrub({
                   y: "-50%",
                   opacity: irisOpacity,
                   background: irisBackground,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* A brief bright flash at each object's exact position, right as
+            its iris shuts -- reads as the drawing condensing into light and
+            the icon crystallizing out of it, instead of just popping in on
+            top of a plain dark hole. Additive blend so it brightens rather
+            than paints a flat white disc. */}
+        <div className="absolute inset-x-0 top-[56%] z-[3] flex justify-center sm:top-[46%]" aria-hidden>
+          <div className="relative h-[34vh] w-full max-w-lg">
+            {icons.map((icon) => (
+              <motion.div
+                key={icon.id}
+                className="absolute h-32 w-32 sm:h-44 sm:w-44"
+                style={{
+                  left: `${icon.leftPct}%`,
+                  top: `${icon.topPct}%`,
+                  x: "-50%",
+                  y: "-50%",
+                  opacity: flashOpacity,
+                  mixBlendMode: "plus-lighter",
+                  background:
+                    "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(196,181,253,0.5) 35%, rgba(34,211,238,0.2) 60%, transparent 75%)",
                 }}
               />
             ))}
