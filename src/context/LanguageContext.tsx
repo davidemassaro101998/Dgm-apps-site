@@ -25,6 +25,10 @@ export interface Translations {
   heroDescription: string;
   heroCta: string;
   heroSecondaryCta: string;
+  heroScrubTaglineLine1: string;
+  heroScrubTaglineLine2: string;
+  heroScrubAboutLine1: string;
+  heroScrubAboutLine2: string;
 
   // Story
   storyBadge: string;
@@ -82,6 +86,10 @@ const translations: Record<Language, Translations> = {
     heroDescription: "Tre app AI, un solo gesto: dicci cosa ti serve — un regalo, un attrezzo, l'attrezzatura giusta — e troviamo il prodotto perfetto su Amazon. Niente recensioni infinite, niente dieci tab aperte.",
     heroCta: "Prova le app",
     heroSecondaryCta: "Chi siamo",
+    heroScrubTaglineLine1: "Tre app.",
+    heroScrubTaglineLine2: "Zero tempo perso.",
+    heroScrubAboutLine1: "Due persone.",
+    heroScrubAboutLine2: "Nessuna scusa.",
 
     storyBadge: "Chi siamo",
     storyTitleLine1: "Due persone.",
@@ -146,6 +154,10 @@ const translations: Record<Language, Translations> = {
     heroDescription: "Three AI apps, one gesture: tell us what you need — a gift, a tool, the right gear — and we find the perfect product on Amazon. No endless reviews, no ten open tabs.",
     heroCta: "Try the apps",
     heroSecondaryCta: "About Us",
+    heroScrubTaglineLine1: "Three apps.",
+    heroScrubTaglineLine2: "Zero wasted time.",
+    heroScrubAboutLine1: "Two people.",
+    heroScrubAboutLine2: "No excuses.",
 
     storyBadge: "About Us",
     storyTitleLine1: "Two people.",
@@ -210,6 +222,10 @@ const translations: Record<Language, Translations> = {
     heroDescription: "Tres apps con IA, un solo gesto: dinos qué necesitas — un regalo, una herramienta, el equipo justo — y encontramos el producto perfecto en Amazon. Sin reseñas infinitas, sin diez pestañas abiertas.",
     heroCta: "Prueba las apps",
     heroSecondaryCta: "Sobre Nosotros",
+    heroScrubTaglineLine1: "Tres apps.",
+    heroScrubTaglineLine2: "Cero tiempo perdido.",
+    heroScrubAboutLine1: "Dos personas.",
+    heroScrubAboutLine2: "Ninguna excusa.",
 
     storyBadge: "Sobre Nosotros",
     storyTitleLine1: "Dos personas.",
@@ -274,6 +290,10 @@ const translations: Record<Language, Translations> = {
     heroDescription: "Trois apps IA, un seul geste : dites-nous ce qu'il vous faut — un cadeau, un outil, le bon équipement — et on trouve le produit parfait sur Amazon. Sans avis interminables, sans dix onglets ouverts.",
     heroCta: "Essayer les apps",
     heroSecondaryCta: "À Propos",
+    heroScrubTaglineLine1: "Trois apps.",
+    heroScrubTaglineLine2: "Zéro temps perdu.",
+    heroScrubAboutLine1: "Deux personnes.",
+    heroScrubAboutLine2: "Aucune excuse.",
 
     storyBadge: "À Propos",
     storyTitleLine1: "Deux personnes.",
@@ -338,6 +358,10 @@ const translations: Record<Language, Translations> = {
     heroDescription: "Drei KI-Apps, eine Geste: Sag uns, was du brauchst — ein Geschenk, ein Werkzeug, die richtige Ausrüstung — und wir finden das perfekte Produkt auf Amazon. Keine endlosen Bewertungen, keine zehn offenen Tabs.",
     heroCta: "Apps ausprobieren",
     heroSecondaryCta: "Über Uns",
+    heroScrubTaglineLine1: "Drei Apps.",
+    heroScrubTaglineLine2: "Null verlorene Zeit.",
+    heroScrubAboutLine1: "Zwei Menschen.",
+    heroScrubAboutLine2: "Keine Ausreden.",
 
     storyBadge: "Über Uns",
     storyTitleLine1: "Zwei Menschen.",

@@ -1,18 +1,40 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { MotionConfig } from "framer-motion";
 import { Header } from "./components/Header";
-import { HeroScrub } from "./components/ui/hero-scrub";
+import { HeroScrub, type HeroScrubIcon } from "./components/ui/hero-scrub";
 import { Story } from "./components/Story";
 import { AppGrid } from "./components/AppGrid";
 import { Footer } from "./components/Footer";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
+import { apps } from "./data/apps";
+import { photoUrl } from "./lib/appPhoto";
 
 const SECTION_IDS = ["top", "chi-siamo", "catalogo", "contatti"];
 
+// Left-to-right order matches the video's own gift / wrench / dumbbell
+// layout, so the icon handoff lands roughly where each object floats.
+const HERO_ICON_POSITIONS: Record<string, number> = {
+  kado: 22,
+  bricolo: 50,
+  forma: 78,
+};
+
 function MainContent() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const [selectedAppIdFromHeader, setSelectedAppIdFromHeader] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState(0);
+
+  const heroIcons: HeroScrubIcon[] = useMemo(
+    () =>
+      apps.map((app) => ({
+        id: app.id,
+        name: app.name[language],
+        iconUrl: photoUrl(app),
+        href: app.href,
+        leftPct: HERO_ICON_POSITIONS[app.id] ?? 50,
+      })),
+    [language]
+  );
 
   // Scrollspy for the side nav dots — tracks whichever section covers the viewport midpoint.
   useEffect(() => {
@@ -58,7 +80,15 @@ function MainContent() {
     <div className="relative min-h-screen w-full bg-ink-950 font-body">
       <Header onSelectApp={handleSelectApp} onNavigateSection={goToSection} />
 
-      <HeroScrub videoSrc="/videos/hero-brand.mp4" title="DGM APPS" />
+      <HeroScrub
+        videoSrc="/videos/hero-brand.mp4"
+        taglineLine1={t.heroScrubTaglineLine1}
+        taglineLine2={t.heroScrubTaglineLine2}
+        ctaLabel={t.heroCta}
+        aboutLine1={t.heroScrubAboutLine1}
+        aboutLine2={t.heroScrubAboutLine2}
+        icons={heroIcons}
+      />
 
       <Story />
 
