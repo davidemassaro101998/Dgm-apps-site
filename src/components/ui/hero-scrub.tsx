@@ -28,7 +28,12 @@ export interface HeroScrubProps {
   icons: HeroScrubIcon[];
 }
 
-const PIN_VH = 320;
+// Scrollable distance for the whole staged sequence. Deliberately long --
+// this must take many separate scroll/slide gestures to get through (a
+// couple to reach "chi siamo", a couple through it, a couple more to reach
+// the icons), so it reads as scrubbing through a continuous video one
+// frame at a time rather than resolving in one or two scrolls.
+const PIN_VH = 560;
 
 export function HeroScrub({
   videoSrc,
@@ -46,24 +51,6 @@ export function HeroScrub({
   const videoRef = useRef<HTMLVideoElement>(null);
   const reduced = useReducedMotion();
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = true;
-    video.setAttribute("muted", "");
-    // iOS Safari never decodes/paints a single frame from currentTime seeks
-    // alone -- it needs one real play() to prime the decoder. Play muted and
-    // immediately pause so the poster area shows real video instead of black.
-    const primeDecoder = () => {
-      video.play()
-        .then(() => video.pause())
-        .catch(() => {});
-    };
-    if (video.readyState >= 1) primeDecoder();
-    else video.addEventListener("loadedmetadata", primeDecoder, { once: true });
-    return () => video.removeEventListener("loadedmetadata", primeDecoder);
-  }, [videoSrc]);
-
   // Manual scroll tracking: framer's useScroll({ target }) was silently
   // falling back to whole-document scroll instead of this section's own
   // range (progress only reached 1 at the very bottom of the page). This
@@ -74,27 +61,71 @@ export function HeroScrub({
     const section = sectionRef.current;
     const video = videoRef.current;
     if (!section) return;
-    function onScroll() {
+
+    function syncToScroll() {
       const rect = section!.getBoundingClientRect();
       const total = rect.height - window.innerHeight;
       const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
       scrollYProgress.set(p);
       if (video && video.duration && !reduced) {
-        video.currentTime = Math.min(video.duration, Math.max(0, p * video.duration));
+        // Never let this collapse to exactly 0 -- assigning the value the
+        // element already holds is a silent no-op seek that paints nothing.
+        video.currentTime = Math.min(video.duration, Math.max(0.001, p * video.duration));
       }
     }
-    onScroll();
-    // Duration is 0 until metadata loads -- re-sync once it does so the
-    // very first frame isn't stuck waiting for the next scroll event.
-    video?.addEventListener("loadedmetadata", onScroll);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+
+    let cancelled = false;
+    if (video) {
+      video.muted = true;
+      video.setAttribute("muted", "");
+      // A <video> driven only by currentTime seeks (never actually played)
+      // stays visually black on real Safari/Chrome mobile until it has been
+      // through one real playback start. The naive "play then immediately
+      // pause" version is flaky for two reasons:
+      //  1) assigning currentTime the value it already holds (0 -> 0) is a
+      //     no-op with no seek/paint, so priming must force a *different*
+      //     value first (handled by syncToScroll's 0.001 floor above);
+      //  2) pausing the instant the play() promise resolves only means
+      //     playback *started*, not that a frame has painted yet -- and
+      //     while it plays, the video visibly drifts away from the frame
+      //     the current scroll position calls for. Wait for the real
+      //     "playing" event (with a timeout fallback), then immediately
+      //     resync to the true scroll-derived frame so priming never
+      //     leaves the video ahead of where the user has actually scrolled.
+      const primeDecoder = () => {
+        if (cancelled) return;
+        syncToScroll();
+        video
+          .play()
+          .then(() => {
+            if (cancelled) return;
+            const onPlaying = () => {
+              video.pause();
+              syncToScroll();
+              video.removeEventListener("playing", onPlaying);
+            };
+            video.addEventListener("playing", onPlaying);
+            setTimeout(() => {
+              video.removeEventListener("playing", onPlaying);
+              if (!video.paused) video.pause();
+              syncToScroll();
+            }, 250);
+          })
+          .catch(() => {});
+      };
+      if (video.readyState >= 1) primeDecoder();
+      else video.addEventListener("loadedmetadata", primeDecoder, { once: true });
+    }
+
+    syncToScroll();
+    window.addEventListener("scroll", syncToScroll, { passive: true });
+    window.addEventListener("resize", syncToScroll);
     return () => {
-      video?.removeEventListener("loadedmetadata", onScroll);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      cancelled = true;
+      window.removeEventListener("scroll", syncToScroll);
+      window.removeEventListener("resize", syncToScroll);
     };
-  }, [reduced]);
+  }, [reduced, videoSrc]);
 
   // Every layer is a smooth, continuous fade over its own slice of the
   // scroll range -- nothing snaps in or out on a single scroll tick.
@@ -128,14 +159,15 @@ export function HeroScrub({
       {/* NOTE: this offset is a % of the section's own (PIN_VH-tall) height,
           not of the scrollable pin range (height - viewport) that scroll
           progress is measured against -- the two only line up at the very
-          top. top-[27%] here lands around progress ~0.39, inside the
-          [0.28, 0.5] window where the about text is on screen. */}
-      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[27%] h-px w-full" />
+          top. Recompute both whenever PIN_VH changes: top-[32%] here lands
+          around progress ~0.39, inside the [0.28, 0.5] window where the
+          about text is on screen (based on a ~844px reference viewport). */}
+      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[32%] h-px w-full" />
       {/* Anchor for the "Catalogo" nav item: the real catalog is the 3 real
           app icons that take the video's own drawn icons' place below --
-          there is no separate catalog section any more. top-[42%] lands
+          there is no separate catalog section any more. top-[50%] lands
           around progress ~0.61, inside the [0.56, 0.66] icon fade-in window. */}
-      <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[42%] h-px w-full" />
+      <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[50%] h-px w-full" />
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden" style={{ perspective: "1400px" }}>
         <div className="absolute inset-0 z-0">
           {videoSrc ? (
