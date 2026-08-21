@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 
 export interface HeroScrubProps {
@@ -12,7 +12,19 @@ export interface HeroScrubProps {
 
 export function HeroScrub({ videoSrc, posterSrc, title }: HeroScrubProps) {
   const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const reduced = useReducedMotion();
+
+  // React only sets `.muted` as a DOM property, not the HTML attribute --
+  // some mobile browsers check the attribute before that property assignment
+  // lands, and silently refuse to autoplay. Force both explicitly.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    video.setAttribute("muted", "");
+    video.play().catch(() => {});
+  }, [videoSrc]);
 
   // The whole hero fades out as a single piece while you scroll into the
   // next section -- no per-element choreography, just one clean dissolve.
@@ -31,6 +43,7 @@ export function HeroScrub({ videoSrc, posterSrc, title }: HeroScrubProps) {
         <div className="absolute inset-0 z-0">
           {videoSrc ? (
             <video
+              ref={videoRef}
               src={videoSrc}
               poster={posterSrc}
               muted
@@ -57,7 +70,9 @@ export function HeroScrub({ videoSrc, posterSrc, title }: HeroScrubProps) {
           style={{ background: "radial-gradient(ellipse at 50% 22%, transparent 35%, rgba(0,0,0,0.6) 100%)" }}
         />
 
-        <div className="relative z-10 flex h-full w-full items-start justify-center pt-14 sm:pt-20" style={{ transformStyle: "preserve-3d" }}>
+        {/* pt clears the fixed 64px header (h-16) with real margin to spare,
+            so the wordmark never renders underneath the nav bar. */}
+        <div className="relative z-10 flex h-full w-full items-start justify-center pt-24 sm:pt-32" style={{ transformStyle: "preserve-3d" }}>
           <motion.h1
             initial={reduced ? undefined : { opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
