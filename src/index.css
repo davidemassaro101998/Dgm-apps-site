@@ -22,6 +22,12 @@ html, body {
   background-color: #07070b;
   color: #f5f5f9;
   scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 
 [data-overlay="true"],

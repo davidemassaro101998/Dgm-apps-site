@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useMotionValue, useTransform, useReducedMotion } from "framer-motion";
+import { motion, useMotionValue, useMotionTemplate, useTransform, useReducedMotion } from "framer-motion";
 
 export interface HeroScrubIcon {
   id: string;
@@ -206,6 +206,16 @@ export function HeroScrub({
   const iconsY = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [64, 0]);
   const iconsHeadingY = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [-16, 0]);
   const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > ICONS_POP_END ? "auto" : "none"));
+  // The tiles arrive dim -- matching the same dark, cupo tone the background
+  // just faded to -- and only light up brighter once they've settled into
+  // place, instead of popping in at full brightness against a background
+  // that's still noticeably darker than they are.
+  const iconsBrightness = useTransform(
+    scrollYProgress,
+    [ICONS_POP_START, ICONS_POP_END, ICONS_POP_END + 0.05],
+    [0.35, 0.85, 1.1]
+  );
+  const iconsBrightnessFilter = useMotionTemplate`brightness(${iconsBrightness})`;
 
   const handleCtaClick = () => {
     const section = sectionRef.current;
@@ -367,7 +377,10 @@ export function HeroScrub({
                   opacity: iconsOpacity,
                 }}
               >
-                <span className="relative block h-24 w-24 shrink-0 sm:h-36 sm:w-36">
+                <motion.span
+                  className="relative block h-24 w-24 shrink-0 sm:h-36 sm:w-36"
+                  style={{ filter: iconsBrightnessFilter }}
+                >
                   {/* Against the near-solid-black backdrop at this point in
                       the sequence, a dark contact shadow is literally
                       invisible -- what actually sells "floating in air" here
@@ -395,7 +408,7 @@ export function HeroScrub({
                         "linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.08) 22%, transparent 45%, transparent 100%)",
                     }}
                   />
-                </span>
+                </motion.span>
                 <span className="text-sm font-semibold uppercase tracking-wide text-white/90 sm:text-base">
                   {icon.name}
                 </span>
