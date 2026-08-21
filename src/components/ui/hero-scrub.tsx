@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useMotionValue, useMotionTemplate, useTransform, useReducedMotion } from "framer-motion";
+import { motion, useMotionValue, useTransform, useReducedMotion } from "framer-motion";
 
 export interface HeroScrubIcon {
   id: string;
@@ -190,65 +190,18 @@ export function HeroScrub({
   // of the two overlapping.
   const aboutOpacity = useTransform(scrollYProgress, [0.15, 0.3, 0.4, 0.5], [0, 1, 1, 0]);
   const aboutY = useTransform(scrollYProgress, [0.15, 0.3, 0.4, 0.5], [48, 0, 0, 48]);
-  // The hand-off: each of the three drawn objects gets its own iris that
-  // closes from the outside in, down to a tiny dot -- not one global wipe
-  // -- and right as each iris shuts, the matching real icon grows outward
-  // from that same point, reading as "the drawing became the icon."
-  const IRIS_CLOSE_START = VIDEO_SETTLE_PROGRESS; // 0.835
-  const IRIS_CLOSE_END = VIDEO_SETTLE_PROGRESS + 0.045; // 0.88
-  const FLASH_PEAK = IRIS_CLOSE_END; // the exact instant of hand-off
-  const ICONS_POP_START = IRIS_CLOSE_END;
-  const ICONS_POP_MID = VIDEO_SETTLE_PROGRESS + 0.105; // overshoot peak
-  const ICONS_POP_END = VIDEO_SETTLE_PROGRESS + 0.15; // 0.985
-  const irisRadiusPct = useTransform(scrollYProgress, [IRIS_CLOSE_START, IRIS_CLOSE_END], [46, 0]);
-  // A soft, feathered falloff (three stops instead of a hard edge two
-  // percentage points apart) reads as the object dissolving away rather
-  // than being cut out with a knife -- closer to "real" than a crisp wipe.
-  const irisMidPct = useTransform(irisRadiusPct, (r) => r + 6);
-  const irisEdgePct = useTransform(irisRadiusPct, (r) => r + 16);
-  // A circle inscribed at 46% radius never reaches a square box's corners
-  // (they sit at ~70.7% distance from center), so the iris divs render
-  // permanent black corner triangles for every scroll position before the
-  // close starts -- visible from page load, not just during the hand-off.
-  // Keep each iris fully invisible until the exact instant the close begins,
-  // snapping in on the same near-instant window as the scrim below so there
-  // is never a frame where the corners show but the matching scrim doesn't.
-  const irisOpacity = useTransform(scrollYProgress, [IRIS_CLOSE_START, IRIS_CLOSE_START + 0.005], [0, 1]);
-  // Solid opaque black (not a translucent rgba) so the square edge of this
-  // div never shows as a seam against the surrounding scrim below, however
-  // their opacities happen to line up at a given scroll position.
-  const irisBackground = useMotionTemplate`radial-gradient(circle, transparent ${irisRadiusPct}%, rgba(0,0,0,0.55) ${irisMidPct}%, rgba(0,0,0,1) ${irisEdgePct}%, rgba(0,0,0,1) 100%)`;
-  // Darkens everything outside the three irises -- and critically, snaps to
-  // fully opaque almost instantly (a 0.01-wide ramp) right as the irises
-  // start closing, rather than fading in gradually over the same window
-  // the irises take to close. The iris's own "outside the circle" area is
-  // always instantly solid black the moment it starts shrinking (it has no
-  // opacity ramp of its own, only its transparent hole animates) -- if this
-  // scrim faded in slowly in parallel, the two wouldn't match for most of
-  // the close and it would read as a hard-edged black square sitting on a
-  // still-lit background. Snapping this dark first turns the whole moment
-  // into "everything already dark except a shrinking spotlight on each
-  // object," which is the actual "outside to inside" effect that was asked
-  // for -- not two independently-timed darkenings that drift apart.
-  const iconScrimOpacity = useTransform(scrollYProgress, [IRIS_CLOSE_START, IRIS_CLOSE_START + 0.01], [0, 1]);
-  // A brief bright burst right at the exact hand-off instant -- the object
-  // doesn't just vanish into a dark dot, it flashes into light and the icon
-  // condenses out of that light, which is what actually reads as "real"
-  // materialization instead of a wipe/mask trick.
-  const flashOpacity = useTransform(
-    scrollYProgress,
-    [FLASH_PEAK - 0.02, FLASH_PEAK, FLASH_PEAK + 0.05],
-    [0, 0.9, 0]
-  );
-  const iconsOpacity = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_START + 0.02], [0, 1]);
-  // A slight overshoot (grows past full size, then eases back down) instead
-  // of a linear scale-up -- the small bit of "bounce" is what sells it as a
-  // physical thing settling into place rather than a flat CSS tween.
-  const iconsScale = useTransform(
-    scrollYProgress,
-    [ICONS_POP_START, ICONS_POP_MID, ICONS_POP_END],
-    [0.1, 1.12, 1]
-  );
+  // The hand-off: the screen darkens to full black almost instantly (no
+  // visible fade to watch happen), then the three real icons arrive from
+  // below like a stack of notifications sliding up into their resting
+  // position -- rather than growing out of the drawings in place.
+  const BLACKOUT_AT = VIDEO_SETTLE_PROGRESS; // 0.835
+  const ICONS_POP_START = BLACKOUT_AT + 0.01;
+  const ICONS_POP_END = VIDEO_SETTLE_PROGRESS + 0.11;
+  const iconScrimOpacity = useTransform(scrollYProgress, [BLACKOUT_AT, BLACKOUT_AT + 0.006], [0, 1]);
+  const iconsOpacity = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_START + 0.03], [0, 1]);
+  // Slide up from below into their real resting position, like a
+  // notification arriving -- no scale/grow, just a clean rise + settle.
+  const iconsY = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [64, 0]);
   const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > ICONS_POP_END ? "auto" : "none"));
 
   const handleCtaClick = () => {
@@ -367,73 +320,20 @@ export function HeroScrub({
           </p>
         </motion.div>
 
-        {/* Erases the video's own now-settled drawn objects right as the
-            real icons fade in below, so the two never show at once --
-            sits above the video but below the icons themselves. */}
+        {/* Blacks out the entire screen almost instantly right at the
+            video's settle point -- the darkening itself is never visible as
+            a fade, it just snaps to black -- hiding the drawn objects
+            completely before the real icons arrive. */}
         <motion.div
           aria-hidden
-          className="absolute inset-x-0 top-[28%] bottom-0 z-[2]"
-          style={{
-            opacity: iconScrimOpacity,
-            background:
-              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 15%, rgba(0,0,0,1) 35%, rgba(0,0,0,1) 100%)",
-          }}
+          className="absolute inset-0 z-[2] bg-black"
+          style={{ opacity: iconScrimOpacity }}
         />
 
-        {/* Each drawn object gets its own iris, closing from the outside in
-            down to a tiny dot right at the settle point -- not one global
-            wipe -- so it reads as that specific object shutting off. */}
-        <div className="absolute inset-x-0 top-[56%] z-[3] flex justify-center sm:top-[46%]">
-          <div className="relative h-[34vh] w-full max-w-lg">
-            {icons.map((icon) => (
-              <motion.div
-                key={icon.id}
-                aria-hidden
-                className="absolute h-32 w-32 sm:h-44 sm:w-44"
-                style={{
-                  left: `${icon.leftPct}%`,
-                  top: `${icon.topPct}%`,
-                  x: "-50%",
-                  y: "-50%",
-                  opacity: irisOpacity,
-                  background: irisBackground,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* A brief bright flash at each object's exact position, right as
-            its iris shuts -- reads as the drawing condensing into light and
-            the icon crystallizing out of it, instead of just popping in on
-            top of a plain dark hole. Additive blend so it brightens rather
-            than paints a flat white disc. */}
-        <div className="absolute inset-x-0 top-[56%] z-[3] flex justify-center sm:top-[46%]" aria-hidden>
-          <div className="relative h-[34vh] w-full max-w-lg">
-            {icons.map((icon) => (
-              <motion.div
-                key={icon.id}
-                className="absolute h-32 w-32 sm:h-44 sm:w-44"
-                style={{
-                  left: `${icon.leftPct}%`,
-                  top: `${icon.topPct}%`,
-                  x: "-50%",
-                  y: "-50%",
-                  opacity: flashOpacity,
-                  mixBlendMode: "plus-lighter",
-                  background:
-                    "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(196,181,253,0.5) 35%, rgba(34,211,238,0.2) 60%, transparent 75%)",
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Real, tappable icons -- each grows outward from the exact point/
-            moment its own drawn object's iris shut, like the drawing
-            itself turned into the icon, rather than sliding in separately.
-            Bigger than the "in-flight" hand-off state, with a status pill
-            so this genuinely reads as the catalog. */}
+        {/* Real, tappable icons -- arrive from below into their resting
+            position like a notification sliding up, once the screen is
+            already fully black. Bigger, with a status pill, so this reads
+            as the catalog. */}
         <motion.div
           className="absolute inset-x-0 top-[56%] z-10 flex justify-center sm:top-[46%]"
           style={{ pointerEvents: iconsPointerEvents }}
@@ -450,7 +350,7 @@ export function HeroScrub({
                   left: `${icon.leftPct}%`,
                   top: `${icon.topPct}%`,
                   x: "-50%",
-                  scale: iconsScale,
+                  y: iconsY,
                   opacity: iconsOpacity,
                 }}
               >
