@@ -5,7 +5,9 @@ const accentHex = { violet: "#8B5CF6", cyan: "#22D3EE", amber: "#FBBF24" } as co
 
 function placeholderPhoto(accent: AppEntry["accent"]) {
   const hex = accentHex[accent];
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${hex}" stop-opacity="0.35"/><stop offset="100%" stop-color="#0B0B12"/></linearGradient></defs><rect width="300" height="400" fill="url(#g)"/><circle cx="150" cy="200" r="46" fill="none" stroke="${hex}" stroke-width="2" opacity="0.6"/></svg>`;
+  // Square, matching the real app icons it sits next to in the carousel
+  // now that cards were replaced by icon-sized buttons.
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${hex}" stop-opacity="0.35"/><stop offset="100%" stop-color="#0B0B12"/></linearGradient></defs><rect width="300" height="300" rx="66" fill="url(#g)"/><circle cx="150" cy="150" r="42" fill="none" stroke="${hex}" stroke-width="3" opacity="0.6"/></svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 

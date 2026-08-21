@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
-import { Instagram, Linkedin, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
+import { useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { Logo } from "./ui/logo";
+import { LegalModal } from "./ui/legal-modal";
 
 interface FooterProps {
   onNavigateSection?: (sectionIndex: number) => void;
@@ -9,6 +11,7 @@ interface FooterProps {
 
 export function Footer({ onNavigateSection }: FooterProps) {
   const { t } = useLanguage();
+  const [legalOpen, setLegalOpen] = useState<"privacy" | "terms" | null>(null);
 
   const handleNav = (index: number) => {
     if (onNavigateSection) {
@@ -72,14 +75,22 @@ export function Footer({ onNavigateSection }: FooterProps) {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <a href="#" className="text-mist-300 transition-colors hover:text-white">
+                <button
+                  type="button"
+                  onClick={() => setLegalOpen("privacy")}
+                  className="text-mist-300 transition-colors hover:text-white"
+                >
                   {t.privacyPolicy}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-mist-300 transition-colors hover:text-white">
+                <button
+                  type="button"
+                  onClick={() => setLegalOpen("terms")}
+                  className="text-mist-300 transition-colors hover:text-white"
+                >
                   {t.termsOfService}
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -96,22 +107,6 @@ export function Footer({ onNavigateSection }: FooterProps) {
               <Mail className="h-3.5 w-3.5 text-violet-400" />
               info@dgmapps.it
             </a>
-            <div className="flex items-center gap-3 pt-1">
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="rounded-full border border-white/10 bg-white/5 p-2 text-mist-300 transition-colors hover:border-white/25 hover:text-white"
-              >
-                <Instagram className="h-4 w-4" />
-              </a>
-              <a
-                href="#"
-                aria-label="LinkedIn"
-                className="rounded-full border border-white/10 bg-white/5 p-2 text-mist-300 transition-colors hover:border-white/25 hover:text-white"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
-            </div>
           </div>
         </div>
 
@@ -123,6 +118,8 @@ export function Footer({ onNavigateSection }: FooterProps) {
           © {new Date().getFullYear()} {t.copyright}
         </div>
       </motion.div>
+
+      <LegalModal open={legalOpen} onClose={() => setLegalOpen(null)} />
     </footer>
   );
 }

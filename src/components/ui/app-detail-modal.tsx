@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "../../context/LanguageContext";
@@ -38,7 +39,7 @@ export function AppDetailModal({ app, onClose }: AppDetailModalProps) {
     };
   }, [app, onClose]);
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {app && (
         <motion.div
@@ -110,6 +111,7 @@ export function AppDetailModal({ app, onClose }: AppDetailModalProps) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

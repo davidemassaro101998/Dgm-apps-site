@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X, Globe, ChevronRight } from "lucide-react";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage, LANGUAGES } from "../context/LanguageContext";
 import { apps } from "../data/apps";
 import { getStatusLabel } from "../lib/appPhoto";
 import { Logo } from "./ui/logo";
@@ -12,7 +12,20 @@ interface HeaderProps {
 
 export function Header({ onSelectApp, onNavigateSection }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const langMenuRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage, t } = useLanguage();
+
+  useEffect(() => {
+    if (!langMenuOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
+        setLangMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [langMenuOpen]);
 
   useEffect(() => {
     if (menuOpen) {
@@ -61,28 +74,42 @@ export function Header({ onSelectApp, onNavigateSection }: HeaderProps) {
 
         {/* Right Top Controls: Language Switcher + Three-line Menu Button */}
         <div className="flex items-center gap-3">
-          {/* Language Toggle Pill */}
-          <div className="flex items-center rounded-full border border-white/15 bg-white/5 p-1 text-xs">
+          {/* Language Switcher */}
+          <div className="relative" ref={langMenuRef}>
             <button
-              onClick={() => setLanguage("it")}
-              className={`rounded-full px-2.5 py-0.5 font-medium transition-colors ${
-                language === "it"
-                  ? "bg-violet-500/80 text-white shadow-sm"
-                  : "text-zinc-400 hover:text-white"
-              }`}
+              onClick={() => setLangMenuOpen((v) => !v)}
+              aria-haspopup="listbox"
+              aria-expanded={langMenuOpen}
+              className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-zinc-200 transition-colors hover:border-white/30 hover:text-white"
             >
-              IT
+              <Globe className="h-3.5 w-3.5 text-violet-300" />
+              {LANGUAGES.find((l) => l.code === language)?.label}
             </button>
-            <button
-              onClick={() => setLanguage("en")}
-              className={`rounded-full px-2.5 py-0.5 font-medium transition-colors ${
-                language === "en"
-                  ? "bg-violet-500/80 text-white shadow-sm"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-            >
-              EN
-            </button>
+            {langMenuOpen && (
+              <div
+                role="listbox"
+                className="absolute right-0 top-[calc(100%+8px)] z-20 flex min-w-[7rem] flex-col overflow-hidden rounded-xl border border-white/10 bg-ink-900/95 py-1 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-md"
+              >
+                {LANGUAGES.map((l) => (
+                  <button
+                    key={l.code}
+                    role="option"
+                    aria-selected={language === l.code}
+                    onClick={() => {
+                      setLanguage(l.code);
+                      setLangMenuOpen(false);
+                    }}
+                    className={`px-3 py-1.5 text-left text-xs font-medium transition-colors ${
+                      language === l.code
+                        ? "bg-violet-500/20 text-violet-200"
+                        : "text-zinc-300 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Three-line Menu Trigger */}

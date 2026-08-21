@@ -2,7 +2,8 @@
 
 Sito ufficiale della famiglia DGM Apps (React + Vite + Tailwind v4), con hero
 a schermo intero, sezione "Chi siamo", carosello del catalogo app e footer —
-navigazione a pagine intere (scroll/swipe), bilingue IT/EN.
+navigazione a pagine intere (scroll/swipe), disponibile in 5 lingue
+(IT/EN/ES/FR/DE, stesse lingue supportate dalle app della famiglia).
 
 App attualmente in catalogo: **ExitKit**, **Kado AI**, **Bricolo AI**, **Forma AI**,
 più due slot segnaposto ("Presto disponibile") per le prossime.
@@ -18,9 +19,20 @@ quante app si aggiungono in futuro:
 (un terzo accento, ambra `#FBBF24`, è disponibile nel sistema per varietà tra
 le card del carosello, ma non è un colore fisso del marchio).
 
-Ogni app nel catalogo mostra semplicemente il proprio screenshot reale nella
-card — non ha bisogno di un colore dedicato sul sito: il colore di ogni app
-vive dentro l'app stessa.
+Ogni app nel catalogo è rappresentata dalla propria icona (nessuna card con
+sfondo attorno: l'icona stessa è il pulsante, come sulla schermata home di un
+telefono) — non ha bisogno di un colore dedicato sul sito: il colore di ogni
+app vive dentro l'app stessa.
+
+## Lingue e testi legali
+
+`src/context/LanguageContext.tsx` contiene tutte le traduzioni (IT/EN/ES/FR/DE)
+e la lista lingue attive (`LANGUAGES`). Il footer include Privacy Policy e
+Termini di Servizio come modali (`src/components/ui/legal-modal.tsx`), con
+testo tradotto in tutte e 5 le lingue: sono testi informativi generici (il
+sito non raccoglie dati personali né elabora pagamenti — ogni acquisto avviene
+nello store dell'app). Da aggiornare se in futuro cambiano le pratiche reali
+di raccolta dati.
 
 ## Sviluppo locale
 

@@ -5,7 +5,7 @@ import "swiper/css"
 import "swiper/css/effect-coverflow"
 import "swiper/css/pagination"
 import "swiper/css/navigation"
-import { SparklesIcon, ExternalLink } from "lucide-react"
+import { SparklesIcon } from "lucide-react"
 import {
   Autoplay,
   EffectCoverflow,
@@ -47,24 +47,21 @@ export const CardCarousel: React.FC<CarouselProps> = ({
     padding-left: 8px;
     padding-right: 8px;
   }
-  
+
   .swiper-slide {
-    background-position: center;
-    background-size: cover;
-    width: min(78vw, 300px);
-    height: min(108vw, 410px);
-    min-height: 310px;
-    border-radius: 20px;
+    width: min(64vw, 220px);
+    height: min(78vw, 260px);
+    min-height: 220px;
     transition: transform 0.4s ease, opacity 0.4s ease;
   }
 
   @media (min-width: 640px) {
     .swiper-slide {
-      width: 310px;
-      height: 410px;
+      width: 220px;
+      height: 260px;
     }
   }
-  
+
   .swiper-3d .swiper-slide-shadow-left,
   .swiper-3d .swiper-slide-shadow-right {
     background-image: none !important;
@@ -157,42 +154,35 @@ export const CardCarousel: React.FC<CarouselProps> = ({
         >
           {displayItems.map((item, index) => (
             <SwiperSlide key={`${item.id}-${index}`}>
-              <div
+              {/* The icon itself IS the button -- no card chrome around it,
+                  same as tapping an app icon on a phone home screen. */}
+              <button
+                type="button"
                 onClick={() => onItemClick?.(item.id)}
-                className="group relative h-full w-full cursor-pointer overflow-hidden rounded-2xl border border-white/15 bg-zinc-900 shadow-2xl transition-all duration-300 hover:border-violet-400/50 hover:scale-[1.02]"
+                className="group flex h-full w-full flex-col items-center justify-start gap-3 bg-transparent text-center cursor-pointer"
               >
-                {/* Background Image */}
-                <img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
-
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
-
-                {/* Top Badge */}
-                <div className="absolute right-3 top-3 z-10">
-                  <span className="rounded-full border border-white/20 bg-black/70 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-md shadow-md">
+                <div className="relative">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="h-28 w-28 rounded-[24px] object-cover shadow-[0_16px_36px_-8px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-[1.06] group-active:scale-95 sm:h-32 sm:w-32"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/70 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-md shadow-md">
                     {item.badge}
                   </span>
                 </div>
 
-                {/* Bottom Info */}
-                <div className="absolute inset-x-0 bottom-0 z-10 p-4 sm:p-5">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-display text-lg font-bold text-white group-hover:text-violet-300 transition-colors sm:text-xl">
-                      {item.title}
-                    </h4>
-                    <ExternalLink className="h-4 w-4 text-zinc-400 group-hover:text-white" />
-                  </div>
-                  <p className="mt-1 text-xs leading-relaxed text-zinc-300 line-clamp-2">
+                <div className="mt-2 max-w-[180px]">
+                  <h4 className="font-display text-base font-bold text-white transition-colors group-hover:text-violet-300 sm:text-lg">
+                    {item.title}
+                  </h4>
+                  <p className="mt-1 text-xs leading-relaxed text-zinc-400 line-clamp-2">
                     {item.subtitle}
                   </p>
                 </div>
-              </div>
+              </button>
             </SwiperSlide>
           ))}
         </Swiper>
