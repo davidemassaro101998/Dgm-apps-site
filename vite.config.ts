@@ -18,5 +18,12 @@ export default defineConfig(() => {
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
+    preview: {
+      // Vite's preview server blocks unrecognized Host headers by default;
+      // without this, requests through Railway's *.up.railway.app domain
+      // (or any future custom domain) get rejected as "not allowed".
+      host: true,
+      allowedHosts: true as const,
+    },
   };
 });
