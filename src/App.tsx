@@ -88,6 +88,7 @@ function MainContent() {
         aboutLine1={t.heroScrubAboutLine1}
         aboutLine2={t.heroScrubAboutLine2}
         aboutLine3={t.heroScrubAboutLine3}
+        aboutLine4={t.heroScrubAboutLine4}
         catalogHeading={t.heroScrubCatalogHeading}
         icons={heroIcons}
       />

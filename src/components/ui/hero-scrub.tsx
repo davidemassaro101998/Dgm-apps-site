@@ -32,6 +32,7 @@ export interface HeroScrubProps {
   aboutLine1: string;
   aboutLine2: string;
   aboutLine3: string;
+  aboutLine4: string;
   catalogHeading: string;
   icons: HeroScrubIcon[];
 }
@@ -67,6 +68,7 @@ export function HeroScrub({
   aboutLine1,
   aboutLine2,
   aboutLine3,
+  aboutLine4,
   catalogHeading,
   icons,
 }: HeroScrubProps) {
@@ -262,20 +264,18 @@ export function HeroScrub({
             behind them -- the physical text-shadow treatment is what makes
             them read as lifted off the video and the clear focal point. */}
         <motion.div
-          className="absolute inset-x-0 bottom-[6%] z-10 flex flex-col items-center gap-6 px-4 sm:bottom-[9%]"
+          className="absolute inset-x-0 bottom-[14%] z-10 flex flex-col items-center gap-8 px-4 sm:bottom-[17%]"
           style={{ opacity: taglineOpacity }}
         >
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={ENTRANCE_TRANSITION}
-            className="text-center font-display font-black uppercase leading-[0.95] tracking-[-0.02em] text-white"
-            style={{ fontSize: "clamp(1.6rem, 7.2vw, 3.8rem)", textShadow: PHYSICAL_TEXT_SHADOW }}
+            className="text-center font-display font-black uppercase leading-[1.05] tracking-[-0.02em] text-white"
+            style={{ fontSize: "clamp(2rem, 9vw, 4.8rem)", textShadow: PHYSICAL_TEXT_SHADOW }}
           >
             <span className="block">{taglineLine1}</span>
-            <span className="block bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
-              {taglineLine2}
-            </span>
+            <span className="block">{taglineLine2}</span>
           </motion.h1>
 
           <motion.button
@@ -293,10 +293,12 @@ export function HeroScrub({
 
         {/* "Chi siamo": rises from below into the middle-lower part of the
             screen, holds, then sinks back out -- never a flat cross-fade.
-            One centered column, three short iconic lines, same physical
-            text-shadow treatment as the tagline. Fully faded out well
-            before the video's own onset point, leaving a real gap of pure
-            video in between. */}
+            One centered column, four short iconic lines, all the same
+            bright white and the same size -- no accent-colored or
+            differently-sized sub-line -- same physical text-shadow
+            treatment as the tagline. Fully faded out well before the
+            video's own onset point, leaving a real gap of pure video in
+            between. */}
         <motion.div
           className="absolute inset-x-0 top-[58%] z-10 flex flex-col items-center gap-1 px-4 text-center sm:top-[52%]"
           style={{ opacity: aboutOpacity, y: aboutY }}
@@ -308,14 +310,10 @@ export function HeroScrub({
             {aboutLine1}
             <br />
             {aboutLine2}
-          </p>
-          <p
-            className="font-display font-black uppercase leading-tight tracking-[-0.02em]"
-            style={{ fontSize: "clamp(1.15rem, 5.4vw, 2.6rem)", textShadow: PHYSICAL_TEXT_SHADOW }}
-          >
-            <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
-              {aboutLine3}
-            </span>
+            <br />
+            {aboutLine3}
+            <br />
+            {aboutLine4}
           </p>
         </motion.div>
 
@@ -334,8 +332,13 @@ export function HeroScrub({
             its own small settle-down so it doesn't feel pasted on top. */}
         <motion.p
           aria-hidden
-          className="absolute inset-x-0 top-[40%] z-10 px-4 text-center font-display text-sm font-bold uppercase tracking-[0.25em] text-white/70 sm:top-[33%] sm:text-base"
-          style={{ opacity: iconsOpacity, y: iconsHeadingY, textShadow: PHYSICAL_TEXT_SHADOW }}
+          className="absolute inset-x-0 top-[38%] z-10 px-4 text-center font-display font-black uppercase leading-tight tracking-[-0.02em] text-white sm:top-[30%]"
+          style={{
+            fontSize: "clamp(1.4rem, 6vw, 2.8rem)",
+            opacity: iconsOpacity,
+            y: iconsHeadingY,
+            textShadow: PHYSICAL_TEXT_SHADOW,
+          }}
         >
           {catalogHeading}
         </motion.p>

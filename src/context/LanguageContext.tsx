@@ -26,6 +26,7 @@ export interface Translations {
   heroScrubAboutLine1: string;
   heroScrubAboutLine2: string;
   heroScrubAboutLine3: string;
+  heroScrubAboutLine4: string;
   heroScrubCatalogHeading: string;
 
   // App status labels (used in the Header's "All Apps" menu)
@@ -68,6 +69,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine1: "Due persone.",
     heroScrubAboutLine2: "Nessuna scusa.",
     heroScrubAboutLine3: "Solo quello che serve davvero.",
+    heroScrubAboutLine4: "Fatto bene. Punto.",
     heroScrubCatalogHeading: "Scopri il catalogo",
 
     statusLive: "Disponibile",
@@ -106,6 +108,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine1: "Two people.",
     heroScrubAboutLine2: "No excuses.",
     heroScrubAboutLine3: "Only what truly matters.",
+    heroScrubAboutLine4: "Done right. Period.",
     heroScrubCatalogHeading: "Discover the catalog",
 
     statusLive: "Available",
@@ -144,6 +147,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine1: "Dos personas.",
     heroScrubAboutLine2: "Ninguna excusa.",
     heroScrubAboutLine3: "Solo lo que de verdad sirve.",
+    heroScrubAboutLine4: "Bien hecho. Punto.",
     heroScrubCatalogHeading: "Descubre el catálogo",
 
     statusLive: "Disponible",
@@ -182,6 +186,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine1: "Deux personnes.",
     heroScrubAboutLine2: "Aucune excuse.",
     heroScrubAboutLine3: "Seulement ce qui compte vraiment.",
+    heroScrubAboutLine4: "Bien fait. Point final.",
     heroScrubCatalogHeading: "Découvre le catalogue",
 
     statusLive: "Disponible",
@@ -220,6 +225,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine1: "Zwei Menschen.",
     heroScrubAboutLine2: "Keine Ausreden.",
     heroScrubAboutLine3: "Nur das, was wirklich zählt.",
+    heroScrubAboutLine4: "Gut gemacht. Punkt.",
     heroScrubCatalogHeading: "Entdecke den Katalog",
 
     statusLive: "Verfügbar",
