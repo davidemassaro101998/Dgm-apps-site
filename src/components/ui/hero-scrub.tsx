@@ -138,17 +138,6 @@ export function HeroScrub({
       drawFrame(index);
     }
 
-    // Scroll events can fire far more often than the screen actually
-    // repaints -- coalesce with rAF so at most one draw happens per frame.
-    let rafId = 0;
-    function onScroll() {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = 0;
-        applyProgress();
-      });
-    }
-
     for (let i = 0; i < frameCount; i++) {
       const img = new Image();
       img.decoding = "async";
@@ -163,14 +152,48 @@ export function HeroScrub({
       images[i] = img;
     }
 
+    // Reading scrollY off the native "scroll" event and reacting to it is
+    // the thing that was still reading as laggy on mobile: touch/momentum
+    // scrolling on many mobile browsers batches or throttles that event
+    // independently of when frames are actually being rendered. Polling
+    // scrollY once per animation frame instead -- the same technique behind
+    // any buttery-smooth scroll-scrub site -- ties the draw directly to the
+    // render loop rather than to however the browser chooses to dispatch
+    // scroll events. Only run the loop while the section is anywhere near
+    // the viewport (generous margin) so it costs nothing once scrolled well
+    // past into the footer.
+    let looping = false;
+    let rafId = 0;
+    function loop() {
+      applyProgress();
+      if (looping) rafId = requestAnimationFrame(loop);
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !looping) {
+          looping = true;
+          loop();
+        } else if (!entry.isIntersecting && looping) {
+          looping = false;
+          if (rafId) cancelAnimationFrame(rafId);
+        }
+      },
+      { rootMargin: "50% 0px 50% 0px" }
+    );
+    observer.observe(section);
+
+    function onResize() {
+      applyProgress();
+    }
+
     applyProgress();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
     return () => {
       cancelled = true;
+      looping = false;
       if (rafId) cancelAnimationFrame(rafId);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      observer.disconnect();
+      window.removeEventListener("resize", onResize);
     };
   }, [reduced, framesBaseUrl, frameCount]);
 
@@ -244,7 +267,12 @@ export function HeroScrub({
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden" style={{ perspective: "1400px" }}>
         <div className="absolute inset-0 z-0">
           {framesBaseUrl ? (
-            <canvas ref={canvasRef} className="pointer-events-none h-full w-full" aria-hidden />
+            <canvas
+              ref={canvasRef}
+              className="pointer-events-none h-full w-full"
+              style={{ willChange: "contents" }}
+              aria-hidden
+            />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-black">
               <span className="text-xs font-semibold uppercase tracking-widest text-white/40">
