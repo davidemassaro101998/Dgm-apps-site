@@ -57,7 +57,7 @@ export function Header({ onNavigateSection }: HeaderProps) {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-ink-950/85 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <button

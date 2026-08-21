@@ -5,7 +5,7 @@ import { HeroScrub, type HeroScrubIcon } from "./components/ui/hero-scrub";
 import { Footer } from "./components/Footer";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { apps } from "./data/apps";
-import { photoUrl } from "./lib/appPhoto";
+import { photoUrl, getStatusLabel } from "./lib/appPhoto";
 
 const SECTION_IDS = ["top", "chi-siamo", "catalogo", "contatti"];
 
@@ -30,13 +30,14 @@ function MainContent() {
         return {
           id: app.id,
           name: app.name[language],
+          statusLabel: getStatusLabel(app.status, t),
           iconUrl: photoUrl(app),
           href: app.href,
           leftPct: pos.leftPct,
           topPct: pos.topPct,
         };
       }),
-    [language]
+    [language, t]
   );
 
   // Scrollspy for the side nav dots — tracks whichever section covers the viewport midpoint.

@@ -10,7 +10,7 @@ interface LogoProps {
 // e del marchio "due persone" già usato in Chi Siamo, elevata a logo vero.
 export function Logo({ className, iconOnly = false }: LogoProps) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
+    <span className={cn("inline-flex items-center gap-2.5 drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]", className)}>
       <svg width="28" height="28" viewBox="0 0 48 48" className="shrink-0" aria-hidden>
         <defs>
           <radialGradient id="logoGlow" cx="50%" cy="50%" r="50%">
