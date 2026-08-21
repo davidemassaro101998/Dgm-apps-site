@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { MotionConfig } from "framer-motion";
 import { Header } from "./components/Header";
 import { HeroScrub, type HeroScrubIcon } from "./components/ui/hero-scrub";
-import { Story } from "./components/Story";
 import { AppGrid } from "./components/AppGrid";
 import { Footer } from "./components/Footer";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
@@ -89,8 +88,6 @@ function MainContent() {
         aboutLine2={t.heroScrubAboutLine2}
         icons={heroIcons}
       />
-
-      <Story />
 
       <AppGrid
         selectedAppIdFromHeader={selectedAppIdFromHeader}

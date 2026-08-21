@@ -104,6 +104,10 @@ export function HeroScrub({
 
   return (
     <section ref={sectionRef} className="relative w-full bg-black text-white" style={{ height: `${PIN_VH}vh` }} id="top">
+      {/* Anchor for the "Chi siamo" nav item: scrollIntoView lands right where
+          the aboutOpacity beat below is visible, since the standalone "Chi
+          siamo" section was removed (it duplicated this in-hero beat). */}
+      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[38%] h-px w-full" />
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden" style={{ perspective: "1400px" }}>
         <div className="absolute inset-0 z-0">
           {videoSrc ? (
