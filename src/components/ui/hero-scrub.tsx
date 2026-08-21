@@ -249,12 +249,19 @@ export function HeroScrub({
   // div never shows as a seam against the surrounding scrim below, however
   // their opacities happen to line up at a given scroll position.
   const irisBackground = useMotionTemplate`radial-gradient(circle, transparent ${irisRadiusPct}%, rgba(0,0,0,1) ${irisEdgePct}%, rgba(0,0,0,1) 100%)`;
-  // Darkens everything else (outside the three closing irises) so the rest
-  // of the frame -- the light burst, the ribbons -- is gone by the time the
-  // irises finish shutting, not lingering behind them. Reaches fully opaque
-  // black (not just near-opaque) so it matches the irises' own solid fill
-  // exactly, with no visible seam between the two.
-  const iconScrimOpacity = useTransform(scrollYProgress, [IRIS_CLOSE_START, IRIS_CLOSE_END - 0.01], [0, 1]);
+  // Darkens everything outside the three irises -- and critically, snaps to
+  // fully opaque almost instantly (a 0.01-wide ramp) right as the irises
+  // start closing, rather than fading in gradually over the same window
+  // the irises take to close. The iris's own "outside the circle" area is
+  // always instantly solid black the moment it starts shrinking (it has no
+  // opacity ramp of its own, only its transparent hole animates) -- if this
+  // scrim faded in slowly in parallel, the two wouldn't match for most of
+  // the close and it would read as a hard-edged black square sitting on a
+  // still-lit background. Snapping this dark first turns the whole moment
+  // into "everything already dark except a shrinking spotlight on each
+  // object," which is the actual "outside to inside" effect that was asked
+  // for -- not two independently-timed darkenings that drift apart.
+  const iconScrimOpacity = useTransform(scrollYProgress, [IRIS_CLOSE_START, IRIS_CLOSE_START + 0.01], [0, 1]);
   const iconsOpacity = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [0, 1]);
   const iconsScale = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [0.05, 1]);
   const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > ICONS_POP_END ? "auto" : "none"));
