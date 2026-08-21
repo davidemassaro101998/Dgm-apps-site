@@ -14,10 +14,9 @@ export interface HeroScrubIcon {
 }
 
 export interface HeroScrubProps {
-  /** Scroll-scrubbed brand video: currentTime tracks scroll position (via a
-   *  non-linear map, see progressToVideoTime), it never plays on its own. */
+  /** Scroll-scrubbed brand video: currentTime tracks scroll position 1:1,
+   *  it never plays on its own. */
   videoSrc?: string;
-  posterSrc?: string;
   taglineLine1: string;
   taglineLine2: string;
   ctaLabel: string;
@@ -33,40 +32,6 @@ export interface HeroScrubProps {
 // it reads as scrubbing through a continuous video one frame at a time
 // rather than resolving in one or two scrolls.
 const PIN_VH = 560;
-
-// The production video (public/videos/hero-brand.mp4) is cut from the
-// original render starting right after its opening frames (which had a
-// brief visual glitch showing the gift/wrench/dumbbell too early), through
-// to well past the point where they finish forming. These two checkpoints
-// are measured directly from that file -- re-measure and update both if the
-// video is ever re-cut.
-const VIDEO_FPS = 24;
-const VIDEO_ONSET_FRAME = 107; // gift/wrench/dumbbell first become visible
-const VIDEO_SETTLE_FRAME = 157; // fully formed, holds steady from here on
-const VIDEO_ONSET_T = VIDEO_ONSET_FRAME / VIDEO_FPS;
-const VIDEO_SETTLE_T = VIDEO_SETTLE_FRAME / VIDEO_FPS;
-
-// Maps scroll progress (0-1) to video currentTime -- deliberately NOT
-// linear. The video's own content is front-loaded (all the motion --
-// spheres merging, light burst, ribbons, objects forming -- happens before
-// VIDEO_SETTLE_T) and then just holds a static frame for the rest of its
-// duration. A linear map would spend the back quarter of the scroll on a
-// video that's barely moving. Instead this pins three checkpoints that
-// match the on-screen content beats:
-//   progress 0    -> video 0          (rest state)
-//   progress 0.5  -> VIDEO_ONSET_T    ("chi siamo" fully open, objects not
-//                                       visible yet -- clean background)
-//   progress 0.75 -> VIDEO_SETTLE_T   (objects fully formed, "chi siamo"
-//                                       has finished dissolving into them)
-//   progress 1    -> video duration   (icons in; video motion barely
-//                                       matters here, it's under the scrim)
-function progressToVideoTime(p: number, duration: number): number {
-  const onset = Math.min(VIDEO_ONSET_T, duration);
-  const settle = Math.min(VIDEO_SETTLE_T, duration);
-  if (p <= 0.5) return (p / 0.5) * onset;
-  if (p <= 0.75) return onset + ((p - 0.5) / 0.25) * (settle - onset);
-  return settle + ((p - 0.75) / 0.25) * (duration - settle);
-}
 
 // Every on-screen text block is styled to look physically lifted off the
 // video -- a bright bevel edge on top, a stepped dark side, then a soft
@@ -86,7 +51,6 @@ const ENTRANCE_TRANSITION = { delay: 0.5, duration: 0.7, ease: [0.16, 1, 0.3, 1]
 
 export function HeroScrub({
   videoSrc,
-  posterSrc,
   taglineLine1,
   taglineLine2,
   ctaLabel,
@@ -104,13 +68,22 @@ export function HeroScrub({
   // falling back to whole-document scroll instead of this section's own
   // range (progress only reached 1 at the very bottom of the page). This
   // computes progress directly off the section's own bounding rect.
+  //
+  // The video's own currentTime is a straight linear map of that progress
+  // (video.duration * p) -- the footage already has its own natural pacing
+  // (spheres merge, light burst, ribbons form, a brief lull, then the
+  // gift/wrench/dumbbell appear and settle), so scroll just scrubs through
+  // it as-is rather than distorting it to force particular content beats to
+  // line up with particular scroll checkpoints. It's the on-screen text/icon
+  // windows below that are tuned to match the video's real timing, not the
+  // other way around.
   const scrollYProgress = useMotionValue(0);
   useEffect(() => {
     const section = sectionRef.current;
     const video = videoRef.current;
     if (!section) return;
 
-    function syncToScroll() {
+    function applyProgress() {
       const rect = section!.getBoundingClientRect();
       const total = rect.height - window.innerHeight;
       const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
@@ -118,8 +91,21 @@ export function HeroScrub({
       if (video && video.duration && !reduced) {
         // Never let this collapse to exactly 0 -- assigning the value the
         // element already holds is a silent no-op seek that paints nothing.
-        video.currentTime = Math.max(0.001, Math.min(video.duration, progressToVideoTime(p, video.duration)));
+        video.currentTime = Math.max(0.001, Math.min(video.duration, p * video.duration));
       }
+    }
+
+    // Scroll events can fire far more often than the screen actually
+    // repaints -- seeking the video on every single one (rather than once
+    // per animation frame) was producing visible jank. Coalesce with rAF so
+    // at most one seek happens per rendered frame.
+    let rafId = 0;
+    function onScroll() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        applyProgress();
+      });
     }
 
     let cancelled = false;
@@ -153,19 +139,19 @@ export function HeroScrub({
         if (cancelled) return;
         const onPlaying = () => {
           video.pause();
-          syncToScroll();
+          applyProgress();
           video.removeEventListener("playing", onPlaying);
         };
         video.addEventListener("playing", onPlaying);
         setTimeout(() => {
           video.removeEventListener("playing", onPlaying);
           if (!video.paused) video.pause();
-          syncToScroll();
+          applyProgress();
         }, 250);
       };
       const primeDecoder = () => {
         if (cancelled) return;
-        syncToScroll();
+        applyProgress();
         video.play().then(settleAfterPlay).catch(() => {});
       };
       if (video.readyState >= 1) primeDecoder();
@@ -178,47 +164,58 @@ export function HeroScrub({
       const gestureEvents = ["touchstart", "pointerdown", "wheel"] as const;
       gestureEvents.forEach((evt) => window.addEventListener(evt, gestureRetry, { once: true, passive: true }));
 
-      syncToScroll();
-      window.addEventListener("scroll", syncToScroll, { passive: true });
-      window.addEventListener("resize", syncToScroll);
+      applyProgress();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
       return () => {
         cancelled = true;
-        window.removeEventListener("scroll", syncToScroll);
-        window.removeEventListener("resize", syncToScroll);
+        if (rafId) cancelAnimationFrame(rafId);
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onScroll);
         gestureEvents.forEach((evt) => window.removeEventListener(evt, gestureRetry));
       };
     }
 
-    syncToScroll();
-    window.addEventListener("scroll", syncToScroll, { passive: true });
-    window.addEventListener("resize", syncToScroll);
+    applyProgress();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     return () => {
       cancelled = true;
-      window.removeEventListener("scroll", syncToScroll);
-      window.removeEventListener("resize", syncToScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
   }, [reduced, videoSrc]);
 
-  // Four even quarters of the scroll range, each one big scroll/slide wide:
-  //   Q1 [0,    0.25] hero fades out
-  //   Q2 [0.25, 0.5 ] "chi siamo" fades in, fully open exactly at 0.5
-  //   Q3 [0.5,  0.75] "chi siamo" fades out while the video's own objects
-  //                    form behind it (see progressToVideoTime above --
-  //                    that's exactly what video time this quarter covers)
-  //   Q4 [0.75, 1   ] the formed objects are erased (scrim) and the real
-  //                    tappable icons rise in from below
-  const taglineOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
-  const ctaOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
-  const aboutOpacity = useTransform(scrollYProgress, [0.25, 0.48, 0.52, 0.75], [0, 1, 1, 0]);
-  const aboutY = useTransform(scrollYProgress, [0.25, 0.48, 0.52, 0.75], [48, 0, 0, 48]);
-  // Erases the video's own now-fully-formed drawn objects right at the
-  // start of Q4 -- the footage itself just holds them, it never fades them
-  // out on its own, so this is what makes them "disappear completely"
-  // before the real icons take their place.
-  const iconScrimOpacity = useTransform(scrollYProgress, [0.75, 0.82], [0, 1]);
-  const iconsOpacity = useTransform(scrollYProgress, [0.8, 0.95], [0, 1]);
-  const iconsY = useTransform(scrollYProgress, [0.8, 0.95], [40, 0]);
-  const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > 0.9 ? "auto" : "none"));
+  // The video's own real content beats, measured directly from the file
+  // (public/videos/hero-brand.mp4, 188 frames @ 24fps): the gift/wrench/
+  // dumbbell first become visible at frame 107 (progress 0.569) and are
+  // fully formed and holding steady by frame 157 (progress 0.835).
+  // Re-measure and update both if the video is ever re-cut.
+  const VIDEO_ONSET_PROGRESS = 107 / 188;
+  const VIDEO_SETTLE_PROGRESS = 157 / 188;
+
+  // Hero fades out as soon as the visitor scrolls at all.
+  const taglineOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  // "Chi siamo" rises in, holds, and fades back out again *before* the
+  // video's own onset point -- not right up against it -- so there's a real
+  // gap of pure video (the footage's own natural lull between the ribbons
+  // forming and the objects appearing) with no text and no objects, instead
+  // of the two overlapping.
+  const aboutOpacity = useTransform(scrollYProgress, [0.15, 0.3, 0.4, 0.5], [0, 1, 1, 0]);
+  const aboutY = useTransform(scrollYProgress, [0.15, 0.3, 0.4, 0.5], [48, 0, 0, 48]);
+  // Erases the video's own now-settled drawn objects right as the real
+  // icons fade in -- the footage just holds them, it never fades them out
+  // on its own. Timed to the measured settle point, not a guess.
+  const iconScrimOpacity = useTransform(
+    scrollYProgress,
+    [VIDEO_SETTLE_PROGRESS, VIDEO_SETTLE_PROGRESS + 0.04],
+    [0, 1]
+  );
+  const iconsOpacity = useTransform(scrollYProgress, [VIDEO_SETTLE_PROGRESS + 0.02, 0.95], [0, 1]);
+  const iconsY = useTransform(scrollYProgress, [VIDEO_SETTLE_PROGRESS + 0.02, 0.95], [40, 0]);
+  const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > 0.92 ? "auto" : "none"));
 
   const handleCtaClick = () => {
     const section = sectionRef.current;
@@ -236,21 +233,20 @@ export function HeroScrub({
           progress is measured against -- the two only line up at the very
           top. Recompute both whenever PIN_VH or the opacity windows above
           change (based on a ~844px reference viewport). */}
-      {/* Anchor for the "Chi siamo" nav item: top-[41%] lands right at
-          progress 0.5, the exact midpoint where it's fully open. */}
-      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[41%] h-px w-full" />
+      {/* Anchor for the "Chi siamo" nav item: top-[31%] lands around
+          progress 0.375, the middle of its hold. */}
+      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[31%] h-px w-full" />
       {/* Anchor for the "Catalogo" nav item: the real catalog is the 3 real
           app icons that take the video's own drawn icons' place -- there's
-          no separate catalog section. top-[70%] lands around progress
-          0.85, inside the [0.8, 0.95] icon fade-in window. */}
-      <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[70%] h-px w-full" />
+          no separate catalog section. top-[74%] lands around progress
+          0.90, inside the icon fade-in window. */}
+      <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[74%] h-px w-full" />
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden" style={{ perspective: "1400px" }}>
         <div className="absolute inset-0 z-0">
           {videoSrc ? (
             <video
               ref={videoRef}
               src={videoSrc}
-              poster={posterSrc}
               muted
               autoPlay
               playsInline
@@ -274,6 +270,14 @@ export function HeroScrub({
           className="absolute inset-0 z-[1]"
           style={{ background: "radial-gradient(ellipse at 50% 22%, transparent 35%, rgba(0,0,0,0.6) 100%)" }}
         />
+
+        {/* Dims the video a bit whenever a text/icon layer below is on
+            screen -- synced 1:1 to that layer's own opacity, so it fades up
+            and down with the content instead of being a flat, always-on
+            wash. Keeps the (often bright/busy) video from fighting with the
+            text for attention. */}
+        <motion.div aria-hidden className="absolute inset-0 z-[1] bg-black/45" style={{ opacity: taglineOpacity }} />
+        <motion.div aria-hidden className="absolute inset-0 z-[1] bg-black/45" style={{ opacity: aboutOpacity }} />
 
         {/* Tagline + CTA: rest just above the bottom edge of the screen.
             Pop in ~0.5s after the page settles (not on scroll), then fade
@@ -311,8 +315,8 @@ export function HeroScrub({
             screen, holds, then sinks back out -- never a flat cross-fade.
             Two short blocks side by side on the same row, split by a
             glowing rule, same physical text-shadow treatment as the
-            tagline. No scrim needed here: progressToVideoTime keeps this
-            quarter's video content to the pre-object part of the clip. */}
+            tagline. Fully faded out well before the video's own onset
+            point, leaving a real gap of pure video in between. */}
         <motion.div
           className="absolute inset-x-0 top-[58%] z-10 flex items-start justify-center gap-5 px-4 sm:top-[52%] sm:gap-8"
           style={{ opacity: aboutOpacity, y: aboutY }}

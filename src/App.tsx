@@ -74,7 +74,6 @@ function MainContent() {
 
       <HeroScrub
         videoSrc="/videos/hero-brand.mp4"
-        posterSrc="/images/hero-poster.jpg"
         taglineLine1={t.heroScrubTaglineLine1}
         taglineLine2={t.heroScrubTaglineLine2}
         ctaLabel={t.heroCta}
