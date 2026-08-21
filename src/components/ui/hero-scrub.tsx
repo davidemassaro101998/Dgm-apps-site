@@ -332,9 +332,9 @@ export function HeroScrub({
             its own small settle-down so it doesn't feel pasted on top. */}
         <motion.p
           aria-hidden
-          className="absolute inset-x-0 top-[38%] z-10 px-4 text-center font-display font-black uppercase leading-tight tracking-[-0.02em] text-white sm:top-[30%]"
+          className="absolute inset-x-0 top-[34%] z-10 px-4 text-center font-display font-black uppercase leading-[0.95] tracking-[-0.02em] text-white sm:top-[25%]"
           style={{
-            fontSize: "clamp(1.4rem, 6vw, 2.8rem)",
+            fontSize: "clamp(2.1rem, 10vw, 5.2rem)",
             opacity: iconsOpacity,
             y: iconsHeadingY,
             textShadow: PHYSICAL_TEXT_SHADOW,
