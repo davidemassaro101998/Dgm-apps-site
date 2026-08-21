@@ -58,13 +58,7 @@ function MainContent() {
     <div className="relative min-h-screen w-full bg-ink-950 font-body">
       <Header onSelectApp={handleSelectApp} onNavigateSection={goToSection} />
 
-      <HeroScrub
-        videoSrc="/videos/hero-brand.mp4"
-        titleTop="DGM"
-        titleBottom="APPS"
-        ctaLabel={t.heroCta}
-        onCta={() => goToSection(2)}
-      />
+      <HeroScrub videoSrc="/videos/hero-brand.mp4" title="DGM APPS" />
 
       <Story />
 
