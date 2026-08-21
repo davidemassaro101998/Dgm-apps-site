@@ -45,7 +45,7 @@ export function SpotlightHero({ tagline, title, description, ctaText, onCtaClick
   return (
     <section
       ref={sectionRef}
-      className={cn("relative flex h-dvh min-h-[620px] w-full items-center justify-center overflow-hidden px-4 text-center", className)}
+      className={cn("relative flex min-h-dvh w-full items-center justify-center overflow-hidden px-4 text-center", className)}
     >
       <motion.div
         className="absolute inset-0 z-0 will-change-transform"

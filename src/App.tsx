@@ -1,27 +1,71 @@
-import { useState, useRef } from "react";
-import { MotionConfig, motion, useMotionValue } from "framer-motion";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { MotionConfig, useMotionValue } from "framer-motion";
 import { Header } from "./components/Header";
 import { SpotlightHero } from "./components/ui/spotlight-hero";
 import { Story } from "./components/Story";
 import { AppGrid } from "./components/AppGrid";
 import { Footer } from "./components/Footer";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
-import { useFullPageController, TOTAL_SECTIONS } from "./hooks/useFullPageController";
+
+const SECTION_IDS = ["top", "chi-siamo", "catalogo", "contatti"];
 
 function MainContent() {
   const { t } = useLanguage();
   const [selectedAppIdFromHeader, setSelectedAppIdFromHeader] = useState<string | null>(null);
-
-  const { activeSection, goToSection } = useFullPageController({
-    totalSections: TOTAL_SECTIONS,
-  });
+  const [activeSection, setActiveSection] = useState(0);
 
   const heroRef = useRef<HTMLElement>(null);
-  const heroProgress = useMotionValue(activeSection === 0 ? 0 : 1);
+  const heroProgress = useMotionValue(0);
+
+  // Drives the hero's 3D background parallax/fade as the user scrolls it out of view.
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const heroHeight = heroRef.current?.offsetHeight || window.innerHeight;
+        heroProgress.set(Math.min(1, Math.max(0, window.scrollY / heroHeight)));
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [heroProgress]);
+
+  // Scrollspy for the side nav dots — tracks whichever section covers the viewport midpoint.
+  useEffect(() => {
+    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (el): el is HTMLElement => Boolean(el)
+    );
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) {
+          const index = sections.indexOf(visible.target as HTMLElement);
+          if (index !== -1) setActiveSection(index);
+        }
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  const goToSection = useCallback((index: number) => {
+    const id = SECTION_IDS[index];
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   const handleSelectApp = (appId: string) => {
     setSelectedAppIdFromHeader(appId);
-    goToSection(2); // Go to Catalogo
+    goToSection(2); // Catalogo
   };
 
   const navItems = [
@@ -32,52 +76,31 @@ function MainContent() {
   ];
 
   return (
-    <div className="fixed inset-0 h-dvh w-full overflow-hidden bg-ink-950 font-body select-none">
-      {/* Header stays pinned at top */}
-      <Header
-        onSelectApp={handleSelectApp}
-        onNavigateSection={goToSection}
+    <div className="relative min-h-screen w-full bg-ink-950 font-body">
+      <Header onSelectApp={handleSelectApp} onNavigateSection={goToSection} />
+
+      <div id="top">
+        <SpotlightHero
+          tagline={t.heroTagline}
+          title={t.heroTitle}
+          description={t.heroDescription}
+          ctaText={t.heroCta}
+          onCtaClick={() => goToSection(2)}
+          secondaryCtaText={t.heroSecondaryCta}
+          onSecondaryCtaClick={() => goToSection(1)}
+          sectionRef={heroRef}
+          progress={heroProgress}
+        />
+      </div>
+
+      <Story />
+
+      <AppGrid
+        selectedAppIdFromHeader={selectedAppIdFromHeader}
+        onClearSelectedApp={() => setSelectedAppIdFromHeader(null)}
       />
 
-      {/* Main Full-Page Sliding Viewport Track */}
-      <motion.div
-        className="h-full w-full will-change-transform"
-        animate={{ y: `-${activeSection * 100}%` }}
-        transition={{ duration: 0.75, ease: [0.25, 1, 0.5, 1] }}
-      >
-        {/* Section 0: Hero */}
-        <div className="h-dvh w-full shrink-0">
-          <SpotlightHero
-            tagline={t.heroTagline}
-            title={t.heroTitle}
-            description={t.heroDescription}
-            ctaText={t.heroCta}
-            onCtaClick={() => goToSection(2)}
-            secondaryCtaText={t.heroSecondaryCta}
-            onSecondaryCtaClick={() => goToSection(1)}
-            sectionRef={heroRef}
-            progress={heroProgress}
-          />
-        </div>
-
-        {/* Section 1: Chi Siamo / Story */}
-        <div className="h-dvh w-full shrink-0">
-          <Story />
-        </div>
-
-        {/* Section 2: Catalogo App */}
-        <div className="h-dvh w-full shrink-0">
-          <AppGrid
-            selectedAppIdFromHeader={selectedAppIdFromHeader}
-            onClearSelectedApp={() => setSelectedAppIdFromHeader(null)}
-          />
-        </div>
-
-        {/* Section 3: Footer & Contatti */}
-        <div className="h-dvh w-full shrink-0">
-          <Footer onNavigateSection={goToSection} />
-        </div>
-      </motion.div>
+      <Footer onNavigateSection={goToSection} />
 
       {/* Right Side Section Navigation Indicator */}
       <nav

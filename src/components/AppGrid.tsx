@@ -49,7 +49,7 @@ export function AppGrid({ selectedAppIdFromHeader, onClearSelectedApp }: AppGrid
   }, [selectedAppIdFromHeader]);
 
   return (
-    <section id="catalogo" className="relative z-10 flex h-dvh w-full flex-col justify-center overflow-hidden px-4 pt-16 pb-6 sm:px-6">
+    <section id="catalogo" className="relative z-10 flex min-h-dvh w-full flex-col justify-center px-4 py-20 sm:px-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

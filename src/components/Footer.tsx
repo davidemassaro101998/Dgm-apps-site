@@ -23,7 +23,7 @@ export function Footer({ onNavigateSection }: FooterProps) {
   };
 
   return (
-    <footer id="contatti" className="relative z-10 flex h-dvh w-full flex-col justify-center overflow-hidden border-t border-white/10 px-6 pt-16 pb-6 text-mist-300">
+    <footer id="contatti" className="relative z-10 flex min-h-dvh w-full flex-col justify-center border-t border-white/10 px-6 py-20 text-mist-300">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}

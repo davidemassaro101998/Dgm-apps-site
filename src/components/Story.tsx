@@ -5,7 +5,7 @@ export function Story() {
   const { t } = useLanguage();
 
   return (
-    <section id="chi-siamo" className="relative z-10 flex h-dvh w-full items-center justify-center overflow-hidden bg-ink-950 px-5 pt-16 pb-6 sm:px-8">
+    <section id="chi-siamo" className="relative z-10 flex min-h-dvh w-full items-center justify-center bg-ink-950 px-5 py-20 sm:px-8">
       <div className="relative z-10 mx-auto w-full max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
