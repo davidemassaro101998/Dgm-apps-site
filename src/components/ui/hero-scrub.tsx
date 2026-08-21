@@ -88,6 +88,14 @@ export function HeroScrub({
     const video = videoRef.current;
     if (!section) return;
 
+    // Every real seek forces the decoder to locate and paint a keyframe --
+    // real work even on an all-intra file. Skip it when the target time is
+    // close enough to what's already painted (sub-frame at this video's
+    // framerate) to be visually identical; this is what was producing the
+    // reported scroll lag on mobile, where scroll fires far more often than
+    // the resulting frame actually changes.
+    const MIN_SEEK_DELTA = 1 / 48; // half a frame at 24fps
+    let lastSeekedTime = -1;
     function applyProgress() {
       const rect = section!.getBoundingClientRect();
       const total = rect.height - window.innerHeight;
@@ -96,7 +104,11 @@ export function HeroScrub({
       if (video && video.duration && !reduced) {
         // Never let this collapse to exactly 0 -- assigning the value the
         // element already holds is a silent no-op seek that paints nothing.
-        video.currentTime = Math.max(0.001, Math.min(video.duration, p * video.duration));
+        const target = Math.max(0.001, Math.min(video.duration, p * video.duration));
+        if (Math.abs(target - lastSeekedTime) >= MIN_SEEK_DELTA) {
+          video.currentTime = target;
+          lastSeekedTime = target;
+        }
       }
     }
 
@@ -245,6 +257,14 @@ export function HeroScrub({
   const ICONS_POP_END = VIDEO_SETTLE_PROGRESS + 0.135; // 0.97
   const irisRadiusPct = useTransform(scrollYProgress, [IRIS_CLOSE_START, IRIS_CLOSE_END], [46, 0]);
   const irisEdgePct = useTransform(irisRadiusPct, (r) => r + 8);
+  // A circle inscribed at 46% radius never reaches a square box's corners
+  // (they sit at ~70.7% distance from center), so the iris divs render
+  // permanent black corner triangles for every scroll position before the
+  // close starts -- visible from page load, not just during the hand-off.
+  // Keep each iris fully invisible until the exact instant the close begins,
+  // snapping in on the same near-instant window as the scrim below so there
+  // is never a frame where the corners show but the matching scrim doesn't.
+  const irisOpacity = useTransform(scrollYProgress, [IRIS_CLOSE_START, IRIS_CLOSE_START + 0.005], [0, 1]);
   // Solid opaque black (not a translucent rgba) so the square edge of this
   // div never shows as a seam against the surrounding scrim below, however
   // their opacities happen to line up at a given scroll position.
@@ -421,6 +441,7 @@ export function HeroScrub({
                   top: `${icon.topPct}%`,
                   x: "-50%",
                   y: "-50%",
+                  opacity: irisOpacity,
                   background: irisBackground,
                 }}
               />
