@@ -113,7 +113,7 @@ const translations: Record<Language, Translations> = {
     statusPresto: "Presto disponibile",
 
     modalClose: "Chiudi",
-    modalOpenStore: "Apri nello store",
+    modalOpenStore: "Apri",
     modalComingSoon: "Presto disponibile",
     modalNotLinkedYet: "Link in arrivo",
 
@@ -177,7 +177,7 @@ const translations: Record<Language, Translations> = {
     statusPresto: "Coming Soon",
 
     modalClose: "Close",
-    modalOpenStore: "Open in Store",
+    modalOpenStore: "Open",
     modalComingSoon: "Coming Soon",
     modalNotLinkedYet: "Link Coming Soon",
 
@@ -241,7 +241,7 @@ const translations: Record<Language, Translations> = {
     statusPresto: "Próximamente",
 
     modalClose: "Cerrar",
-    modalOpenStore: "Abrir en la tienda",
+    modalOpenStore: "Abrir",
     modalComingSoon: "Próximamente",
     modalNotLinkedYet: "Enlace en camino",
 
@@ -305,7 +305,7 @@ const translations: Record<Language, Translations> = {
     statusPresto: "Bientôt disponible",
 
     modalClose: "Fermer",
-    modalOpenStore: "Ouvrir dans le store",
+    modalOpenStore: "Ouvrir",
     modalComingSoon: "Bientôt disponible",
     modalNotLinkedYet: "Lien à venir",
 
@@ -369,7 +369,7 @@ const translations: Record<Language, Translations> = {
     statusPresto: "Demnächst verfügbar",
 
     modalClose: "Schließen",
-    modalOpenStore: "Im Store öffnen",
+    modalOpenStore: "Öffnen",
     modalComingSoon: "Demnächst verfügbar",
     modalNotLinkedYet: "Link folgt",
 

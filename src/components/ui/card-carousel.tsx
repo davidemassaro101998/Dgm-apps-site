@@ -55,17 +55,21 @@ export const CardCarousel: React.FC<CarouselProps> = ({
     padding-right: 8px;
   }
 
+  /* Sized to the icon + label content itself (not the old big-card
+     dimensions from before cards became bare icons) -- at the old
+     220px width, 3 slides side by side overflowed past a phone's
+     viewport, leaving only the centered one actually visible. */
   .swiper-slide {
-    width: min(64vw, 220px);
-    height: min(78vw, 260px);
-    min-height: 220px;
+    width: min(30vw, 132px);
+    height: min(38vw, 176px);
+    min-height: 150px;
     transition: transform 0.4s ease, opacity 0.4s ease;
   }
 
   @media (min-width: 640px) {
     .swiper-slide {
-      width: 220px;
-      height: 260px;
+      width: 152px;
+      height: 196px;
     }
   }
 
@@ -124,7 +128,7 @@ export const CardCarousel: React.FC<CarouselProps> = ({
       <div className="w-full flex items-center justify-center">
         <Swiper
           initialSlide={0}
-          spaceBetween={16}
+          spaceBetween={10}
           speed={800}
           autoplay={
             loop
