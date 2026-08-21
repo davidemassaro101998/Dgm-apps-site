@@ -47,6 +47,17 @@ export function HeroScrub({
     if (!video) return;
     video.muted = true;
     video.setAttribute("muted", "");
+    // iOS Safari never decodes/paints a single frame from currentTime seeks
+    // alone -- it needs one real play() to prime the decoder. Play muted and
+    // immediately pause so the poster area shows real video instead of black.
+    const primeDecoder = () => {
+      video.play()
+        .then(() => video.pause())
+        .catch(() => {});
+    };
+    if (video.readyState >= 1) primeDecoder();
+    else video.addEventListener("loadedmetadata", primeDecoder, { once: true });
+    return () => video.removeEventListener("loadedmetadata", primeDecoder);
   }, [videoSrc]);
 
   // Manual scroll tracking: framer's useScroll({ target }) was silently
