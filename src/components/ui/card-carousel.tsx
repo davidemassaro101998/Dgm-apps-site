@@ -32,6 +32,9 @@ interface CarouselProps {
   showNavigation?: boolean
   onItemClick?: (id: string) => void
   expandedId?: string | null
+  /** Auto-rotate and infinite-loop the carousel. Turn off when there are few
+   *  enough apps to show them all at once, statically. */
+  loop?: boolean
 }
 
 export const CardCarousel: React.FC<CarouselProps> = ({
@@ -41,6 +44,7 @@ export const CardCarousel: React.FC<CarouselProps> = ({
   showNavigation = true,
   onItemClick,
   expandedId,
+  loop = true,
 }) => {
   const css = `
   .swiper {
@@ -91,14 +95,15 @@ export const CardCarousel: React.FC<CarouselProps> = ({
   }
   `
 
-  // Ensure at least 6-9 slides for smooth 3D coverflow infinite loop without jumps
+  // Ensure at least 6-9 slides for smooth 3D coverflow infinite loop without jumps.
+  // Only relevant when looping -- a static, non-looping row must show each app once.
   const displayItems = React.useMemo(() => {
     if (!items || items.length === 0) return [];
-    if (items.length < 6) {
+    if (loop && items.length < 6) {
       return [...items, ...items, ...items];
     }
     return items;
-  }, [items]);
+  }, [items, loop]);
 
   return (
     <div className="w-full relative px-2 sm:px-4">
@@ -121,15 +126,19 @@ export const CardCarousel: React.FC<CarouselProps> = ({
           initialSlide={0}
           spaceBetween={16}
           speed={800}
-          autoplay={{
-            delay: autoplayDelay,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          }}
+          autoplay={
+            loop
+              ? {
+                  delay: autoplayDelay,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
+                }
+              : false
+          }
           effect={"coverflow"}
           grabCursor={true}
           centeredSlides={true}
-          loop={true}
+          loop={loop}
           slidesPerView={"auto"}
           coverflowEffect={{
             rotate: 0,

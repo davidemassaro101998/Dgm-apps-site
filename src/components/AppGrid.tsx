@@ -26,6 +26,11 @@ export function AppGrid({ selectedAppIdFromHeader, onClearSelectedApp }: AppGrid
     }));
   }, [language, t]);
 
+  // With only a handful of apps, show them all at once statically instead of
+  // an auto-rotating loop -- once more apps ship this naturally reverts to
+  // looping/autoplay on its own.
+  const isStatic = items.length <= 3;
+
   function openApp(id: string) {
     const app = apps.find((a: AppEntry) => a.id === id);
     if (!app) return;
@@ -76,6 +81,9 @@ export function AppGrid({ selectedAppIdFromHeader, onClearSelectedApp }: AppGrid
           onItemClick={openApp}
           autoplayDelay={4500}
           expandedId={expanded?.id ?? null}
+          loop={!isStatic}
+          showPagination={!isStatic}
+          showNavigation={!isStatic}
         />
       </motion.div>
 
