@@ -11,6 +11,10 @@ export interface HeroScrubIcon {
   /** Approximate on-screen position, as a percentage, matching where this
    *  object floats in the video -- doesn't need to be pixel-exact. */
   leftPct: number;
+  /** Extra vertical offset (percent of the icon row's own height) from the
+   *  shared baseline, since the video's own objects don't all sit at the
+   *  same height. */
+  topPct: number;
 }
 
 export interface HeroScrubProps {
@@ -118,6 +122,31 @@ export function HeroScrub({
       video.muted = true;
       video.setAttribute("muted", "");
       video.setAttribute("autoplay", "");
+
+      // Safari specifically checks prefers-reduced-motion before honoring
+      // autoplay on a <video> -- if the visitor has that OS accessibility
+      // setting on, calling play() ourselves fights it and Safari shows its
+      // native tap-to-play affordance as the (correct, by design) fallback.
+      // So under reduced motion, never call play() at all: just seek once to
+      // paint a single still frame. Text/icons still reveal normally on
+      // scroll via applyProgress below (it only skips the video's own
+      // currentTime updates when reduced, not scrollYProgress itself) --
+      // reduced motion means the video stops scrubbing, not that the page
+      // stops responding to scroll.
+      if (reduced) {
+        if (video.readyState >= 1) video.currentTime = 0.001;
+        else video.addEventListener("loadedmetadata", () => (video.currentTime = 0.001), { once: true });
+        applyProgress();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll);
+        return () => {
+          cancelled = true;
+          if (rafId) cancelAnimationFrame(rafId);
+          window.removeEventListener("scroll", onScroll);
+          window.removeEventListener("resize", onScroll);
+        };
+      }
+
       // A <video> driven only by currentTime seeks (never actually played)
       // stays visually black on real Safari/Chrome mobile until it has been
       // through one real playback start. Two independent attempts:
@@ -371,8 +400,8 @@ export function HeroScrub({
                 href={icon.href}
                 target="_blank"
                 rel="noreferrer"
-                className="group absolute top-0 flex -translate-x-1/2 flex-col items-center gap-2"
-                style={{ left: `${icon.leftPct}%` }}
+                className="group absolute flex -translate-x-1/2 flex-col items-center gap-2"
+                style={{ left: `${icon.leftPct}%`, top: `${icon.topPct}%` }}
               >
                 <img
                   src={icon.iconUrl}

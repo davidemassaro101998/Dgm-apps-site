@@ -6,11 +6,10 @@ import { getStatusLabel } from "../lib/appPhoto";
 import { Logo } from "./ui/logo";
 
 interface HeaderProps {
-  onSelectApp?: (appId: string) => void;
   onNavigateSection?: (sectionIndex: number) => void;
 }
 
-export function Header({ onSelectApp, onNavigateSection }: HeaderProps) {
+export function Header({ onNavigateSection }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
@@ -53,11 +52,8 @@ export function Header({ onSelectApp, onNavigateSection }: HeaderProps) {
 
   const handleAppClick = (appId: string) => {
     setMenuOpen(false);
-    if (onSelectApp) {
-      onSelectApp(appId);
-    } else if (onNavigateSection) {
-      onNavigateSection(2);
-    }
+    const app = apps.find((a) => a.id === appId);
+    if (app) window.open(app.href, "_blank", "noopener,noreferrer");
   };
 
   return (

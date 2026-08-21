@@ -9,12 +9,14 @@ import { photoUrl } from "./lib/appPhoto";
 
 const SECTION_IDS = ["top", "chi-siamo", "catalogo", "contatti"];
 
-// Left-to-right order matches the video's own gift / wrench / dumbbell
-// layout, so the icon handoff lands roughly where each object floats.
-const HERO_ICON_POSITIONS: Record<string, number> = {
-  kado: 22,
-  bricolo: 50,
-  forma: 78,
+// Left-to-right order and offsets match the video's own gift / wrench /
+// dumbbell layout (measured directly off the settled frame), so the icon
+// hand-off lands where each object actually floats -- the wrench (bricolo)
+// sits noticeably lower/more central than the other two in the footage.
+const HERO_ICON_POSITIONS: Record<string, { leftPct: number; topPct: number }> = {
+  kado: { leftPct: 22, topPct: 0 },
+  bricolo: { leftPct: 50, topPct: 14 },
+  forma: { leftPct: 78, topPct: -4 },
 };
 
 function MainContent() {
@@ -23,13 +25,17 @@ function MainContent() {
 
   const heroIcons: HeroScrubIcon[] = useMemo(
     () =>
-      apps.map((app) => ({
-        id: app.id,
-        name: app.name[language],
-        iconUrl: photoUrl(app),
-        href: app.href,
-        leftPct: HERO_ICON_POSITIONS[app.id] ?? 50,
-      })),
+      apps.map((app) => {
+        const pos = HERO_ICON_POSITIONS[app.id] ?? { leftPct: 50, topPct: 0 };
+        return {
+          id: app.id,
+          name: app.name[language],
+          iconUrl: photoUrl(app),
+          href: app.href,
+          leftPct: pos.leftPct,
+          topPct: pos.topPct,
+        };
+      }),
     [language]
   );
 
