@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { apps, type AppEntry } from "../data/apps";
 import { CardCarousel, type CarouselAppItem } from "./ui/card-carousel";
-import { AppDetailModal, type AppDetail } from "./ui/app-detail-modal";
+import { AppIconExpand, type AppDetail } from "./ui/app-icon-expand";
 import { photoUrl, getStatusLabel } from "../lib/appPhoto";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -12,7 +12,7 @@ interface AppGridProps {
 }
 
 export function AppGrid({ selectedAppIdFromHeader, onClearSelectedApp }: AppGridProps) {
-  const [selected, setSelected] = useState<AppDetail | null>(null);
+  const [expanded, setExpanded] = useState<AppDetail | null>(null);
   const { language, t } = useLanguage();
 
   const items: CarouselAppItem[] = useMemo(() => {
@@ -29,10 +29,9 @@ export function AppGrid({ selectedAppIdFromHeader, onClearSelectedApp }: AppGrid
   function openApp(id: string) {
     const app = apps.find((a: AppEntry) => a.id === id);
     if (!app) return;
-    setSelected({
+    setExpanded({
       id: app.id,
       title: app.name[language],
-      subtitle: app.tagline[language],
       badge: getStatusLabel(app.status, t),
       imageUrl: photoUrl(app),
       storeHref: app.href,
@@ -72,10 +71,15 @@ export function AppGrid({ selectedAppIdFromHeader, onClearSelectedApp }: AppGrid
         transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         className="mx-auto mt-10 w-full max-w-5xl"
       >
-        <CardCarousel items={items} onItemClick={openApp} autoplayDelay={4500} />
+        <CardCarousel
+          items={items}
+          onItemClick={openApp}
+          autoplayDelay={4500}
+          expandedId={expanded?.id ?? null}
+        />
       </motion.div>
 
-      <AppDetailModal app={selected} onClose={() => setSelected(null)} />
+      <AppIconExpand app={expanded} onClose={() => setExpanded(null)} />
     </section>
   );
 }

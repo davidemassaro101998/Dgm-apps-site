@@ -1,4 +1,5 @@
 import React from "react"
+import { motion } from "framer-motion"
 import { Swiper, SwiperSlide } from "swiper/react"
 
 import "swiper/css"
@@ -30,6 +31,7 @@ interface CarouselProps {
   showPagination?: boolean
   showNavigation?: boolean
   onItemClick?: (id: string) => void
+  expandedId?: string | null
 }
 
 export const CardCarousel: React.FC<CarouselProps> = ({
@@ -38,6 +40,7 @@ export const CardCarousel: React.FC<CarouselProps> = ({
   showPagination = true,
   showNavigation = true,
   onItemClick,
+  expandedId,
 }) => {
   const css = `
   .swiper {
@@ -161,14 +164,18 @@ export const CardCarousel: React.FC<CarouselProps> = ({
                 onClick={() => onItemClick?.(item.id)}
                 className="group flex h-full w-full flex-col items-center justify-start gap-3 bg-transparent text-center cursor-pointer"
               >
-                <div className="relative">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="h-28 w-28 rounded-[24px] object-cover shadow-[0_16px_36px_-8px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-[1.06] group-active:scale-95 sm:h-32 sm:w-32"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                <div className="relative h-28 w-28 sm:h-32 sm:w-32">
+                  {item.id !== expandedId && (
+                    <motion.img
+                      layoutId={`app-icon-${item.id}`}
+                      src={item.imageUrl}
+                      alt={item.title}
+                      transition={{ type: "spring", stiffness: 260, damping: 26 }}
+                      className="h-28 w-28 rounded-[22%] object-cover shadow-[0_16px_36px_-8px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-[1.06] group-active:scale-95 sm:h-32 sm:w-32"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
                   <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/70 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-md shadow-md">
                     {item.badge}
                   </span>
