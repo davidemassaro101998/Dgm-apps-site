@@ -145,13 +145,17 @@ export function HeroScrub({
   const ctaY = useTransform(scrollYProgress, [0, 0.05], [16, 0]);
   // "Chi siamo" rises in from below the frame with a fade, holds, then sinks
   // back down out of view as it fades -- never a flat cross-fade in place.
-  const aboutOpacity = useTransform(scrollYProgress, [0.28, 0.34, 0.44, 0.5], [0, 1, 1, 0]);
-  const aboutY = useTransform(scrollYProgress, [0.28, 0.34, 0.44, 0.5], [48, 0, 0, 48]);
-  // Icons fade in right as the video's own rendered objects finish forming
-  // (~0.59 in the trimmed clip) and simply sit on top from then on --
-  // the "swap" reads as the video handing off to real, tappable icons.
-  const iconsOpacity = useTransform(scrollYProgress, [0.56, 0.66], [0, 1]);
-  const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > 0.6 ? "auto" : "none"));
+  // Widened vs. the first pass so it gets real scroll time of its own.
+  const aboutOpacity = useTransform(scrollYProgress, [0.26, 0.34, 0.48, 0.56], [0, 1, 1, 0]);
+  const aboutY = useTransform(scrollYProgress, [0.26, 0.34, 0.48, 0.56], [48, 0, 0, 48]);
+  // The video's own drawn gift/wrench/dumbbell finish forming around
+  // progress ~0.59 and then just sit there, fully settled, for the rest of
+  // the clip -- so let that footage hold and play out almost to the very
+  // end of the scroll before swapping to the real, tappable icons. The
+  // hand-off should read as "you've reached the end of the video," not as
+  // a mid-scroll detail.
+  const iconsOpacity = useTransform(scrollYProgress, [0.9, 0.99], [0, 1]);
+  const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > 0.95 ? "auto" : "none"));
 
   const handleCtaClick = () => {
     const section = sectionRef.current;
@@ -170,15 +174,16 @@ export function HeroScrub({
       {/* NOTE: this offset is a % of the section's own (PIN_VH-tall) height,
           not of the scrollable pin range (height - viewport) that scroll
           progress is measured against -- the two only line up at the very
-          top. Recompute both whenever PIN_VH changes: top-[32%] here lands
-          around progress ~0.39, inside the [0.28, 0.5] window where the
-          about text is on screen (based on a ~844px reference viewport). */}
-      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[32%] h-px w-full" />
+          top. Recompute both whenever PIN_VH or the opacity windows below
+          change: top-[34%] here lands around progress ~0.41, inside the
+          [0.26, 0.56] window where the about text is on screen (based on a
+          ~844px reference viewport). */}
+      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[34%] h-px w-full" />
       {/* Anchor for the "Catalogo" nav item: the real catalog is the 3 real
           app icons that take the video's own drawn icons' place below --
-          there is no separate catalog section any more. top-[50%] lands
-          around progress ~0.61, inside the [0.56, 0.66] icon fade-in window. */}
-      <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[50%] h-px w-full" />
+          there is no separate catalog section any more. top-[78%] lands
+          around progress ~0.945, inside the [0.9, 0.99] icon fade-in window. */}
+      <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[78%] h-px w-full" />
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden" style={{ perspective: "1400px" }}>
         <div className="absolute inset-0 z-0">
           {videoSrc ? (
@@ -189,8 +194,10 @@ export function HeroScrub({
               muted
               autoPlay
               playsInline
+              disablePictureInPicture
               preload="auto"
-              className="h-full w-full object-cover object-center sm:object-[center_40%]"
+              tabIndex={-1}
+              className="hero-scrub-video pointer-events-none h-full w-full object-cover object-center sm:object-[center_40%]"
               aria-hidden
             />
           ) : (
@@ -209,60 +216,68 @@ export function HeroScrub({
         />
 
         {/* Tagline + CTA: rest just above the bottom edge of the screen,
-            visible at rest, gone by the second beat of scroll */}
+            visible at rest, gone by the second beat of scroll. Wrapped in a
+            glass card so it reads as the clear focal point of this screen,
+            not just text floating over a busy video. */}
         <motion.div
-          className="absolute inset-x-0 bottom-[6%] z-10 flex flex-col items-center gap-6 px-4 sm:bottom-[9%]"
+          className="absolute inset-x-0 bottom-[6%] z-10 flex justify-center px-4 sm:bottom-[9%]"
           style={{ opacity: taglineOpacity }}
         >
-          <h1
-            className="whitespace-nowrap text-center font-display font-black uppercase leading-[0.95] tracking-[-0.02em]"
-            style={{
-              fontSize: "clamp(1.4rem, 6.2vw, 3.5rem)",
-              color: "#ffffff",
-              textShadow: [
-                "0 -1px 0 rgba(255,255,255,0.5)",
-                "0 2px 0 rgba(0,0,0,0.35)",
-                "0 4px 0 rgba(0,0,0,0.3)",
-                "0 6px 10px rgba(0,0,0,0.35)",
-                "0 20px 40px rgba(0,0,0,0.55)",
-              ].join(", "),
-            }}
-          >
-            {taglineLine1} {taglineLine2}
-          </h1>
+          <div className="flex flex-col items-center gap-6 rounded-3xl border border-white/10 bg-black/45 px-6 py-6 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.65)] backdrop-blur-md sm:px-10 sm:py-8">
+            <h1
+              className="whitespace-nowrap text-center font-display font-black uppercase leading-[0.95] tracking-[-0.02em]"
+              style={{
+                fontSize: "clamp(1.3rem, 5.8vw, 3.2rem)",
+                color: "#ffffff",
+              }}
+            >
+              {taglineLine1} {taglineLine2}
+            </h1>
 
-          <motion.button
-            type="button"
-            onClick={handleCtaClick}
-            style={{ opacity: ctaOpacity, y: ctaY }}
-            className="rounded-full bg-white px-6 py-2.5 text-sm font-bold text-black transition-transform duration-200 hover:scale-105 active:scale-95 sm:px-8 sm:py-3.5 sm:text-base"
-          >
-            {ctaLabel}
-          </motion.button>
+            <motion.button
+              type="button"
+              onClick={handleCtaClick}
+              style={{ opacity: ctaOpacity, y: ctaY }}
+              className="rounded-full bg-white px-6 py-2.5 text-sm font-bold text-black transition-transform duration-200 hover:scale-105 active:scale-95 sm:px-8 sm:py-3.5 sm:text-base"
+            >
+              {ctaLabel}
+            </motion.button>
+          </div>
         </motion.div>
 
         {/* "Chi siamo": rises from below into the middle-lower part of the
-            screen, holds, then sinks back out -- never a flat cross-fade. */}
+            screen, holds, then sinks back out -- never a flat cross-fade.
+            Two short blocks side by side on the same row (not 4 stacked
+            lines), inside the same glass-card treatment as the tagline
+            above, so it's the clear focal point of the screen rather than
+            a caption over the background. */}
         <motion.div
-          className="absolute inset-x-0 top-[58%] z-10 px-6 text-center sm:top-[52%]"
+          className="absolute inset-x-0 top-[58%] z-10 flex justify-center px-4 sm:top-[52%]"
           style={{ opacity: aboutOpacity, y: aboutY }}
         >
-          <p
-            className="font-display font-black uppercase leading-tight tracking-[-0.02em]"
-            style={{ fontSize: "clamp(1.2rem, 4.6vw, 2.6rem)", textShadow: "0 4px 24px rgba(0,0,0,0.6)" }}
-          >
-            {aboutLine1}
-            <br />
-            {aboutLine2}
-            <br />
-            <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
-              {aboutLine3}
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
-              {aboutLine4}
-            </span>
-          </p>
+          <div className="flex items-center gap-5 rounded-3xl border border-white/10 bg-black/45 px-5 py-6 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.65)] backdrop-blur-md sm:gap-8 sm:px-10 sm:py-8">
+            <p
+              className="text-right font-display font-black uppercase leading-tight tracking-[-0.02em] text-white"
+              style={{ fontSize: "clamp(0.95rem, 4.4vw, 1.9rem)" }}
+            >
+              {aboutLine1}
+              <br />
+              {aboutLine2}
+            </p>
+            <div className="h-12 w-px shrink-0 bg-white/20 sm:h-16" />
+            <p
+              className="text-left font-display font-black uppercase leading-tight tracking-[-0.02em]"
+              style={{ fontSize: "clamp(0.95rem, 4.4vw, 1.9rem)" }}
+            >
+              <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
+                {aboutLine3}
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
+                {aboutLine4}
+              </span>
+            </p>
+          </div>
         </motion.div>
 
         {/* Real, tappable icons -- roughly where the video's own objects

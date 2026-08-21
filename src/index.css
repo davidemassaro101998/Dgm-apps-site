@@ -45,3 +45,18 @@ html, body {
 .bg-aurora {
   background-image: linear-gradient(120deg, #8B5CF6 0%, #22D3EE 50%, #8B5CF6 100%);
 }
+
+/* The hero background video is driven entirely by scroll (currentTime),
+   never meant to be tapped and "played" by the visitor -- but Android
+   Chrome/WebView draws its own big native play-button overlay on any
+   paused <video> without `controls`, regardless of `autoplay`/`muted`.
+   Hide that native affordance everywhere it can appear. */
+.hero-scrub-video::-webkit-media-controls,
+.hero-scrub-video::-webkit-media-controls-start-playback-button,
+.hero-scrub-video::-webkit-media-controls-play-button,
+.hero-scrub-video::-webkit-media-controls-panel {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
