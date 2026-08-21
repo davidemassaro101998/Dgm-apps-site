@@ -234,17 +234,35 @@ export function HeroScrub({
   // of the two overlapping.
   const aboutOpacity = useTransform(scrollYProgress, [0.15, 0.3, 0.4, 0.5], [0, 1, 1, 0]);
   const aboutY = useTransform(scrollYProgress, [0.15, 0.3, 0.4, 0.5], [48, 0, 0, 48]);
+  // The "TV power-off" hand-off: instead of a plain cross-fade, the video
+  // itself collapses vertically to a thin line right at the object row
+  // (like an old CRT switching off) with a quick bright flash at the
+  // collapse instant, and the real icons grow outward from that same
+  // point/moment -- reading as "the drawing became the icon" rather than
+  // one thing fading out while a separate thing fades in on top.
+  const videoCollapseScale = useTransform(
+    scrollYProgress,
+    [VIDEO_SETTLE_PROGRESS, VIDEO_SETTLE_PROGRESS + 0.03],
+    [1, 0.02]
+  );
+  const collapseFlashOpacity = useTransform(
+    scrollYProgress,
+    [VIDEO_SETTLE_PROGRESS, VIDEO_SETTLE_PROGRESS + 0.015, VIDEO_SETTLE_PROGRESS + 0.03],
+    [0, 0.85, 0]
+  );
   // Erases the video's own now-settled drawn objects right as the real
   // icons fade in -- the footage just holds them, it never fades them out
   // on its own. Timed to the measured settle point, not a guess.
   const iconScrimOpacity = useTransform(
     scrollYProgress,
-    [VIDEO_SETTLE_PROGRESS, VIDEO_SETTLE_PROGRESS + 0.04],
+    [VIDEO_SETTLE_PROGRESS, VIDEO_SETTLE_PROGRESS + 0.03],
     [0, 1]
   );
-  const iconsOpacity = useTransform(scrollYProgress, [VIDEO_SETTLE_PROGRESS + 0.02, 0.95], [0, 1]);
-  const iconsY = useTransform(scrollYProgress, [VIDEO_SETTLE_PROGRESS + 0.02, 0.95], [40, 0]);
-  const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > 0.92 ? "auto" : "none"));
+  const ICONS_POP_START = VIDEO_SETTLE_PROGRESS + 0.02;
+  const ICONS_POP_END = VIDEO_SETTLE_PROGRESS + 0.1;
+  const iconsOpacity = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [0, 1]);
+  const iconsScale = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [0.05, 1]);
+  const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > ICONS_POP_END ? "auto" : "none"));
 
   const handleCtaClick = () => {
     const section = sectionRef.current;
@@ -268,10 +286,16 @@ export function HeroScrub({
       {/* Anchor for the "Catalogo" nav item: the real catalog is the 3 real
           app icons that take the video's own drawn icons' place -- there's
           no separate catalog section. top-[74%] lands around progress
-          0.90, inside the icon fade-in window. */}
+          0.895, inside the icons' quick pop-in window. */}
       <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[74%] h-px w-full" />
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden" style={{ perspective: "1400px" }}>
-        <div className="absolute inset-0 z-0">
+        {/* Collapses vertically to a thin line at the object row right at
+            the settle point -- the "TV power-off" moment -- instead of just
+            sitting there until the scrim erases it. */}
+        <motion.div
+          className="absolute inset-0 z-0"
+          style={{ scaleY: videoCollapseScale, transformOrigin: "50% 62%" }}
+        >
           {videoSrc ? (
             <video
               ref={videoRef}
@@ -292,12 +316,23 @@ export function HeroScrub({
               </span>
             </div>
           )}
-        </div>
+        </motion.div>
 
         <div
           aria-hidden
           className="absolute inset-0 z-[1]"
           style={{ background: "radial-gradient(ellipse at 50% 22%, transparent 35%, rgba(0,0,0,0.6) 100%)" }}
+        />
+
+        {/* The brief bright flash at the exact instant the video finishes
+            collapsing -- the classic CRT power-off beat right before dark. */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-0 z-[1]"
+          style={{
+            opacity: collapseFlashOpacity,
+            background: "radial-gradient(ellipse 70% 18% at 50% 62%, rgba(255,255,255,0.95), transparent 70%)",
+          }}
         />
 
         {/* Dims the video a bit whenever a text/icon layer below is on
@@ -386,22 +421,28 @@ export function HeroScrub({
           }}
         />
 
-        {/* Real, tappable icons -- roughly where the video's own objects
-            settle, not pixel-matched. Rise up from below as they fade in,
-            same entrance motion as "chi siamo". */}
+        {/* Real, tappable icons -- each grows outward from the exact point/
+            moment its own drawn object collapsed away, like the drawing
+            itself turned into the icon, rather than sliding in separately. */}
         <motion.div
           className="absolute inset-x-0 top-[56%] z-10 flex justify-center sm:top-[46%]"
-          style={{ opacity: iconsOpacity, y: iconsY, pointerEvents: iconsPointerEvents }}
+          style={{ pointerEvents: iconsPointerEvents }}
         >
           <div className="relative h-[30vh] w-full max-w-lg">
             {icons.map((icon) => (
-              <a
+              <motion.a
                 key={icon.id}
                 href={icon.href}
                 target="_blank"
                 rel="noreferrer"
-                className="group absolute flex -translate-x-1/2 flex-col items-center gap-2"
-                style={{ left: `${icon.leftPct}%`, top: `${icon.topPct}%` }}
+                className="group absolute flex flex-col items-center gap-2"
+                style={{
+                  left: `${icon.leftPct}%`,
+                  top: `${icon.topPct}%`,
+                  x: "-50%",
+                  scale: iconsScale,
+                  opacity: iconsOpacity,
+                }}
               >
                 <img
                   src={icon.iconUrl}
@@ -411,7 +452,7 @@ export function HeroScrub({
                 <span className="text-xs font-semibold uppercase tracking-wide text-white/90 sm:text-sm">
                   {icon.name}
                 </span>
-              </a>
+              </motion.a>
             ))}
           </div>
         </motion.div>
