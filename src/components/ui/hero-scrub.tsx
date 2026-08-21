@@ -32,7 +32,7 @@ export interface HeroScrubProps {
   aboutLine1: string;
   aboutLine2: string;
   aboutLine3: string;
-  aboutLine4: string;
+  catalogHeading: string;
   icons: HeroScrubIcon[];
 }
 
@@ -67,7 +67,7 @@ export function HeroScrub({
   aboutLine1,
   aboutLine2,
   aboutLine3,
-  aboutLine4,
+  catalogHeading,
   icons,
 }: HeroScrubProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -202,6 +202,7 @@ export function HeroScrub({
   // Slide up from below into their real resting position, like a
   // notification arriving -- no scale/grow, just a clean rise + settle.
   const iconsY = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [64, 0]);
+  const iconsHeadingY = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [-16, 0]);
   const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > ICONS_POP_END ? "auto" : "none"));
 
   const handleCtaClick = () => {
@@ -268,10 +269,13 @@ export function HeroScrub({
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={ENTRANCE_TRANSITION}
-            className="whitespace-nowrap text-center font-display font-black uppercase leading-[0.95] tracking-[-0.02em] text-white"
+            className="text-center font-display font-black uppercase leading-[0.95] tracking-[-0.02em] text-white"
             style={{ fontSize: "clamp(1.6rem, 7.2vw, 3.8rem)", textShadow: PHYSICAL_TEXT_SHADOW }}
           >
-            {taglineLine1} {taglineLine2}
+            <span className="block">{taglineLine1}</span>
+            <span className="block bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
+              {taglineLine2}
+            </span>
           </motion.h1>
 
           <motion.button
@@ -289,33 +293,28 @@ export function HeroScrub({
 
         {/* "Chi siamo": rises from below into the middle-lower part of the
             screen, holds, then sinks back out -- never a flat cross-fade.
-            Two short blocks side by side on the same row, split by a
-            glowing rule, same physical text-shadow treatment as the
-            tagline. Fully faded out well before the video's own onset
-            point, leaving a real gap of pure video in between. */}
+            One centered column, three short iconic lines, same physical
+            text-shadow treatment as the tagline. Fully faded out well
+            before the video's own onset point, leaving a real gap of pure
+            video in between. */}
         <motion.div
-          className="absolute inset-x-0 top-[58%] z-10 flex items-start justify-center gap-5 px-4 sm:top-[52%] sm:gap-8"
+          className="absolute inset-x-0 top-[58%] z-10 flex flex-col items-center gap-1 px-4 text-center sm:top-[52%]"
           style={{ opacity: aboutOpacity, y: aboutY }}
         >
           <p
-            className="text-right font-display font-black uppercase leading-tight tracking-[-0.02em] text-white"
+            className="font-display font-black uppercase leading-tight tracking-[-0.02em] text-white"
             style={{ fontSize: "clamp(1.15rem, 5.4vw, 2.6rem)", textShadow: PHYSICAL_TEXT_SHADOW }}
           >
             {aboutLine1}
             <br />
             {aboutLine2}
           </p>
-          <div className="mt-1 h-14 w-[3px] shrink-0 rounded-full bg-gradient-to-b from-white/70 via-white/25 to-transparent sm:h-20" />
           <p
-            className="text-left font-display font-black uppercase leading-tight tracking-[-0.02em]"
+            className="font-display font-black uppercase leading-tight tracking-[-0.02em]"
             style={{ fontSize: "clamp(1.15rem, 5.4vw, 2.6rem)", textShadow: PHYSICAL_TEXT_SHADOW }}
           >
             <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
               {aboutLine3}
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
-              {aboutLine4}
             </span>
           </p>
         </motion.div>
@@ -329,6 +328,17 @@ export function HeroScrub({
           className="absolute inset-0 z-[2] bg-black"
           style={{ opacity: iconScrimOpacity }}
         />
+
+        {/* Heading that introduces the icons the instant they start
+            arriving -- same fade-in window as the icons themselves, with
+            its own small settle-down so it doesn't feel pasted on top. */}
+        <motion.p
+          aria-hidden
+          className="absolute inset-x-0 top-[40%] z-10 px-4 text-center font-display text-sm font-bold uppercase tracking-[0.25em] text-white/70 sm:top-[33%] sm:text-base"
+          style={{ opacity: iconsOpacity, y: iconsHeadingY, textShadow: PHYSICAL_TEXT_SHADOW }}
+        >
+          {catalogHeading}
+        </motion.p>
 
         {/* Real, tappable icons -- arrive from below into their resting
             position like a notification sliding up, once the screen is
@@ -354,11 +364,35 @@ export function HeroScrub({
                   opacity: iconsOpacity,
                 }}
               >
-                <img
-                  src={icon.iconUrl}
-                  alt={icon.name}
-                  className="h-24 w-24 rounded-[24%] object-cover shadow-[0_24px_50px_-8px_rgba(0,0,0,0.8)] transition-transform duration-200 group-hover:scale-110 group-active:scale-95 sm:h-36 sm:w-36"
-                />
+                <span className="relative block h-24 w-24 shrink-0 sm:h-36 sm:w-36">
+                  {/* Against the near-solid-black backdrop at this point in
+                      the sequence, a dark contact shadow is literally
+                      invisible -- what actually sells "floating in air" here
+                      is a soft ambient glow underneath instead, like bounce
+                      light off a surface that isn't shown. */}
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-2 -bottom-4 h-8 rounded-full bg-white/25 blur-lg transition-opacity duration-200 group-hover:opacity-70"
+                  />
+                  <img
+                    src={icon.iconUrl}
+                    alt={icon.name}
+                    className="relative h-full w-full rounded-[24%] object-cover shadow-[0_4px_10px_rgba(0,0,0,0.5),0_22px_45px_-10px_rgba(0,0,0,0.85)] ring-1 ring-white/15 transition-transform duration-200 group-hover:scale-110 group-active:scale-95"
+                    style={{ filter: "drop-shadow(0 14px 26px rgba(255,255,255,0.12))" }}
+                  />
+                  {/* Glossy top highlight -- a thin bright edge along the
+                      upper-left, like light catching a rounded, lifted
+                      surface -- sells the 3D read without needing an actual
+                      3D render. */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 rounded-[24%]"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.08) 22%, transparent 45%, transparent 100%)",
+                    }}
+                  />
+                </span>
                 <span className="text-sm font-semibold uppercase tracking-wide text-white/90 sm:text-base">
                   {icon.name}
                 </span>

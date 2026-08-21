@@ -26,7 +26,7 @@ export interface Translations {
   heroScrubAboutLine1: string;
   heroScrubAboutLine2: string;
   heroScrubAboutLine3: string;
-  heroScrubAboutLine4: string;
+  heroScrubCatalogHeading: string;
 
   // App status labels (used in the Header's "All Apps" menu)
   statusLive: string;
@@ -63,12 +63,12 @@ const translations: Record<Language, Translations> = {
     closeMenu: "Chiudi menu",
 
     heroCta: "Prova le app",
-    heroScrubTaglineLine1: "Tre app.",
-    heroScrubTaglineLine2: "Zero tempo perso.",
+    heroScrubTaglineLine1: "Facciamo app.",
+    heroScrubTaglineLine2: "Ma sono utili.",
     heroScrubAboutLine1: "Due persone.",
     heroScrubAboutLine2: "Nessuna scusa.",
-    heroScrubAboutLine3: "Solo quello",
-    heroScrubAboutLine4: "che serve davvero.",
+    heroScrubAboutLine3: "Solo quello che serve davvero.",
+    heroScrubCatalogHeading: "Scopri il catalogo",
 
     statusLive: "Disponibile",
     statusBeta: "Beta",
@@ -101,12 +101,12 @@ const translations: Record<Language, Translations> = {
     closeMenu: "Close menu",
 
     heroCta: "Try the apps",
-    heroScrubTaglineLine1: "Three apps.",
-    heroScrubTaglineLine2: "Zero wasted time.",
+    heroScrubTaglineLine1: "We build apps.",
+    heroScrubTaglineLine2: "Actually useful ones.",
     heroScrubAboutLine1: "Two people.",
     heroScrubAboutLine2: "No excuses.",
-    heroScrubAboutLine3: "Only what",
-    heroScrubAboutLine4: "truly matters.",
+    heroScrubAboutLine3: "Only what truly matters.",
+    heroScrubCatalogHeading: "Discover the catalog",
 
     statusLive: "Available",
     statusBeta: "Beta",
@@ -139,12 +139,12 @@ const translations: Record<Language, Translations> = {
     closeMenu: "Cerrar menú",
 
     heroCta: "Prueba las apps",
-    heroScrubTaglineLine1: "Tres apps.",
-    heroScrubTaglineLine2: "Cero tiempo perdido.",
+    heroScrubTaglineLine1: "Hacemos apps.",
+    heroScrubTaglineLine2: "Pero útiles de verdad.",
     heroScrubAboutLine1: "Dos personas.",
     heroScrubAboutLine2: "Ninguna excusa.",
-    heroScrubAboutLine3: "Solo lo",
-    heroScrubAboutLine4: "que de verdad sirve.",
+    heroScrubAboutLine3: "Solo lo que de verdad sirve.",
+    heroScrubCatalogHeading: "Descubre el catálogo",
 
     statusLive: "Disponible",
     statusBeta: "Beta",
@@ -177,12 +177,12 @@ const translations: Record<Language, Translations> = {
     closeMenu: "Fermer le menu",
 
     heroCta: "Essayer les apps",
-    heroScrubTaglineLine1: "Trois apps.",
-    heroScrubTaglineLine2: "Zéro temps perdu.",
+    heroScrubTaglineLine1: "On fait des apps.",
+    heroScrubTaglineLine2: "Mais vraiment utiles.",
     heroScrubAboutLine1: "Deux personnes.",
     heroScrubAboutLine2: "Aucune excuse.",
-    heroScrubAboutLine3: "Seulement ce qui",
-    heroScrubAboutLine4: "compte vraiment.",
+    heroScrubAboutLine3: "Seulement ce qui compte vraiment.",
+    heroScrubCatalogHeading: "Découvre le catalogue",
 
     statusLive: "Disponible",
     statusBeta: "Bêta",
@@ -215,12 +215,12 @@ const translations: Record<Language, Translations> = {
     closeMenu: "Menü schließen",
 
     heroCta: "Apps ausprobieren",
-    heroScrubTaglineLine1: "Drei Apps.",
-    heroScrubTaglineLine2: "Null verlorene Zeit.",
+    heroScrubTaglineLine1: "Wir bauen Apps.",
+    heroScrubTaglineLine2: "Aber wirklich nützliche.",
     heroScrubAboutLine1: "Zwei Menschen.",
     heroScrubAboutLine2: "Keine Ausreden.",
-    heroScrubAboutLine3: "Nur das,",
-    heroScrubAboutLine4: "was wirklich zählt.",
+    heroScrubAboutLine3: "Nur das, was wirklich zählt.",
+    heroScrubCatalogHeading: "Entdecke den Katalog",
 
     statusLive: "Verfügbar",
     statusBeta: "Beta",
