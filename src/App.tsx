@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { MotionConfig } from "framer-motion";
 import { Header } from "./components/Header";
 import { HeroScrub, type HeroScrubIcon } from "./components/ui/hero-scrub";
-import { AppGrid } from "./components/AppGrid";
 import { Footer } from "./components/Footer";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { apps } from "./data/apps";
@@ -20,7 +19,6 @@ const HERO_ICON_POSITIONS: Record<string, number> = {
 
 function MainContent() {
   const { language, t } = useLanguage();
-  const [selectedAppIdFromHeader, setSelectedAppIdFromHeader] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState(0);
 
   const heroIcons: HeroScrubIcon[] = useMemo(
@@ -63,11 +61,6 @@ function MainContent() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  const handleSelectApp = (appId: string) => {
-    setSelectedAppIdFromHeader(appId);
-    goToSection(2); // Catalogo
-  };
-
   const navItems = [
     { label: "Home", index: 0 },
     { label: t.aboutUs, index: 1 },
@@ -77,7 +70,7 @@ function MainContent() {
 
   return (
     <div className="relative min-h-screen w-full bg-ink-950 font-body">
-      <Header onSelectApp={handleSelectApp} onNavigateSection={goToSection} />
+      <Header onNavigateSection={goToSection} />
 
       <HeroScrub
         videoSrc="/videos/hero-brand.mp4"
@@ -86,12 +79,9 @@ function MainContent() {
         ctaLabel={t.heroCta}
         aboutLine1={t.heroScrubAboutLine1}
         aboutLine2={t.heroScrubAboutLine2}
+        aboutLine3={t.heroScrubAboutLine3}
+        aboutLine4={t.heroScrubAboutLine4}
         icons={heroIcons}
-      />
-
-      <AppGrid
-        selectedAppIdFromHeader={selectedAppIdFromHeader}
-        onClearSelectedApp={() => setSelectedAppIdFromHeader(null)}
       />
 
       <Footer onNavigateSection={goToSection} />

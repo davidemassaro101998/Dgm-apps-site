@@ -23,6 +23,8 @@ export interface HeroScrubProps {
   ctaLabel: string;
   aboutLine1: string;
   aboutLine2: string;
+  aboutLine3: string;
+  aboutLine4: string;
   icons: HeroScrubIcon[];
 }
 
@@ -36,6 +38,8 @@ export function HeroScrub({
   ctaLabel,
   aboutLine1,
   aboutLine2,
+  aboutLine3,
+  aboutLine4,
   icons,
 }: HeroScrubProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -97,7 +101,10 @@ export function HeroScrub({
   const taglineOpacity = useTransform(scrollYProgress, [0, 0.05, 0.14, 0.2], [1, 1, 1, 0]);
   const ctaOpacity = useTransform(scrollYProgress, [0, 0.05, 0.14, 0.2], [0, 1, 1, 0]);
   const ctaY = useTransform(scrollYProgress, [0, 0.05], [16, 0]);
+  // "Chi siamo" rises in from below the frame with a fade, holds, then sinks
+  // back down out of view as it fades -- never a flat cross-fade in place.
   const aboutOpacity = useTransform(scrollYProgress, [0.28, 0.34, 0.44, 0.5], [0, 1, 1, 0]);
+  const aboutY = useTransform(scrollYProgress, [0.28, 0.34, 0.44, 0.5], [48, 0, 0, 48]);
   // Icons fade in right as the video's own rendered objects finish forming
   // (~0.59 in the trimmed clip) and simply sit on top from then on --
   // the "swap" reads as the video handing off to real, tappable icons.
@@ -118,7 +125,17 @@ export function HeroScrub({
       {/* Anchor for the "Chi siamo" nav item: scrollIntoView lands right where
           the aboutOpacity beat below is visible, since the standalone "Chi
           siamo" section was removed (it duplicated this in-hero beat). */}
-      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[38%] h-px w-full" />
+      {/* NOTE: this offset is a % of the section's own (PIN_VH-tall) height,
+          not of the scrollable pin range (height - viewport) that scroll
+          progress is measured against -- the two only line up at the very
+          top. top-[27%] here lands around progress ~0.39, inside the
+          [0.28, 0.5] window where the about text is on screen. */}
+      <div id="chi-siamo" aria-hidden className="absolute inset-x-0 top-[27%] h-px w-full" />
+      {/* Anchor for the "Catalogo" nav item: the real catalog is the 3 real
+          app icons that take the video's own drawn icons' place below --
+          there is no separate catalog section any more. top-[42%] lands
+          around progress ~0.61, inside the [0.56, 0.66] icon fade-in window. */}
+      <div id="catalogo" aria-hidden className="absolute inset-x-0 top-[42%] h-px w-full" />
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden" style={{ perspective: "1400px" }}>
         <div className="absolute inset-0 z-0">
           {videoSrc ? (
@@ -147,10 +164,10 @@ export function HeroScrub({
           style={{ background: "radial-gradient(ellipse at 50% 22%, transparent 35%, rgba(0,0,0,0.6) 100%)" }}
         />
 
-        {/* Tagline + CTA: sit just under the two spheres, visible at rest,
-            gone by the second beat of scroll */}
+        {/* Tagline + CTA: rest just above the bottom edge of the screen,
+            visible at rest, gone by the second beat of scroll */}
         <motion.div
-          className="absolute inset-x-0 top-[44%] z-10 flex flex-col items-center gap-6 px-4"
+          className="absolute inset-x-0 bottom-[6%] z-10 flex flex-col items-center gap-6 px-4 sm:bottom-[9%]"
           style={{ opacity: taglineOpacity }}
         >
           <h1
@@ -180,20 +197,26 @@ export function HeroScrub({
           </motion.button>
         </motion.div>
 
-        {/* "Chi siamo", two lines, appears/disappears mid-scroll over the video,
-            in the same reading zone the tagline just vacated */}
+        {/* "Chi siamo": rises from below into the middle-lower part of the
+            screen, holds, then sinks back out -- never a flat cross-fade. */}
         <motion.div
-          className="absolute inset-x-0 top-[44%] z-10 px-6 text-center"
-          style={{ opacity: aboutOpacity }}
+          className="absolute inset-x-0 top-[58%] z-10 px-6 text-center sm:top-[52%]"
+          style={{ opacity: aboutOpacity, y: aboutY }}
         >
           <p
             className="font-display font-black uppercase leading-tight tracking-[-0.02em]"
-            style={{ fontSize: "clamp(1.6rem, 6vw, 3.2rem)", textShadow: "0 4px 24px rgba(0,0,0,0.6)" }}
+            style={{ fontSize: "clamp(1.2rem, 4.6vw, 2.6rem)", textShadow: "0 4px 24px rgba(0,0,0,0.6)" }}
           >
             {aboutLine1}
             <br />
+            {aboutLine2}
+            <br />
             <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
-              {aboutLine2}
+              {aboutLine3}
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-white bg-clip-text text-transparent">
+              {aboutLine4}
             </span>
           </p>
         </motion.div>
@@ -204,22 +227,22 @@ export function HeroScrub({
           className="absolute inset-x-0 top-[56%] z-10 flex justify-center sm:top-[46%]"
           style={{ opacity: iconsOpacity, pointerEvents: iconsPointerEvents }}
         >
-          <div className="relative h-[26vh] w-full max-w-md">
+          <div className="relative h-[30vh] w-full max-w-lg">
             {icons.map((icon) => (
               <a
                 key={icon.id}
                 href={icon.href}
                 target="_blank"
                 rel="noreferrer"
-                className="group absolute top-0 flex -translate-x-1/2 flex-col items-center gap-1.5"
+                className="group absolute top-0 flex -translate-x-1/2 flex-col items-center gap-2"
                 style={{ left: `${icon.leftPct}%` }}
               >
                 <img
                   src={icon.iconUrl}
                   alt={icon.name}
-                  className="h-16 w-16 rounded-[24%] object-cover shadow-[0_16px_36px_-8px_rgba(0,0,0,0.7)] transition-transform duration-200 group-hover:scale-110 group-active:scale-95 sm:h-20 sm:w-20"
+                  className="h-20 w-20 rounded-[24%] object-cover shadow-[0_20px_44px_-8px_rgba(0,0,0,0.75)] transition-transform duration-200 group-hover:scale-110 group-active:scale-95 sm:h-28 sm:w-28"
                 />
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-white/90 sm:text-xs">
+                <span className="text-xs font-semibold uppercase tracking-wide text-white/90 sm:text-sm">
                   {icon.name}
                 </span>
               </a>

@@ -29,6 +29,8 @@ export interface Translations {
   heroScrubTaglineLine2: string;
   heroScrubAboutLine1: string;
   heroScrubAboutLine2: string;
+  heroScrubAboutLine3: string;
+  heroScrubAboutLine4: string;
 
   // Story
   storyBadge: string;
@@ -90,6 +92,8 @@ const translations: Record<Language, Translations> = {
     heroScrubTaglineLine2: "Zero tempo perso.",
     heroScrubAboutLine1: "Due persone.",
     heroScrubAboutLine2: "Nessuna scusa.",
+    heroScrubAboutLine3: "Solo quello",
+    heroScrubAboutLine4: "che serve davvero.",
 
     storyBadge: "Chi siamo",
     storyTitleLine1: "Due persone.",
@@ -158,6 +162,8 @@ const translations: Record<Language, Translations> = {
     heroScrubTaglineLine2: "Zero wasted time.",
     heroScrubAboutLine1: "Two people.",
     heroScrubAboutLine2: "No excuses.",
+    heroScrubAboutLine3: "Only what",
+    heroScrubAboutLine4: "truly matters.",
 
     storyBadge: "About Us",
     storyTitleLine1: "Two people.",
@@ -226,6 +232,8 @@ const translations: Record<Language, Translations> = {
     heroScrubTaglineLine2: "Cero tiempo perdido.",
     heroScrubAboutLine1: "Dos personas.",
     heroScrubAboutLine2: "Ninguna excusa.",
+    heroScrubAboutLine3: "Solo lo",
+    heroScrubAboutLine4: "que de verdad sirve.",
 
     storyBadge: "Sobre Nosotros",
     storyTitleLine1: "Dos personas.",
@@ -294,6 +302,8 @@ const translations: Record<Language, Translations> = {
     heroScrubTaglineLine2: "Zéro temps perdu.",
     heroScrubAboutLine1: "Deux personnes.",
     heroScrubAboutLine2: "Aucune excuse.",
+    heroScrubAboutLine3: "Seulement ce qui",
+    heroScrubAboutLine4: "compte vraiment.",
 
     storyBadge: "À Propos",
     storyTitleLine1: "Deux personnes.",
@@ -362,6 +372,8 @@ const translations: Record<Language, Translations> = {
     heroScrubTaglineLine2: "Null verlorene Zeit.",
     heroScrubAboutLine1: "Zwei Menschen.",
     heroScrubAboutLine2: "Keine Ausreden.",
+    heroScrubAboutLine3: "Nur das,",
+    heroScrubAboutLine4: "was wirklich zählt.",
 
     storyBadge: "Über Uns",
     storyTitleLine1: "Zwei Menschen.",
