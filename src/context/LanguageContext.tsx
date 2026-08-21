@@ -18,13 +18,9 @@ export interface Translations {
   allApps: string;
   menuTitle: string;
   closeMenu: string;
-  
-  // Hero
-  heroTagline: string;
-  heroTitle: string;
-  heroDescription: string;
+
+  // Hero (scroll-scrubbed)
   heroCta: string;
-  heroSecondaryCta: string;
   heroScrubTaglineLine1: string;
   heroScrubTaglineLine2: string;
   heroScrubAboutLine1: string;
@@ -32,30 +28,13 @@ export interface Translations {
   heroScrubAboutLine3: string;
   heroScrubAboutLine4: string;
 
-  // Story
-  storyBadge: string;
-  storyTitleLine1: string;
-  storyTitleLine2: string;
-  storySubtitle: string;
-  principles: {
-    n: string;
-    title: string;
-    body: string;
-  }[];
-
-  // Catalog
-  catalogBadge: string;
-  catalogTitle: string;
-  catalogSubtitle: string;
+  // App status labels (used in the Header's "All Apps" menu)
   statusLive: string;
   statusBeta: string;
   statusPresto: string;
 
-  // Modal
+  // Legal modal close button
   modalClose: string;
-  modalOpenStore: string;
-  modalComingSoon: string;
-  modalNotLinkedYet: string;
 
   // Footer
   footerDesc: string;
@@ -82,12 +61,8 @@ const translations: Record<Language, Translations> = {
     allApps: "Tutte le App",
     menuTitle: "Menu",
     closeMenu: "Chiudi menu",
-    
-    heroTagline: "Basta scrollare. Inizia a scegliere.",
-    heroTitle: "DGM APPS",
-    heroDescription: "Tre app AI, un solo gesto: dicci cosa ti serve — un regalo, un attrezzo, l'attrezzatura giusta — e troviamo il prodotto perfetto su Amazon. Niente recensioni infinite, niente dieci tab aperte.",
+
     heroCta: "Prova le app",
-    heroSecondaryCta: "Chi siamo",
     heroScrubTaglineLine1: "Tre app.",
     heroScrubTaglineLine2: "Zero tempo perso.",
     heroScrubAboutLine1: "Due persone.",
@@ -95,39 +70,11 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Solo quello",
     heroScrubAboutLine4: "che serve davvero.",
 
-    storyBadge: "Chi siamo",
-    storyTitleLine1: "Due persone.",
-    storyTitleLine2: "Nessuna scusa.",
-    storySubtitle: "Ogni riga di codice ha uno scopo preciso: farti risparmiare tempo. Costruiamo, testiamo, tagliamo tutto il superfluo — finché non resta solo quello che serve.",
-    principles: [
-      {
-        n: "01",
-        title: "Utile",
-        body: "Risolve un problema reale. Se non lo fa, non esiste.",
-      },
-      {
-        n: "02",
-        title: "Semplice",
-        body: "Zero curva di apprendimento. Zero tutorial da leggere.",
-      },
-      {
-        n: "03",
-        title: "Testata",
-        body: "La usiamo noi per primi, ogni giorno, prima di chiederlo a te.",
-      },
-    ],
-
-    catalogBadge: "Catalogo Soluzioni DGM",
-    catalogTitle: "Il Catalogo delle Soluzioni",
-    catalogSubtitle: "Tocca un'app per scoprirla e aprirla.",
     statusLive: "Disponibile",
     statusBeta: "Beta",
     statusPresto: "Presto disponibile",
 
     modalClose: "Chiudi",
-    modalOpenStore: "Apri",
-    modalComingSoon: "Presto disponibile",
-    modalNotLinkedYet: "Link in arrivo",
 
     footerDesc: "App utili e semplici per la vita di tutti i giorni.",
     footerSite: "Sito",
@@ -153,11 +100,7 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menu",
     closeMenu: "Close menu",
 
-    heroTagline: "Stop scrolling. Start choosing.",
-    heroTitle: "DGM APPS",
-    heroDescription: "Three AI apps, one gesture: tell us what you need — a gift, a tool, the right gear — and we find the perfect product on Amazon. No endless reviews, no ten open tabs.",
     heroCta: "Try the apps",
-    heroSecondaryCta: "About Us",
     heroScrubTaglineLine1: "Three apps.",
     heroScrubTaglineLine2: "Zero wasted time.",
     heroScrubAboutLine1: "Two people.",
@@ -165,39 +108,11 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Only what",
     heroScrubAboutLine4: "truly matters.",
 
-    storyBadge: "About Us",
-    storyTitleLine1: "Two people.",
-    storyTitleLine2: "No excuses.",
-    storySubtitle: "Every line of code serves a single purpose: saving you time. We build, test, and cut out the clutter—until only what truly matters remains.",
-    principles: [
-      {
-        n: "01",
-        title: "Useful",
-        body: "Solves a real problem. If it doesn't, it shouldn't exist.",
-      },
-      {
-        n: "02",
-        title: "Simple",
-        body: "Zero learning curve. No tedious tutorials to read.",
-      },
-      {
-        n: "03",
-        title: "Tested",
-        body: "We use our own apps daily before ever offering them to you.",
-      },
-    ],
-
-    catalogBadge: "DGM Solutions Catalog",
-    catalogTitle: "Our Solutions Catalog",
-    catalogSubtitle: "Tap an app to discover it and open it.",
     statusLive: "Available",
     statusBeta: "Beta",
     statusPresto: "Coming Soon",
 
     modalClose: "Close",
-    modalOpenStore: "Open",
-    modalComingSoon: "Coming Soon",
-    modalNotLinkedYet: "Link Coming Soon",
 
     footerDesc: "Useful and simple apps for everyday life.",
     footerSite: "Site",
@@ -223,11 +138,7 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menú",
     closeMenu: "Cerrar menú",
 
-    heroTagline: "Basta de scroll infinito.",
-    heroTitle: "DGM APPS",
-    heroDescription: "Tres apps con IA, un solo gesto: dinos qué necesitas — un regalo, una herramienta, el equipo justo — y encontramos el producto perfecto en Amazon. Sin reseñas infinitas, sin diez pestañas abiertas.",
     heroCta: "Prueba las apps",
-    heroSecondaryCta: "Sobre Nosotros",
     heroScrubTaglineLine1: "Tres apps.",
     heroScrubTaglineLine2: "Cero tiempo perdido.",
     heroScrubAboutLine1: "Dos personas.",
@@ -235,39 +146,11 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Solo lo",
     heroScrubAboutLine4: "que de verdad sirve.",
 
-    storyBadge: "Sobre Nosotros",
-    storyTitleLine1: "Dos personas.",
-    storyTitleLine2: "Ninguna excusa.",
-    storySubtitle: "Cada línea de código tiene un propósito claro: ahorrarte tiempo. Construimos, probamos y eliminamos lo superfluo, hasta que solo queda lo que realmente sirve.",
-    principles: [
-      {
-        n: "01",
-        title: "Útil",
-        body: "Resuelve un problema real. Si no lo hace, no existe.",
-      },
-      {
-        n: "02",
-        title: "Simple",
-        body: "Cero curva de aprendizaje. Cero tutoriales que leer.",
-      },
-      {
-        n: "03",
-        title: "Probada",
-        body: "La usamos nosotros primero, cada día, antes de pedírtelo a ti.",
-      },
-    ],
-
-    catalogBadge: "Catálogo de Soluciones DGM",
-    catalogTitle: "El Catálogo de Soluciones",
-    catalogSubtitle: "Toca una app para descubrirla y abrirla.",
     statusLive: "Disponible",
     statusBeta: "Beta",
     statusPresto: "Próximamente",
 
     modalClose: "Cerrar",
-    modalOpenStore: "Abrir",
-    modalComingSoon: "Próximamente",
-    modalNotLinkedYet: "Enlace en camino",
 
     footerDesc: "Apps útiles y simples para el día a día.",
     footerSite: "Sitio",
@@ -293,11 +176,7 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menu",
     closeMenu: "Fermer le menu",
 
-    heroTagline: "Fini le scroll infini.",
-    heroTitle: "DGM APPS",
-    heroDescription: "Trois apps IA, un seul geste : dites-nous ce qu'il vous faut — un cadeau, un outil, le bon équipement — et on trouve le produit parfait sur Amazon. Sans avis interminables, sans dix onglets ouverts.",
     heroCta: "Essayer les apps",
-    heroSecondaryCta: "À Propos",
     heroScrubTaglineLine1: "Trois apps.",
     heroScrubTaglineLine2: "Zéro temps perdu.",
     heroScrubAboutLine1: "Deux personnes.",
@@ -305,39 +184,11 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Seulement ce qui",
     heroScrubAboutLine4: "compte vraiment.",
 
-    storyBadge: "À Propos",
-    storyTitleLine1: "Deux personnes.",
-    storyTitleLine2: "Aucune excuse.",
-    storySubtitle: "Chaque ligne de code a un but précis : vous faire gagner du temps. Nous construisons, testons, éliminons le superflu — jusqu'à ne garder que l'essentiel.",
-    principles: [
-      {
-        n: "01",
-        title: "Utile",
-        body: "Résout un vrai problème. Sinon, elle n'existe pas.",
-      },
-      {
-        n: "02",
-        title: "Simple",
-        body: "Aucune courbe d'apprentissage. Aucun tutoriel à lire.",
-      },
-      {
-        n: "03",
-        title: "Testée",
-        body: "Nous l'utilisons nous-mêmes en premier, chaque jour, avant de vous la proposer.",
-      },
-    ],
-
-    catalogBadge: "Catalogue de Solutions DGM",
-    catalogTitle: "Le Catalogue de Solutions",
-    catalogSubtitle: "Touchez une app pour la découvrir et l'ouvrir.",
     statusLive: "Disponible",
     statusBeta: "Bêta",
     statusPresto: "Bientôt disponible",
 
     modalClose: "Fermer",
-    modalOpenStore: "Ouvrir",
-    modalComingSoon: "Bientôt disponible",
-    modalNotLinkedYet: "Lien à venir",
 
     footerDesc: "Des applications utiles et simples pour le quotidien.",
     footerSite: "Site",
@@ -363,11 +214,7 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menü",
     closeMenu: "Menü schließen",
 
-    heroTagline: "Schluss mit endlosem Scrollen.",
-    heroTitle: "DGM APPS",
-    heroDescription: "Drei KI-Apps, eine Geste: Sag uns, was du brauchst — ein Geschenk, ein Werkzeug, die richtige Ausrüstung — und wir finden das perfekte Produkt auf Amazon. Keine endlosen Bewertungen, keine zehn offenen Tabs.",
     heroCta: "Apps ausprobieren",
-    heroSecondaryCta: "Über Uns",
     heroScrubTaglineLine1: "Drei Apps.",
     heroScrubTaglineLine2: "Null verlorene Zeit.",
     heroScrubAboutLine1: "Zwei Menschen.",
@@ -375,39 +222,11 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Nur das,",
     heroScrubAboutLine4: "was wirklich zählt.",
 
-    storyBadge: "Über Uns",
-    storyTitleLine1: "Zwei Menschen.",
-    storyTitleLine2: "Keine Ausreden.",
-    storySubtitle: "Jede Zeile Code hat einen klaren Zweck: dir Zeit zu sparen. Wir bauen, testen und streichen alles Überflüssige — bis nur noch das Wesentliche bleibt.",
-    principles: [
-      {
-        n: "01",
-        title: "Nützlich",
-        body: "Löst ein echtes Problem. Sonst gibt es sie nicht.",
-      },
-      {
-        n: "02",
-        title: "Einfach",
-        body: "Keine Lernkurve. Keine Tutorials zum Durchlesen.",
-      },
-      {
-        n: "03",
-        title: "Getestet",
-        body: "Wir nutzen sie selbst zuerst, jeden Tag, bevor wir sie dir anbieten.",
-      },
-    ],
-
-    catalogBadge: "DGM Lösungskatalog",
-    catalogTitle: "Der Lösungskatalog",
-    catalogSubtitle: "Tippe auf eine App, um sie zu entdecken und zu öffnen.",
     statusLive: "Verfügbar",
     statusBeta: "Beta",
     statusPresto: "Demnächst verfügbar",
 
     modalClose: "Schließen",
-    modalOpenStore: "Öffnen",
-    modalComingSoon: "Demnächst verfügbar",
-    modalNotLinkedYet: "Link folgt",
 
     footerDesc: "Nützliche und einfache Apps für den Alltag.",
     footerSite: "Website",

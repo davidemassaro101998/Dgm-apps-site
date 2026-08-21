@@ -76,12 +76,23 @@ export function HeroScrub({
 
     let cancelled = false;
     if (video) {
+      // React sets `muted`/`autoPlay` as DOM *properties* during commit, not
+      // as the literal HTML attributes -- some mobile browsers only check
+      // the attribute at parse time when deciding whether to honor
+      // autoplay, so the JSX props alone aren't reliable. Force both as real
+      // attributes too, redundantly with the JSX props above.
       video.muted = true;
       video.setAttribute("muted", "");
+      video.setAttribute("autoplay", "");
       // A <video> driven only by currentTime seeks (never actually played)
       // stays visually black on real Safari/Chrome mobile until it has been
-      // through one real playback start. The naive "play then immediately
-      // pause" version is flaky for two reasons:
+      // through one real playback start -- this is why the element also
+      // carries the native `autoplay` attribute above, the most broadly
+      // reliable way to get a muted video decoding at all on a phone. This
+      // effect's own explicit play() call is a redundant fallback for
+      // browsers where the attribute alone doesn't fire in time. The naive
+      // "play then immediately pause" version of that fallback is flaky for
+      // two reasons:
       //  1) assigning currentTime the value it already holds (0 -> 0) is a
       //     no-op with no seek/paint, so priming must force a *different*
       //     value first (handled by syncToScroll's 0.001 floor above);
@@ -176,6 +187,7 @@ export function HeroScrub({
               src={videoSrc}
               poster={posterSrc}
               muted
+              autoPlay
               playsInline
               preload="auto"
               className="h-full w-full object-cover object-center sm:object-[center_40%]"
