@@ -175,20 +175,25 @@ export function HeroScrub({
       }
       const cwPx = canvas!.width;
       const chPx = canvas!.height;
-      // object-fit: cover, centered vertically. This used to shift to 0.4 on
-      // wider viewports, which crops more off the bottom of the frame -- on
-      // an actually wide/short desktop window that pushed the gift/wrench/
-      // dumbbell trio (which sit in the lower half of the source footage)
-      // almost entirely below the visible canvas by the time they're fully
-      // formed. Same crop everywhere now, matching what mobile always saw.
-      const focalY = 0.5;
-      const scale = Math.max(cwPx / img.naturalWidth, chPx / img.naturalHeight);
+      // The source frames are shot portrait (720x1280, phone-shaped), and
+      // true object-fit:cover -- Math.max of the two ratios -- forces the
+      // scale to whichever axis needs *more* zoom to fill. On a landscape
+      // desktop window that's always the width axis, and it isn't a small
+      // difference: at 1440x900 that's a ~2x zoom just to reach the canvas
+      // width, versus the ~0.66x mobile naturally sits at when the height
+      // axis drives it. That's the actual "too big" -- the footage itself
+      // was being blown up 3x larger on desktop, not just cropped.
+      // Scaling to height only reproduces mobile's natural, un-zoomed
+      // framing on every viewport; a landscape window that's proportionally
+      // wider than the 9:16 footage simply letterboxes to black on the
+      // sides instead of zooming in, which reads as intentional/cinematic
+      // against this section's black background rather than as empty space.
+      const scale = chPx / img.naturalHeight;
       const drawW = img.naturalWidth * scale;
-      const drawH = img.naturalHeight * scale;
+      const drawH = chPx; // always exactly fills the canvas height, never crops it
       const dx = (cwPx - drawW) / 2;
-      const dy = (chPx - drawH) * focalY;
       ctx!.clearRect(0, 0, cwPx, chPx);
-      ctx!.drawImage(img, dx, dy, drawW, drawH);
+      ctx!.drawImage(img, dx, 0, drawW, drawH);
     }
 
     function applyProgress() {
