@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useMotionValue, useMotionTemplate, useTransform, useReducedMotion } from "framer-motion";
+import { motion, useMotionValue, useMotionTemplate, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
 
 export interface HeroScrubIcon {
   id: string;
   name: string;
   statusLabel: string;
+  /** Drives the status pill's color -- "live" glows emerald, "beta" glows
+   *  amber, "presto" stays a dim neutral (nothing to be excited about yet). */
+  statusTone: "live" | "beta" | "presto";
   iconUrl: string;
   href: string;
   /** Approximate on-screen position, as a percentage, matching where this
@@ -43,21 +46,76 @@ export interface HeroScrubProps {
 // rather than resolving in one or two scrolls.
 const PIN_VH = 560;
 
-// Every on-screen text block is styled to look physically lifted off the
-// video -- a bright bevel edge on top, a stepped dark side, then a soft
-// contact shadow -- instead of sitting in a background panel. This is what
-// makes the words the clear focal point of the screen without boxing them.
-const PHYSICAL_TEXT_SHADOW = [
-  "0 -1.5px 0 rgba(255,255,255,0.65)",
-  "0 1px 0 rgba(0,0,0,0.45)",
-  "0 2px 0 rgba(0,0,0,0.45)",
-  "0 3px 0 rgba(0,0,0,0.4)",
-  "0 4px 0 rgba(0,0,0,0.4)",
-  "0 10px 18px rgba(0,0,0,0.55)",
-  "0 26px 50px rgba(0,0,0,0.65)",
-].join(", ");
+// Every on-screen text block gets a soft ambient contact shadow -- a close
+// tight layer for edge definition against busy video content, and a wider
+// falloff underneath -- instead of a background panel. Deliberately a single
+// soft falloff rather than the hard stacked-offset "sticker/bevel" look:
+// the text should read as materializing in the scene, not as a decal
+// pasted on top of it.
+const SOFT_TEXT_SHADOW = "0 2px 20px rgba(0,0,0,0.5), 0 16px 48px rgba(0,0,0,0.4)";
 
 const ENTRANCE_TRANSITION = { delay: 0.5, duration: 0.7, ease: [0.16, 1, 0.3, 1] as const };
+
+// Per-word blur-in reveal for the one-time (mount, not scroll-scrubbed)
+// hero entrance -- an Apple-keynote-style cascade instead of the whole line
+// popping in as one block.
+const WORD_CONTAINER_VARIANTS = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.09, delayChildren: 0.5 } },
+};
+const WORD_VARIANTS = {
+  hidden: { opacity: 0, y: 18, filter: "blur(14px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as const },
+  },
+};
+
+// "Live" gets an actual emerald glow (a real signal worth noticing) instead
+// of the same flat gray as "coming soon" -- beta sits between the two.
+const STATUS_PILL_CLASSES: Record<HeroScrubIcon["statusTone"], string> = {
+  live: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300 shadow-[0_0_16px_-2px_rgba(52,211,153,0.35)]",
+  beta: "border-amber-400/30 bg-amber-400/10 text-amber-300 shadow-[0_0_16px_-2px_rgba(251,191,36,0.3)]",
+  presto: "border-white/15 bg-black/50 text-zinc-400",
+};
+
+function BlurInWords({ text, className }: { text: string; className?: string }) {
+  return (
+    <span className={`flex flex-wrap justify-center gap-x-[0.28em] ${className ?? ""}`}>
+      {text.split(" ").map((word, i) => (
+        <motion.span key={i} variants={WORD_VARIANTS} className="inline-block">
+          {word}
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
+// Scroll-progress offset between each icon's own pop-in window -- a real
+// per-icon cascade instead of all three arriving as one rigid block, while
+// staying entirely scroll-scrubbed (each icon's motion is still a pure
+// function of scroll position, just of a slightly shifted window, so
+// scrubbing back and forth still tracks perfectly). Called 3 times,
+// unconditionally, at fixed call sites below -- not inside the icons.map()
+// render loop -- to keep this rules-of-hooks legal.
+const ICON_STAGGER = 0.012;
+
+function useIconEntrance(
+  scrollYProgress: MotionValue<number>,
+  startBase: number,
+  endBase: number,
+  index: number
+) {
+  const start = startBase + index * ICON_STAGGER;
+  const end = endBase + index * ICON_STAGGER;
+  const opacity = useTransform(scrollYProgress, [start, start + 0.03], [0, 1]);
+  const y = useTransform(scrollYProgress, [start, end], [64, 0]);
+  const brightness = useTransform(scrollYProgress, [start, end, end + 0.05], [0.35, 0.85, 1.1]);
+  const brightnessFilter = useMotionTemplate`brightness(${brightness})`;
+  return { opacity, y, brightnessFilter };
+}
 
 export function HeroScrub({
   framesBaseUrl,
@@ -208,6 +266,13 @@ export function HeroScrub({
   // Hero fades out as soon as the visitor scrolls at all.
   const taglineOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
   const ctaOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  // This layer holds the one real interactive element on the whole hero
+  // (the CTA button) and is full-width/absolutely positioned like every
+  // other text layer stacked in this section -- so once it's faded out it
+  // must stop accepting pointer events too, or its invisible hit area sits
+  // on top of whatever's supposed to be interactive underneath/after it
+  // (mirrors the same guard already used for the icons row below).
+  const taglinePointerEvents = useTransform(scrollYProgress, (v) => (v < 0.15 ? "auto" : "none"));
   // "Chi siamo" rises in, holds, and fades back out again *before* the
   // video's own onset point -- not right up against it -- so there's a real
   // gap of pure video (the footage's own natural lull between the ribbons
@@ -215,6 +280,12 @@ export function HeroScrub({
   // of the two overlapping.
   const aboutOpacity = useTransform(scrollYProgress, [0.15, 0.3, 0.4, 0.5], [0, 1, 1, 0]);
   const aboutY = useTransform(scrollYProgress, [0.15, 0.3, 0.4, 0.5], [48, 0, 0, 48]);
+  // Materializes into focus rather than just sliding/fading in -- blurred
+  // going in, sharp through the hold, softening again as it exits. Tied to
+  // the same scroll windows as the opacity/y above so it stays perfectly
+  // scrubbable (no time-based animation to fight scroll direction).
+  const aboutBlur = useTransform(scrollYProgress, [0.15, 0.3, 0.4, 0.5], [10, 0, 0, 6]);
+  const aboutBlurFilter = useMotionTemplate`blur(${aboutBlur}px)`;
   // The hand-off: the screen darkens to full black almost instantly (no
   // visible fade to watch happen), then the three real icons arrive from
   // below like a stack of notifications sliding up into their resting
@@ -224,21 +295,23 @@ export function HeroScrub({
   const ICONS_POP_END = VIDEO_SETTLE_PROGRESS + 0.11;
   const iconScrimOpacity = useTransform(scrollYProgress, [BLACKOUT_AT, BLACKOUT_AT + 0.006], [0, 1]);
   const iconsOpacity = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_START + 0.03], [0, 1]);
-  // Slide up from below into their real resting position, like a
-  // notification arriving -- no scale/grow, just a clean rise + settle.
-  const iconsY = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [64, 0]);
+  const iconsHeadingBlur = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_START + 0.03], [10, 0]);
+  const iconsHeadingBlurFilter = useMotionTemplate`blur(${iconsHeadingBlur}px)`;
   const iconsHeadingY = useTransform(scrollYProgress, [ICONS_POP_START, ICONS_POP_END], [-16, 0]);
-  const iconsPointerEvents = useTransform(scrollYProgress, (v) => (v > ICONS_POP_END ? "auto" : "none"));
-  // The tiles arrive dim -- matching the same dark, cupo tone the background
-  // just faded to -- and only light up brighter once they've settled into
-  // place, instead of popping in at full brightness against a background
-  // that's still noticeably darker than they are.
-  const iconsBrightness = useTransform(
-    scrollYProgress,
-    [ICONS_POP_START, ICONS_POP_END, ICONS_POP_END + 0.05],
-    [0.35, 0.85, 1.1]
+  // Interactive only once the *last* (most delayed) icon has actually
+  // finished arriving -- otherwise the group would accept clicks on tiles
+  // that visually haven't landed yet.
+  const iconsPointerEvents = useTransform(scrollYProgress, (v) =>
+    v > ICONS_POP_END + ICON_STAGGER * 2 ? "auto" : "none"
   );
-  const iconsBrightnessFilter = useMotionTemplate`brightness(${iconsBrightness})`;
+  // Each icon gets its own slide-up + brightness-ramp window, offset by
+  // ICON_STAGGER -- a real per-tile cascade (left, then center, then right)
+  // instead of all three rising as one rigid block. Still driven purely by
+  // scroll position, so it stays perfectly scrubbable in both directions.
+  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0);
+  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1);
+  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2);
+  const iconMotions = [icon0, icon1, icon2];
 
   const handleCtaClick = () => {
     const section = sectionRef.current;
@@ -284,7 +357,7 @@ export function HeroScrub({
 
         <div
           aria-hidden
-          className="absolute inset-0 z-[1]"
+          className="pointer-events-none absolute inset-0 z-[1]"
           style={{ background: "radial-gradient(ellipse at 50% 22%, transparent 35%, rgba(0,0,0,0.6) 100%)" }}
         />
 
@@ -293,27 +366,28 @@ export function HeroScrub({
             and down with the content instead of being a flat, always-on
             wash. Keeps the (often bright/busy) video from fighting with the
             text for attention. */}
-        <motion.div aria-hidden className="absolute inset-0 z-[1] bg-black/45" style={{ opacity: taglineOpacity }} />
-        <motion.div aria-hidden className="absolute inset-0 z-[1] bg-black/45" style={{ opacity: aboutOpacity }} />
+        <motion.div aria-hidden className="pointer-events-none absolute inset-0 z-[1] bg-black/45" style={{ opacity: taglineOpacity }} />
+        <motion.div aria-hidden className="pointer-events-none absolute inset-0 z-[1] bg-black/45" style={{ opacity: aboutOpacity }} />
 
         {/* Tagline + CTA: rest just above the bottom edge of the screen.
-            Pop in ~0.5s after the page settles (not on scroll), then fade
-            out together as soon as the visitor starts scrolling. No panel
-            behind them -- the physical text-shadow treatment is what makes
-            them read as lifted off the video and the clear focal point. */}
+            Cascade in word-by-word ~0.5s after the page settles (not on
+            scroll), then fade out together as soon as the visitor starts
+            scrolling. No panel behind them -- the soft contact shadow is
+            what makes them read as lifted off the video and the clear
+            focal point. */}
         <motion.div
           className="absolute inset-x-0 bottom-[14%] z-10 flex flex-col items-center gap-8 px-4 sm:bottom-[17%]"
-          style={{ opacity: taglineOpacity }}
+          style={{ opacity: taglineOpacity, pointerEvents: taglinePointerEvents }}
         >
           <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={ENTRANCE_TRANSITION}
-            className="text-center font-display font-black uppercase leading-[1.05] tracking-[-0.02em] text-white"
-            style={{ fontSize: "clamp(2rem, 9vw, 4.8rem)", textShadow: PHYSICAL_TEXT_SHADOW }}
+            initial="hidden"
+            animate="visible"
+            variants={WORD_CONTAINER_VARIANTS}
+            className="flex flex-col items-center text-center font-display-hero font-black uppercase leading-[1.05] tracking-[-0.01em] text-white"
+            style={{ fontSize: "clamp(2rem, 9vw, 4.8rem)", textShadow: SOFT_TEXT_SHADOW }}
           >
-            <span className="block">{taglineLine1}</span>
-            <span className="block">{taglineLine2}</span>
+            <BlurInWords text={taglineLine1} />
+            <BlurInWords text={taglineLine2} />
           </motion.h1>
 
           <motion.button
@@ -323,36 +397,73 @@ export function HeroScrub({
             animate={{ opacity: 1, y: 0 }}
             transition={ENTRANCE_TRANSITION}
             style={{ opacity: ctaOpacity }}
-            className="rounded-full bg-white px-6 py-2.5 text-sm font-bold text-black transition-transform duration-200 hover:scale-105 active:scale-95 sm:px-8 sm:py-3.5 sm:text-base"
+            className="group relative"
           >
-            {ctaLabel}
+            {/* Soft aurora glow breathing behind the pill, echoing the
+                video's own violet/cyan nebula instead of a generic shadow. */}
+            <motion.span
+              aria-hidden
+              className="absolute -inset-3 -z-10 rounded-full blur-xl"
+              style={{ background: "linear-gradient(120deg, #8B5CF6 0%, #67E8F9 100%)" }}
+              animate={{ opacity: [0.35, 0.6, 0.35], scale: [0.96, 1.04, 0.96] }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <span
+              className="relative flex items-center overflow-hidden rounded-full bg-white px-6 py-2.5 text-sm font-semibold tracking-[0.01em] text-black transition-transform duration-200 group-hover:scale-[1.03] group-active:scale-95 sm:px-8 sm:py-3.5 sm:text-base"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {/* Diagonal glare sweep -- clipped to the pill, off-screen at
+                  rest, crosses on hover only (no idle cost). Tinted with the
+                  same aurora violet as the glow behind it rather than a
+                  black/gray tint: a brightness-only tint reads as barely
+                  more than noise against solid white, where a hue shift is
+                  visible even at modest opacity and ties the two effects
+                  together instead of looking like two unrelated tricks. */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/4 -skew-x-12 bg-gradient-to-r from-transparent via-violet-500/40 to-transparent opacity-0 transition-all duration-500 ease-out group-hover:left-[140%] group-hover:opacity-100"
+              />
+              {ctaLabel}
+            </span>
           </motion.button>
         </motion.div>
 
         {/* "Chi siamo": rises from below into the middle-lower part of the
-            screen, holds, then sinks back out -- never a flat cross-fade.
-            One centered column, four short iconic lines, all the same
-            bright white and the same size -- no accent-colored or
-            differently-sized sub-line -- same physical text-shadow
-            treatment as the tagline. Fully faded out well before the
-            video's own onset point, leaving a real gap of pure video in
-            between. */}
+            screen, holds, then sinks back out -- never a flat cross-fade,
+            and materializes into focus rather than just appearing. One
+            centered column, four short lines -- three in white, the one
+            that actually states the promise ("Apri, risolvi, chiudi.") in
+            the aurora gradient so it reads as the line to remember. Fully
+            faded out well before the video's own onset point, leaving a
+            real gap of pure video in between. */}
         <motion.div
-          className="absolute inset-x-0 top-[58%] z-10 flex flex-col items-center gap-1 px-4 text-center sm:top-[52%]"
-          style={{ opacity: aboutOpacity, y: aboutY }}
+          className="pointer-events-none absolute inset-x-0 top-[58%] z-10 flex flex-col items-center gap-1 px-4 text-center sm:top-[52%]"
+          style={{ opacity: aboutOpacity, y: aboutY, filter: aboutBlurFilter }}
         >
-          <p
-            className="font-display font-black uppercase leading-tight tracking-[-0.02em] text-white"
-            style={{ fontSize: "clamp(1.15rem, 5.4vw, 2.6rem)", textShadow: PHYSICAL_TEXT_SHADOW }}
+          <span
+            className="block font-display-hero font-black uppercase leading-tight tracking-[-0.01em] text-white"
+            style={{ fontSize: "clamp(1.15rem, 5.4vw, 2.6rem)", textShadow: SOFT_TEXT_SHADOW }}
           >
             {aboutLine1}
-            <br />
+          </span>
+          <span
+            className="block font-display-hero font-black uppercase leading-tight tracking-[-0.01em] text-white"
+            style={{ fontSize: "clamp(1.15rem, 5.4vw, 2.6rem)", textShadow: SOFT_TEXT_SHADOW }}
+          >
             {aboutLine2}
-            <br />
+          </span>
+          <span
+            className="bg-aurora block bg-clip-text font-display-hero font-black uppercase leading-tight tracking-[-0.01em] text-transparent"
+            style={{ fontSize: "clamp(1.15rem, 5.4vw, 2.6rem)", filter: "drop-shadow(0 10px 28px rgba(0,0,0,0.55))" }}
+          >
             {aboutLine3}
-            <br />
+          </span>
+          <span
+            className="block font-display-hero font-black uppercase leading-tight tracking-[-0.01em] text-white"
+            style={{ fontSize: "clamp(1.15rem, 5.4vw, 2.6rem)", textShadow: SOFT_TEXT_SHADOW }}
+          >
             {aboutLine4}
-          </p>
+          </span>
         </motion.div>
 
         {/* Blacks out the entire screen almost instantly right at the
@@ -361,7 +472,7 @@ export function HeroScrub({
             completely before the real icons arrive. */}
         <motion.div
           aria-hidden
-          className="absolute inset-0 z-[2] bg-black"
+          className="pointer-events-none absolute inset-0 z-[2] bg-black"
           style={{ opacity: iconScrimOpacity }}
         />
 
@@ -370,12 +481,13 @@ export function HeroScrub({
             its own small settle-down so it doesn't feel pasted on top. */}
         <motion.p
           aria-hidden
-          className="absolute inset-x-0 top-[34%] z-10 px-4 text-center font-display font-black uppercase leading-[0.95] tracking-[-0.02em] text-white sm:top-[25%]"
+          className="pointer-events-none absolute inset-x-0 top-[34%] z-10 px-4 text-center font-display-hero font-black uppercase leading-[0.95] tracking-[-0.01em] text-white sm:top-[25%]"
           style={{
             fontSize: "clamp(2.1rem, 10vw, 5.2rem)",
             opacity: iconsOpacity,
             y: iconsHeadingY,
-            textShadow: PHYSICAL_TEXT_SHADOW,
+            filter: iconsHeadingBlurFilter,
+            textShadow: SOFT_TEXT_SHADOW,
           }}
         >
           {catalogHeading}
@@ -390,7 +502,7 @@ export function HeroScrub({
           style={{ pointerEvents: iconsPointerEvents }}
         >
           <div className="relative h-[34vh] w-full max-w-lg">
-            {icons.map((icon) => (
+            {icons.map((icon, index) => (
               <motion.a
                 key={icon.id}
                 href={icon.href}
@@ -401,13 +513,13 @@ export function HeroScrub({
                   left: `${icon.leftPct}%`,
                   top: `${icon.topPct}%`,
                   x: "-50%",
-                  y: iconsY,
-                  opacity: iconsOpacity,
+                  y: iconMotions[index].y,
+                  opacity: iconMotions[index].opacity,
                 }}
               >
                 <motion.span
                   className="relative block h-24 w-24 shrink-0 sm:h-36 sm:w-36"
-                  style={{ filter: iconsBrightnessFilter }}
+                  style={{ filter: iconMotions[index].brightnessFilter }}
                 >
                   {/* Against the near-solid-black backdrop at this point in
                       the sequence, a dark contact shadow is literally
@@ -440,7 +552,12 @@ export function HeroScrub({
                 <span className="text-sm font-semibold uppercase tracking-wide text-white/90 sm:text-base">
                   {icon.name}
                 </span>
-                <span className="rounded-full border border-white/20 bg-black/50 px-2.5 py-0.5 text-[10px] font-medium text-zinc-300 sm:text-xs">
+                <span
+                  className={`rounded-full border px-2.5 py-0.5 text-[10px] font-medium sm:text-xs ${STATUS_PILL_CLASSES[icon.statusTone]}`}
+                >
+                  {icon.statusTone === "live" && (
+                    <span aria-hidden className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_2px_rgba(52,211,153,0.7)]" />
+                  )}
                   {icon.statusLabel}
                 </span>
               </motion.a>

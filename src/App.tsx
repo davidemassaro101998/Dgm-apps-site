@@ -30,6 +30,7 @@ function MainContent() {
           id: app.id,
           name: app.name[language],
           statusLabel: getStatusLabel(app.status, t),
+          statusTone: app.status,
           iconUrl: photoUrl(app),
           href: app.href,
           leftPct: pos.leftPct,
