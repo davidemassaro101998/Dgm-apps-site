@@ -175,9 +175,13 @@ export function HeroScrub({
       }
       const cwPx = canvas!.width;
       const chPx = canvas!.height;
-      // object-fit: cover, with a focal point that shifts lower on wider
-      // (sm+) viewports to match the CSS the <video> element used to have.
-      const focalY = window.innerWidth >= 640 ? 0.4 : 0.5;
+      // object-fit: cover, centered vertically. This used to shift to 0.4 on
+      // wider viewports, which crops more off the bottom of the frame -- on
+      // an actually wide/short desktop window that pushed the gift/wrench/
+      // dumbbell trio (which sit in the lower half of the source footage)
+      // almost entirely below the visible canvas by the time they're fully
+      // formed. Same crop everywhere now, matching what mobile always saw.
+      const focalY = 0.5;
       const scale = Math.max(cwPx / img.naturalWidth, chPx / img.naturalHeight);
       const drawW = img.naturalWidth * scale;
       const drawH = img.naturalHeight * scale;
