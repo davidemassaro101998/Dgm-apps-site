@@ -51,7 +51,7 @@ function MainContent() {
 
       <HeroScrub
         framesBaseUrl="/videos/hero-frames"
-        frameCount={241}
+        frameCount={188}
         taglineLine1={t.heroScrubTaglineLine1}
         taglineLine2={t.heroScrubTaglineLine2}
         ctaLabel={t.heroCta}

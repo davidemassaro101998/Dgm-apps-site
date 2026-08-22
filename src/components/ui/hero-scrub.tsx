@@ -103,20 +103,16 @@ function BlurInWords({ text, className }: { text: string; className?: string }) 
 // render loop -- to keep this rules-of-hooks legal.
 const ICON_STAGGER = 0.012;
 
-// Scroll → footage remap (piecewise lineare). Il footage ha i suoi beat
-// interni (misurati sui frame reali, 241 totali): solo-aurora fino al
-// frame ~70 (0.29), materializzazione 70→204, assestato da ~204 (0.846).
-// Con una mappa lineare gli oggetti inizierebbero a formarsi a scroll
-// 0.29-0.30 — in piena finestra dei testi "chi siamo" (0.15–0.5),
-// comparendo SOPRA le righe ancora a schermo. La rimappa stira l'atto
-// solo-aurora su tutta la porzione testuale dello scroll e fa partire
-// la materializzazione a 0.52, subito dopo l'uscita completa dei testi,
-// chiudendola a 0.835 dove scatta blackout+icone. Se il footage viene
-// rigenerato, rimisurare i beat e aggiornare SOLO i valori di destra.
+// Scroll → footage remap (piecewise lineare). Il footage originale
+// delle due sfere (188 frame, ri-gradato con saturazione accentuata)
+// ha i beat gia allineati alle finestre testuali con una mappa quasi
+// lineare: gli oggetti compaiono dal frame 107 (0.569) — dopo l'uscita
+// completa dei testi "chi siamo" a 0.5 — e sono assestati al frame 157
+// (0.835), dove scatta blackout+icone. La mappa identita conserva
+// quell'allineamento; se il footage viene sostituito, rimisurare i
+// beat e reintrodurre qui i keyframe non lineari.
 const SCRUB_KEYFRAMES: Array<[scroll: number, footage: number]> = [
   [0, 0],
-  [0.52, 70 / 241],
-  [0.835, 204 / 241],
   [1, 1],
 ];
 
