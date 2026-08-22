@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Globe, ChevronRight } from "lucide-react";
+import { Menu, X, Globe, ChevronRight, Mail } from "lucide-react";
 import { useLanguage, LANGUAGES } from "../context/LanguageContext";
 import { apps } from "../data/apps";
 import { getStatusLabel } from "../lib/appPhoto";
 import { Logo } from "./ui/logo";
+import { LegalModal } from "./ui/legal-modal";
 
 interface HeaderProps {
   onNavigateSection?: (sectionIndex: number) => void;
@@ -12,6 +13,7 @@ interface HeaderProps {
 export function Header({ onNavigateSection }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [legalOpen, setLegalOpen] = useState<"privacy" | "terms" | null>(null);
   const langMenuRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage, t } = useLanguage();
 
@@ -45,9 +47,16 @@ export function Header({ onNavigateSection }: HeaderProps) {
     if (onNavigateSection) {
       onNavigateSection(sectionIndex);
     } else {
-      const ids = ["top", "chi-siamo", "catalogo", "contatti"];
+      const ids = ["top", "chi-siamo", "catalogo"];
       document.getElementById(ids[sectionIndex])?.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  // "Contatti" ora vive dentro questo stesso pannello (in fondo, sotto
+  // le app), non su una sezione a se stante a fondo pagina -- scorre il
+  // drawer fino a li invece di navigare la pagina, e non lo chiude.
+  const handleContactClick = () => {
+    document.getElementById("menu-contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleAppClick = (appId: string) => {
@@ -158,7 +167,7 @@ export function Header({ onNavigateSection }: HeaderProps) {
                   <ChevronRight className="h-4 w-4 text-zinc-500" />
                 </button>
                 <button
-                  onClick={() => handleNavClick(3)}
+                  onClick={handleContactClick}
                   className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] p-3 text-left font-display text-sm font-semibold text-mist-100 transition-all hover:border-violet-400/40 hover:bg-white/[0.08]"
                 >
                   <span>{t.contact}</span>
@@ -199,9 +208,47 @@ export function Header({ onNavigateSection }: HeaderProps) {
                 ))}
               </div>
             </div>
+
+            {/* Legal & Contact -- lived in a separate full-screen footer
+                section before; folded in here so the page actually ends
+                right after the app showcase instead of making visitors
+                scroll through an empty extra screen to reach it. */}
+            <div id="menu-contact" className="flex flex-col gap-3 border-t border-white/10 pt-6">
+              <span className="font-display text-[11px] font-semibold uppercase tracking-[0.2em] text-violet-400">
+                {t.footerContact}
+              </span>
+              <a
+                href="mailto:info@dgmapps.it"
+                className="inline-flex w-fit items-center gap-1.5 text-sm text-mist-300 transition-colors hover:text-white"
+              >
+                <Mail className="h-4 w-4 text-violet-400" />
+                info@dgmapps.it
+              </a>
+              <div className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setLegalOpen("privacy")}
+                  className="text-xs text-mist-400 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
+                >
+                  {t.privacyPolicy}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLegalOpen("terms")}
+                  className="text-xs text-mist-400 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
+                >
+                  {t.termsOfService}
+                </button>
+              </div>
+              <div className="pt-2 text-xs text-mist-500">
+                © {new Date().getFullYear()} {t.copyright}
+              </div>
+            </div>
           </div>
         </div>
       )}
+
+      <LegalModal open={legalOpen} onClose={() => setLegalOpen(null)} />
     </header>
   );
 }

@@ -2,12 +2,15 @@ import { useCallback, useMemo } from "react";
 import { MotionConfig } from "framer-motion";
 import { Header } from "./components/Header";
 import { HeroScrub, type HeroScrubIcon } from "./components/ui/hero-scrub";
-import { Footer } from "./components/Footer";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { apps } from "./data/apps";
 import { photoUrl, getStatusLabel } from "./lib/appPhoto";
 
-const SECTION_IDS = ["top", "chi-siamo", "catalogo", "contatti"];
+// "contatti" used to be its own full-screen footer section -- folded
+// into the header's mobile menu (see Header.tsx's #menu-contact) so the
+// page actually ends right after the app showcase instead of forcing an
+// extra scroll past it into empty space.
+const SECTION_IDS = ["top", "chi-siamo", "catalogo"];
 
 // Left-to-right order and offsets match the video's own gift / wrench /
 // dumbbell layout (measured directly off the settled frame), so the icon
@@ -86,8 +89,6 @@ function MainContent() {
         videoUnavailableLabel={t.heroScrubVideoUnavailable}
         icons={heroIcons}
       />
-
-      <Footer onNavigateSection={goToSection} />
     </div>
   );
 }
