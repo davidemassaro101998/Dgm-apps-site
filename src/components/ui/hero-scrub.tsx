@@ -103,6 +103,35 @@ function BlurInWords({ text, className }: { text: string; className?: string }) 
 // render loop -- to keep this rules-of-hooks legal.
 const ICON_STAGGER = 0.012;
 
+// Scroll → footage remap (piecewise lineare). Il footage ha i suoi beat
+// interni (misurati sui frame reali, 241 totali): solo-aurora fino al
+// frame ~70 (0.29), materializzazione 70→204, assestato da ~204 (0.846).
+// Con una mappa lineare gli oggetti inizierebbero a formarsi a scroll
+// 0.29-0.30 — in piena finestra dei testi "chi siamo" (0.15–0.5),
+// comparendo SOPRA le righe ancora a schermo. La rimappa stira l'atto
+// solo-aurora su tutta la porzione testuale dello scroll e fa partire
+// la materializzazione a 0.52, subito dopo l'uscita completa dei testi,
+// chiudendola a 0.835 dove scatta blackout+icone. Se il footage viene
+// rigenerato, rimisurare i beat e aggiornare SOLO i valori di destra.
+const SCRUB_KEYFRAMES: Array<[scroll: number, footage: number]> = [
+  [0, 0],
+  [0.52, 70 / 241],
+  [0.835, 204 / 241],
+  [1, 1],
+];
+
+function remapScrubProgress(p: number): number {
+  for (let i = 1; i < SCRUB_KEYFRAMES.length; i++) {
+    const [s1, f1] = SCRUB_KEYFRAMES[i];
+    if (p <= s1) {
+      const [s0, f0] = SCRUB_KEYFRAMES[i - 1];
+      const t = s1 === s0 ? 1 : (p - s0) / (s1 - s0);
+      return f0 + t * (f1 - f0);
+    }
+  }
+  return 1;
+}
+
 function useIconEntrance(
   scrollYProgress: MotionValue<number>,
   startBase: number,
@@ -203,7 +232,7 @@ export function HeroScrub({
       const total = rect.height - window.innerHeight;
       const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
       scrollYProgress.set(p);
-      const index = Math.min(frameCount - 1, Math.max(0, Math.round(p * (frameCount - 1))));
+      const index = Math.min(frameCount - 1, Math.max(0, Math.round(remapScrubProgress(p) * (frameCount - 1))));
       drawFrame(index);
     }
 
@@ -266,13 +295,11 @@ export function HeroScrub({
     };
   }, [reduced, framesBaseUrl, frameCount]);
 
-  // The video's own real content beats, measured directly from the file
-  // (public/videos/hero-brand.mp4, 188 frames @ 24fps): the gift/wrench/
-  // dumbbell first become visible at frame 107 (progress 0.569) and are
-  // fully formed and holding steady by frame 157 (progress 0.835).
-  // Re-measure and update both if the video is ever re-cut.
-  const VIDEO_ONSET_PROGRESS = 107 / 188;
-  const VIDEO_SETTLE_PROGRESS = 157 / 188;
+  // Beat sull'asse SCROLL (post-remap, vedi SCRUB_KEYFRAMES): gli oggetti
+  // iniziano a materializzarsi a 0.52 — subito dopo che i testi "chi
+  // siamo" sono completamente usciti a 0.5 — e sono fermi e assestati a
+  // 0.835, dove scatta il blackout con l'hand-off alle icone.
+  const VIDEO_SETTLE_PROGRESS = 0.835;
 
   // Hero fades out as soon as the visitor scrolls at all.
   const taglineOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
