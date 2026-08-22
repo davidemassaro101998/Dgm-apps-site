@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion, useMotionValue, useMotionTemplate, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValue, useMotionTemplate, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
 
 export interface HeroScrubIcon {
   id: string;
@@ -378,6 +378,38 @@ export function HeroScrub({
   const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9);
   const iconMotions = [icon0, icon1, icon2];
 
+  // Press feedback: grows the card and fires a light burst instead of the
+  // usual press-to-shrink pattern -- these open a whole other app in a new
+  // tab, so the touch should feel like it matters. Triggered on pointerdown
+  // (fires before the tap's own click/navigation) so the grow is already
+  // visible by the time the browser actually opens the new tab, and
+  // auto-clears on a timer rather than on pointerup -- this tab is about to
+  // lose focus to the new one, so waiting for a release event that may
+  // never cleanly fire here would leave the card stuck enlarged.
+  const [pressedIconId, setPressedIconId] = useState<string | null>(null);
+  const [burstIconId, setBurstIconId] = useState<string | null>(null);
+  const pressTimersRef = useRef<{ burst?: ReturnType<typeof setTimeout>; reset?: ReturnType<typeof setTimeout> }>({});
+
+  const handleIconPress = useCallback((id: string) => {
+    const timers = pressTimersRef.current;
+    if (timers.burst) clearTimeout(timers.burst);
+    if (timers.reset) clearTimeout(timers.reset);
+    setPressedIconId(id);
+    timers.burst = setTimeout(() => setBurstIconId(id), 80);
+    timers.reset = setTimeout(() => {
+      setPressedIconId(null);
+      setBurstIconId(null);
+    }, 620);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      const timers = pressTimersRef.current;
+      if (timers.burst) clearTimeout(timers.burst);
+      if (timers.reset) clearTimeout(timers.reset);
+    };
+  }, []);
+
   const handleCtaClick = () => {
     const section = sectionRef.current;
     if (!section) return;
@@ -573,6 +605,7 @@ export function HeroScrub({
                 href={icon.href}
                 target="_blank"
                 rel="noreferrer"
+                onPointerDown={() => handleIconPress(icon.id)}
                 className="group absolute flex flex-col items-center gap-2"
                 style={{
                   left: `${icon.leftPct}%`,
@@ -589,7 +622,14 @@ export function HeroScrub({
                     rotateX: iconMotions[index].rotateX,
                     rotateY: iconMotions[index].rotateY,
                     transformPerspective: 700,
+                    // Anchored low, not centered: growing from the bottom
+                    // reads as the card lifting up off the row on touch,
+                    // and keeps the bulk of the growth from swallowing its
+                    // own name/status pill sitting right underneath it.
+                    transformOrigin: "50% 88%",
                   }}
+                  animate={{ scale: pressedIconId === icon.id ? 1.2 : 1 }}
+                  transition={{ type: "spring", stiffness: 380, damping: 18 }}
                 >
                   {/* Brand aura -- a bloom in the object's own color
                       (sampled from the video, not a generic white glow),
@@ -623,10 +663,23 @@ export function HeroScrub({
                     className="absolute inset-x-2 -bottom-4 h-8 rounded-full blur-lg transition-opacity duration-200 group-hover:opacity-70"
                     style={{ backgroundColor: hexToRgba(icon.glowColor, 0.3) }}
                   />
+                  {/* Physical thickness -- a second card of the same shape,
+                      peeking out bottom-right, like the tile is resting on
+                      top of another card rather than glued flat to the
+                      screen. This, not the drop-shadow alone, is what
+                      actually reads as "card" instead of "icon". */}
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 translate-x-[5px] translate-y-[6px] rounded-[24%]"
+                    style={{
+                      backgroundColor: "rgba(8,6,10,0.92)",
+                      boxShadow: `0 0 0 1px ${hexToRgba(icon.glowColor, 0.22)}, 0 10px 20px rgba(0,0,0,0.5)`,
+                    }}
+                  />
                   <img
                     src={icon.iconUrl}
                     alt={icon.name}
-                    className={`relative h-full w-full rounded-[24%] object-cover shadow-[0_4px_10px_rgba(0,0,0,0.5),0_22px_45px_-10px_rgba(0,0,0,0.85)] transition-transform duration-200 group-hover:scale-110 group-active:scale-95 ${
+                    className={`relative h-full w-full rounded-[24%] object-cover shadow-[0_4px_10px_rgba(0,0,0,0.5),0_22px_45px_-10px_rgba(0,0,0,0.85)] transition-transform duration-200 group-hover:scale-110 ${
                       icon.featured ? "" : "ring-1 ring-white/15"
                     }`}
                     style={{
@@ -655,6 +708,23 @@ export function HeroScrub({
                         "linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.08) 22%, transparent 45%, transparent 100%)",
                     }}
                   />
+                  {/* Opening burst -- a ring of light in the card's own
+                      color, expanding out and fading as it's pressed. The
+                      animation that gives the tap weight: this isn't just
+                      a link, it's opening one of the three apps. */}
+                  <AnimatePresence>
+                    {burstIconId === icon.id && (
+                      <motion.span
+                        aria-hidden
+                        className="pointer-events-none absolute inset-0 rounded-[24%]"
+                        style={{ boxShadow: `0 0 0 2px ${hexToRgba(icon.glowColor, 0.85)}, 0 0 34px ${hexToRgba(icon.glowColor, 0.6)}` }}
+                        initial={{ opacity: 0.95, scale: 1 }}
+                        animate={{ opacity: 0, scale: 1.6 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                      />
+                    )}
+                  </AnimatePresence>
                 </motion.span>
                 <span className="text-sm font-semibold uppercase tracking-wide text-white/90 sm:text-base">
                   {icon.name}
