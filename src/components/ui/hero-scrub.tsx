@@ -152,7 +152,10 @@ function useIconEntrance(
   startBase: number,
   endBase: number,
   index: number,
-  restTiltY: number
+  restTiltY: number,
+  foregroundStart: number,
+  foregroundEnd: number,
+  isFeatured: boolean
 ) {
   const start = startBase + index * ICON_STAGGER;
   const end = endBase + index * ICON_STAGGER;
@@ -168,7 +171,32 @@ function useIconEntrance(
   // as gathered toward the center rather than three identical stickers.
   const rotateY = useTransform(scrollYProgress, [start, end], [restTiltY * 2.6, restTiltY]);
   const rotateX = useTransform(scrollYProgress, [start, end], [-24, -6]);
-  return { opacity, y, brightnessFilter, rotateY, rotateX };
+
+  // Kado in primo piano: una volta che tutte e tre sono arrivate, un
+  // ultimo tratto di scroll racconta chi e il prodotto di punta. Kado
+  // cresce e avanza verso il centro; Bricolo e Forma si ritirano un
+  // poco, si smorzano e perdono colore -- coerenti col loro status
+  // "presto disponibile", non semplicemente piu piccole.
+  const foregroundScale = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1.3] : [1, 0.82]);
+  const foregroundLeftShift = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [0, 13] : [0, 0]);
+  const foregroundOpacityMul = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.5]);
+  const foregroundSaturate = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.35]);
+  const foregroundFilter = useMotionTemplate`saturate(${foregroundSaturate})`;
+  const combinedOpacity = useTransform([opacity, foregroundOpacityMul], (values) => {
+    const [a, b] = values as number[];
+    return a * b;
+  });
+
+  return {
+    opacity: combinedOpacity,
+    y,
+    brightnessFilter,
+    rotateY,
+    rotateX,
+    foregroundScale,
+    foregroundLeftShift,
+    foregroundFilter,
+  };
 }
 
 export function HeroScrub({
@@ -366,6 +394,13 @@ export function HeroScrub({
   const iconsPointerEvents = useTransform(scrollYProgress, (v) =>
     v > ICONS_POP_END + ICON_STAGGER * 2 ? "auto" : "none"
   );
+  // Last beat of the scroll: Kado (the flagship) advances toward center
+  // and grows further; Bricolo and Forma -- "coming soon", not open to
+  // visitors yet -- recede and fade instead. Starts safely after every
+  // tile has finished arriving (including index 2's own staggered
+  // entrance window) and stays inside the [0,1] scroll budget.
+  const FOREGROUND_START = ICONS_POP_END + 0.025;
+  const FOREGROUND_END = FOREGROUND_START + 0.028;
   // Each icon gets its own slide-up + brightness-ramp window, offset by
   // ICON_STAGGER -- a real per-tile cascade (left, then center, then right)
   // instead of all three rising as one rigid block. Still driven purely by
@@ -373,9 +408,9 @@ export function HeroScrub({
   // Resting yaw per tile: left and right turn a few degrees toward the
   // center one, like three objects angled to face the same middle point
   // rather than three flat faces all pointed straight at the viewer.
-  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0, -9);
-  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1, 0);
-  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9);
+  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0, -9, FOREGROUND_START, FOREGROUND_END, !!icons[0]?.featured);
+  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1, 0, FOREGROUND_START, FOREGROUND_END, !!icons[1]?.featured);
+  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9, FOREGROUND_START, FOREGROUND_END, !!icons[2]?.featured);
   const iconMotions = [icon0, icon1, icon2];
 
   // Press feedback: grows the card and fires a light burst instead of the
@@ -599,20 +634,32 @@ export function HeroScrub({
           style={{ pointerEvents: iconsPointerEvents }}
         >
           <div className="relative h-[34vh] w-full max-w-lg">
-            {icons.map((icon, index) => (
+            {icons.map((icon, index) => {
+              // "presto": the app is deployed and genuinely live, but the
+              // site isn't sending visitors there yet -- no navigation, no
+              // press-to-open feedback (that would promise something that
+              // doesn't happen). It still gets the same recede/dim
+              // treatment as its foreground counterpart below.
+              const isOpenable = icon.statusTone !== "presto";
+              return (
               <motion.a
                 key={icon.id}
-                href={icon.href}
-                target="_blank"
-                rel="noreferrer"
-                onPointerDown={() => handleIconPress(icon.id)}
-                className="group absolute flex flex-col items-center gap-2"
+                href={isOpenable ? icon.href : undefined}
+                target={isOpenable ? "_blank" : undefined}
+                rel={isOpenable ? "noreferrer" : undefined}
+                aria-disabled={!isOpenable}
+                onPointerDown={isOpenable ? () => handleIconPress(icon.id) : undefined}
+                onClick={!isOpenable ? (e) => e.preventDefault() : undefined}
+                className={`group absolute flex flex-col items-center gap-2 ${isOpenable ? "" : "cursor-default"}`}
                 style={{
-                  left: `${icon.leftPct}%`,
+                  left: useMotionTemplate`calc(${icon.leftPct}% + ${iconMotions[index].foregroundLeftShift}%)`,
                   top: `${icon.topPct}%`,
                   x: "-50%",
                   y: iconMotions[index].y,
                   opacity: iconMotions[index].opacity,
+                  scale: iconMotions[index].foregroundScale,
+                  filter: iconMotions[index].foregroundFilter,
+                  zIndex: icon.featured ? 20 : 10,
                 }}
               >
                 <motion.span
@@ -713,7 +760,7 @@ export function HeroScrub({
                       animation that gives the tap weight: this isn't just
                       a link, it's opening one of the three apps. */}
                   <AnimatePresence>
-                    {burstIconId === icon.id && (
+                    {isOpenable && burstIconId === icon.id && (
                       <motion.span
                         aria-hidden
                         className="pointer-events-none absolute inset-0 rounded-[24%]"
@@ -738,7 +785,8 @@ export function HeroScrub({
                   {icon.statusLabel}
                 </span>
               </motion.a>
-            ))}
+              );
+            })}
           </div>
         </motion.div>
       </div>

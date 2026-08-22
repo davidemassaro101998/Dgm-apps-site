@@ -51,9 +51,13 @@ export function Header({ onNavigateSection }: HeaderProps) {
   };
 
   const handleAppClick = (appId: string) => {
-    setMenuOpen(false);
     const app = apps.find((a) => a.id === appId);
-    if (app) window.open(app.href, "_blank", "noopener,noreferrer");
+    // "presto": the app is deployed and genuinely live, but not open to
+    // visitors from the site yet -- don't let this menu in either, same
+    // rule as the hero's own catalog tiles.
+    if (!app || app.status === "presto") return;
+    setMenuOpen(false);
+    window.open(app.href, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -173,7 +177,12 @@ export function Header({ onNavigateSection }: HeaderProps) {
                   <button
                     key={app.id}
                     onClick={() => handleAppClick(app.id)}
-                    className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] p-3.5 text-left transition-all hover:border-violet-400/50 hover:bg-violet-500/10"
+                    aria-disabled={app.status === "presto"}
+                    className={`group flex items-center justify-between rounded-xl border p-3.5 text-left transition-all ${
+                      app.status === "presto"
+                        ? "cursor-default border-white/5 bg-white/[0.01] opacity-60"
+                        : "border-white/10 bg-white/[0.02] hover:border-violet-400/50 hover:bg-violet-500/10"
+                    }`}
                   >
                     <div className="flex flex-col">
                       <span className="font-display text-sm font-bold text-white group-hover:text-violet-300 transition-colors">
