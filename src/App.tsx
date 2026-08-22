@@ -19,6 +19,27 @@ const HERO_ICON_POSITIONS: Record<string, { leftPct: number; topPct: number }> =
   forma: { leftPct: 78, topPct: -4 },
 };
 
+// Colore dell'aura di ogni icona, campionato pixel per pixel dal frame
+// assestato del footage (non la palette teorica) -- cosi il bagliore
+// dietro ogni tile e cromaticamente lo stesso oggetto appena visto nel
+// video, non un colore "vicino".
+const HERO_ICON_GLOW: Record<string, string> = {
+  kado: "#EF4D81",
+  bricolo: "#FBA038",
+  forma: "#33ED59",
+};
+
+// Kado e la punta di diamante del catalogo: resta nella sua posizione a
+// sinistra (e dove l'oggetto vive nel video -- spostarla romperebbe
+// l'hand-off), ma riceve un'aura che pulsa di continuo invece di un
+// bagliore statico come le altre due. Sui 390px di un telefono le tre
+// icone hanno gia margine quasi zero fra loro, quindi la gerarchia si
+// costruisce con la luce, non ingrandendo il riquadro (rischierebbe la
+// sovrapposizione con Bricolo).
+const HERO_ICON_FEATURED: Record<string, boolean> = {
+  kado: true,
+};
+
 function MainContent() {
   const { language, t } = useLanguage();
 
@@ -35,6 +56,8 @@ function MainContent() {
           href: app.href,
           leftPct: pos.leftPct,
           topPct: pos.topPct,
+          glowColor: HERO_ICON_GLOW[app.id] ?? "#8B5CF6",
+          featured: HERO_ICON_FEATURED[app.id] ?? false,
         };
       }),
     [language, t]

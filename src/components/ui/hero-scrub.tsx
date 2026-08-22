@@ -19,6 +19,25 @@ export interface HeroScrubIcon {
    *  shared baseline, since the video's own objects don't all sit at the
    *  same height. */
   topPct: number;
+  /** Brand aura color, sampled from the object's own settled video frame
+   *  -- drives the colored glow behind the tile instead of a generic
+   *  white halo. */
+  glowColor: string;
+  /** Marks the flagship product: same size and position as its siblings
+   *  (moving it would break the video hand-off), but its aura breathes
+   *  continuously instead of sitting static -- hierarchy through light,
+   *  not size, since the three tiles already have near-zero clearance
+   *  between them on a phone screen. */
+  featured?: boolean;
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  const clean = hex.replace("#", "");
+  const value = parseInt(clean, 16);
+  const r = (value >> 16) & 255;
+  const g = (value >> 8) & 255;
+  const b = value & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 export interface HeroScrubProps {
@@ -132,7 +151,8 @@ function useIconEntrance(
   scrollYProgress: MotionValue<number>,
   startBase: number,
   endBase: number,
-  index: number
+  index: number,
+  restTiltY: number
 ) {
   const start = startBase + index * ICON_STAGGER;
   const end = endBase + index * ICON_STAGGER;
@@ -140,7 +160,15 @@ function useIconEntrance(
   const y = useTransform(scrollYProgress, [start, end], [64, 0]);
   const brightness = useTransform(scrollYProgress, [start, end, end + 0.05], [0.35, 0.85, 1.1]);
   const brightnessFilter = useMotionTemplate`brightness(${brightness})`;
-  return { opacity, y, brightnessFilter };
+  // Swivels in from a steeper angle down to its resting tilt, in lockstep
+  // with the same window as opacity/y -- what actually makes the tiles
+  // read as objects in the section's own 3D perspective (already
+  // declared on the sticky container) instead of flat cards pasted on
+  // top of it. Each tile keeps a different resting yaw so the trio reads
+  // as gathered toward the center rather than three identical stickers.
+  const rotateY = useTransform(scrollYProgress, [start, end], [restTiltY * 2.6, restTiltY]);
+  const rotateX = useTransform(scrollYProgress, [start, end], [-24, -6]);
+  return { opacity, y, brightnessFilter, rotateY, rotateX };
 }
 
 export function HeroScrub({
@@ -342,9 +370,12 @@ export function HeroScrub({
   // ICON_STAGGER -- a real per-tile cascade (left, then center, then right)
   // instead of all three rising as one rigid block. Still driven purely by
   // scroll position, so it stays perfectly scrubbable in both directions.
-  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0);
-  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1);
-  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2);
+  // Resting yaw per tile: left and right turn a few degrees toward the
+  // center one, like three objects angled to face the same middle point
+  // rather than three flat faces all pointed straight at the viewer.
+  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0, -9);
+  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1, 0);
+  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9);
   const iconMotions = [icon0, icon1, icon2];
 
   const handleCtaClick = () => {
@@ -553,8 +584,35 @@ export function HeroScrub({
               >
                 <motion.span
                   className="relative block h-28 w-28 shrink-0 sm:h-40 sm:w-40"
-                  style={{ filter: iconMotions[index].brightnessFilter }}
+                  style={{
+                    filter: iconMotions[index].brightnessFilter,
+                    rotateX: iconMotions[index].rotateX,
+                    rotateY: iconMotions[index].rotateY,
+                    transformPerspective: 700,
+                  }}
                 >
+                  {/* Brand aura -- a bloom in the object's own color
+                      (sampled from the video, not a generic white glow),
+                      the primary source of "pop" now that the tile is
+                      lit like its own object rather than a flat icon.
+                      Kado's breathes continuously instead of sitting
+                      static: the flagship stays anchored to its position
+                      from the video, but its light draws the eye first. */}
+                  <motion.span
+                    aria-hidden
+                    className="pointer-events-none absolute -inset-5 -z-10 rounded-full blur-2xl sm:-inset-7"
+                    style={{ backgroundColor: hexToRgba(icon.glowColor, icon.featured ? 0.55 : 0.3) }}
+                    animate={
+                      icon.featured
+                        ? { opacity: [0.75, 1, 0.75], scale: [0.94, 1.06, 0.94] }
+                        : undefined
+                    }
+                    transition={
+                      icon.featured
+                        ? { duration: 2.8, repeat: Infinity, ease: "easeInOut" }
+                        : undefined
+                    }
+                  />
                   {/* Against the near-solid-black backdrop at this point in
                       the sequence, a dark contact shadow is literally
                       invisible -- what actually sells "floating in air" here
@@ -562,13 +620,28 @@ export function HeroScrub({
                       light off a surface that isn't shown. */}
                   <span
                     aria-hidden
-                    className="absolute inset-x-2 -bottom-4 h-8 rounded-full bg-white/25 blur-lg transition-opacity duration-200 group-hover:opacity-70"
+                    className="absolute inset-x-2 -bottom-4 h-8 rounded-full blur-lg transition-opacity duration-200 group-hover:opacity-70"
+                    style={{ backgroundColor: hexToRgba(icon.glowColor, 0.3) }}
                   />
                   <img
                     src={icon.iconUrl}
                     alt={icon.name}
-                    className="relative h-full w-full rounded-[24%] object-cover shadow-[0_4px_10px_rgba(0,0,0,0.5),0_22px_45px_-10px_rgba(0,0,0,0.85)] ring-1 ring-white/15 transition-transform duration-200 group-hover:scale-110 group-active:scale-95"
-                    style={{ filter: "drop-shadow(0 14px 26px rgba(255,255,255,0.12))" }}
+                    className={`relative h-full w-full rounded-[24%] object-cover shadow-[0_4px_10px_rgba(0,0,0,0.5),0_22px_45px_-10px_rgba(0,0,0,0.85)] transition-transform duration-200 group-hover:scale-110 group-active:scale-95 ${
+                      icon.featured ? "" : "ring-1 ring-white/15"
+                    }`}
+                    style={{
+                      filter: "drop-shadow(0 14px 26px rgba(255,255,255,0.12))",
+                      // Featured tile: replace the plain shadow class with an
+                      // inline one that keeps the same base depth AND adds a
+                      // colored ring -- an inline boxShadow fully overrides
+                      // the class's, so the base layers have to be repeated
+                      // here rather than layered on top of it.
+                      ...(icon.featured
+                        ? {
+                            boxShadow: `0 4px 10px rgba(0,0,0,0.5), 0 22px 45px -10px rgba(0,0,0,0.85), 0 0 0 2px ${hexToRgba(icon.glowColor, 0.55)}`,
+                          }
+                        : {}),
+                    }}
                   />
                   {/* Glossy top highlight -- a thin bright edge along the
                       upper-left, like light catching a rounded, lifted
