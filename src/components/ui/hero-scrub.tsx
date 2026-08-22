@@ -192,9 +192,10 @@ function useIconEntrance(
   const foregroundScale = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1.35] : [1, 0.8], { ease: PREMIUM_EASE });
   const foregroundLeftShift = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], [0, foregroundLeftDelta], { ease: PREMIUM_EASE });
   const foregroundTopShift = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], [0, foregroundTopDelta], { ease: PREMIUM_EASE });
-  const foregroundOpacityMul = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.5]);
-  const foregroundSaturate = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.35]);
-  const foregroundFilter = useMotionTemplate`saturate(${foregroundSaturate})`;
+  const foregroundOpacityMul = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.42]);
+  const foregroundSaturate = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.28]);
+  const foregroundBlur = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [0, 0] : [0, 1.5]);
+  const foregroundFilter = useMotionTemplate`saturate(${foregroundSaturate}) blur(${foregroundBlur}px)`;
   const combinedOpacity = useTransform([opacity, foregroundOpacityMul], (values) => {
     const [a, b] = values as number[];
     return a * b;
@@ -417,10 +418,11 @@ export function HeroScrub({
   const FOREGROUND_END = FOREGROUND_START + 0.028;
   // Bricolo sits at leftPct 50 -- exactly where Kado advances to. Left
   // alone it would end up stacked dead-center under Kado, reading as a
-  // layout bug rather than "Kado stepping to the front". Nudged back
-  // toward roughly where Kado departs from instead, so the two read as
-  // trading places rather than colliding.
-  const FOREGROUND_LEFT_TARGET: Record<string, number> = { bricolo: 27 };
+  // layout bug rather than "Kado stepping to the front". Both pushed
+  // further out to their own sides -- a real podium spread, not just
+  // out of Kado's way -- with comfortable margin from the edges even
+  // on a 390px phone at their receded scale.
+  const FOREGROUND_LEFT_TARGET: Record<string, number> = { bricolo: 16, forma: 85 };
   // topPct was tuned to match each object's height IN THE VIDEO (the
   // wrench sits lower than the gift/dumbbell in the footage) -- once
   // Bricolo and Forma are just "the two receding sidekicks" that same
@@ -429,7 +431,7 @@ export function HeroScrub({
   // evenly below Kado, which rises a little above its own baseline --
   // an actual pedestal composition, not a leftover video alignment.
   const FOREGROUND_TOP_TARGET_FEATURED = -8;
-  const FOREGROUND_TOP_TARGET_RECEDING = 9;
+  const FOREGROUND_TOP_TARGET_RECEDING = 22;
   // Each icon gets its own slide-up + brightness-ramp window, offset by
   // ICON_STAGGER -- a real per-tile cascade (left, then center, then right)
   // instead of all three rising as one rigid block. Still driven purely by

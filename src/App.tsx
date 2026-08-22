@@ -89,6 +89,10 @@ function MainContent() {
         videoUnavailableLabel={t.heroScrubVideoUnavailable}
         icons={heroIcons}
       />
+
+      <p className="w-full px-6 py-6 text-center text-[11px] text-mist-500">
+        © {new Date().getFullYear()} {t.copyright}
+      </p>
     </div>
   );
 }
