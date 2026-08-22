@@ -34,6 +34,7 @@ export interface Translations {
   heroScrubAboutLine3: string;
   heroScrubAboutLine4: string;
   heroScrubCatalogHeading: string;
+  heroScrubVideoUnavailable: string;
 
   // App status labels (used in the Header's "All Apps" menu)
   statusLive: string;
@@ -79,6 +80,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Apri, risolvi, chiudi.",
     heroScrubAboutLine4: "Tutto qui.",
     heroScrubCatalogHeading: "Cosa ti serve oggi?",
+    heroScrubVideoUnavailable: "Video brand in arrivo",
 
     statusLive: "Disponibile",
     statusBeta: "Beta",
@@ -120,6 +122,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Open, solve, close.",
     heroScrubAboutLine4: "That's it.",
     heroScrubCatalogHeading: "What do you need today?",
+    heroScrubVideoUnavailable: "Brand video coming soon",
 
     statusLive: "Available",
     statusBeta: "Beta",
@@ -161,6 +164,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Abre, resuelve, cierra.",
     heroScrubAboutLine4: "Eso es todo.",
     heroScrubCatalogHeading: "¿Qué necesitas hoy?",
+    heroScrubVideoUnavailable: "Vídeo de marca próximamente",
 
     statusLive: "Disponible",
     statusBeta: "Beta",
@@ -202,6 +206,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Ouvrir, résoudre, fermer.",
     heroScrubAboutLine4: "C'est tout.",
     heroScrubCatalogHeading: "Il te faut quoi ?",
+    heroScrubVideoUnavailable: "Vidéo de marque bientôt disponible",
 
     statusLive: "Disponible",
     statusBeta: "Bêta",
@@ -243,6 +248,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine3: "Öffnen, lösen, schließen.",
     heroScrubAboutLine4: "Mehr nicht.",
     heroScrubCatalogHeading: "Was brauchst du heute?",
+    heroScrubVideoUnavailable: "Markenvideo folgt in Kürze",
 
     statusLive: "Verfügbar",
     statusBeta: "Beta",

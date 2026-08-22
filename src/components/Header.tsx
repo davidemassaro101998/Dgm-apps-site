@@ -76,6 +76,7 @@ export function Header({ onNavigateSection }: HeaderProps) {
               onClick={() => setLangMenuOpen((v) => !v)}
               aria-haspopup="listbox"
               aria-expanded={langMenuOpen}
+              aria-controls="lang-switcher-listbox"
               className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-zinc-200 transition-colors hover:border-white/30 hover:text-white"
             >
               <Globe className="h-3.5 w-3.5 text-violet-300" />
@@ -83,6 +84,7 @@ export function Header({ onNavigateSection }: HeaderProps) {
             </button>
             {langMenuOpen && (
               <div
+                id="lang-switcher-listbox"
                 role="listbox"
                 className="absolute right-0 top-[calc(100%+8px)] z-20 flex min-w-[7rem] flex-col overflow-hidden rounded-xl border border-white/10 bg-ink-900/95 py-1 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-md"
               >
@@ -113,6 +115,8 @@ export function Header({ onNavigateSection }: HeaderProps) {
             onClick={() => setMenuOpen(!menuOpen)}
             className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-mist-200 hover:border-white/30 hover:bg-white/10 hover:text-white focus:outline-none transition-all"
             aria-label={menuOpen ? t.closeMenu : t.menuTitle}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav-drawer"
           >
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -122,6 +126,7 @@ export function Header({ onNavigateSection }: HeaderProps) {
       {/* Flyout / Overlay Drawer Menu */}
       {menuOpen && (
         <div
+          id="mobile-nav-drawer"
           data-overlay="true"
           role="dialog"
           aria-modal="true"

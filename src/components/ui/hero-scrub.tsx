@@ -37,6 +37,7 @@ export interface HeroScrubProps {
   aboutLine3: string;
   aboutLine4: string;
   catalogHeading: string;
+  videoUnavailableLabel: string;
   icons: HeroScrubIcon[];
 }
 
@@ -128,6 +129,7 @@ export function HeroScrub({
   aboutLine3,
   aboutLine4,
   catalogHeading,
+  videoUnavailableLabel,
   icons,
 }: HeroScrubProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -358,7 +360,7 @@ export function HeroScrub({
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-black">
               <span className="text-xs font-semibold uppercase tracking-widest text-white/40">
-                Video brand in arrivo
+                {videoUnavailableLabel}
               </span>
             </div>
           )}

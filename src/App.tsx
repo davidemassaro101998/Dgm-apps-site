@@ -60,6 +60,7 @@ function MainContent() {
         aboutLine3={t.heroScrubAboutLine3}
         aboutLine4={t.heroScrubAboutLine4}
         catalogHeading={t.heroScrubCatalogHeading}
+        videoUnavailableLabel={t.heroScrubVideoUnavailable}
         icons={heroIcons}
       />
 
