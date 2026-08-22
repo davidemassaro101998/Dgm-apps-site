@@ -404,6 +404,12 @@ export function HeroScrub({
   // entrance window) and stays inside the [0,1] scroll budget.
   const FOREGROUND_START = ICONS_POP_END + 0.025;
   const FOREGROUND_END = FOREGROUND_START + 0.028;
+  // Bricolo sits at leftPct 50 -- exactly where Kado advances to. Left
+  // alone it would end up stacked dead-center under Kado, reading as a
+  // layout bug rather than "Kado stepping to the front". Nudged back
+  // toward roughly where Kado departs from instead, so the two read as
+  // trading places rather than colliding.
+  const FOREGROUND_LEFT_TARGET: Record<string, number> = { bricolo: 27 };
   // Each icon gets its own slide-up + brightness-ramp window, offset by
   // ICON_STAGGER -- a real per-tile cascade (left, then center, then right)
   // instead of all three rising as one rigid block. Still driven purely by
@@ -414,10 +420,51 @@ export function HeroScrub({
   // The featured tile's horizontal delta is computed for real (target
   // 50% minus its own leftPct), not a guessed offset -- Kado actually
   // lands center-screen instead of just nudging a few points over.
-  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0, -9, FOREGROUND_START, FOREGROUND_END, !!icons[0]?.featured, icons[0]?.featured ? 50 - icons[0].leftPct : 0);
-  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1, 0, FOREGROUND_START, FOREGROUND_END, !!icons[1]?.featured, icons[1]?.featured ? 50 - icons[1].leftPct : 0);
-  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9, FOREGROUND_START, FOREGROUND_END, !!icons[2]?.featured, icons[2]?.featured ? 50 - icons[2].leftPct : 0);
+  const foregroundDelta = (icon?: HeroScrubIcon) => {
+    if (!icon) return 0;
+    if (icon.featured) return 50 - icon.leftPct;
+    const target = FOREGROUND_LEFT_TARGET[icon.id];
+    return target !== undefined ? target - icon.leftPct : 0;
+  };
+  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0, -9, FOREGROUND_START, FOREGROUND_END, !!icons[0]?.featured, foregroundDelta(icons[0]));
+  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1, 0, FOREGROUND_START, FOREGROUND_END, !!icons[1]?.featured, foregroundDelta(icons[1]));
+  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9, FOREGROUND_START, FOREGROUND_END, !!icons[2]?.featured, foregroundDelta(icons[2]));
   const iconMotions = [icon0, icon1, icon2];
+
+  // Snaps the scroll forward or back out of the foreground transition if
+  // it comes to rest partway through -- without this a light flick could
+  // leave Kado half-grown and Bricolo/Forma half-faded, a visibly broken
+  // in-between frame. Debounced on the scroll event itself (fires once
+  // scrolling has actually stopped, not on every tick), and only acts
+  // when the rest position falls strictly inside the transition window;
+  // everywhere else on the page scrolls exactly as normal.
+  useEffect(() => {
+    if (reduced) return;
+    const section = sectionRef.current;
+    if (!section) return;
+    let snapTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function onScroll() {
+      if (snapTimer) clearTimeout(snapTimer);
+      snapTimer = setTimeout(() => {
+        const rect = section!.getBoundingClientRect();
+        const total = rect.height - window.innerHeight;
+        if (total <= 0) return;
+        const p = Math.min(1, Math.max(0, -rect.top / total));
+        if (p > FOREGROUND_START && p < FOREGROUND_END) {
+          const target = FOREGROUND_END - p <= p - FOREGROUND_START ? FOREGROUND_END : FOREGROUND_START;
+          const docTop = rect.top + window.scrollY;
+          window.scrollTo({ top: docTop + target * total, behavior: "smooth" });
+        }
+      }, 140);
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (snapTimer) clearTimeout(snapTimer);
+    };
+  }, [reduced, FOREGROUND_START, FOREGROUND_END]);
 
   // Press feedback: grows the card and fires a light burst instead of the
   // usual press-to-shrink pattern -- these open a whole other app in a new
