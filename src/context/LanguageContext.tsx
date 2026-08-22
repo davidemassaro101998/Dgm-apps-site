@@ -187,7 +187,7 @@ const translations: Record<Language, Translations> = {
     heroScrubAboutLine2: "Pas de notifications inutiles.",
     heroScrubAboutLine3: "Ouvrir, résoudre, fermer.",
     heroScrubAboutLine4: "C'est tout.",
-    heroScrubCatalogHeading: "Il te faut quoi, aujourd'hui ?",
+    heroScrubCatalogHeading: "Il te faut quoi ?",
 
     statusLive: "Disponible",
     statusBeta: "Bêta",

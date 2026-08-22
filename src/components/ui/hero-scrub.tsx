@@ -376,7 +376,7 @@ export function HeroScrub({
             what makes them read as lifted off the video and the clear
             focal point. */}
         <motion.div
-          className="absolute inset-x-0 bottom-[14%] z-10 flex flex-col items-center gap-8 px-4 sm:bottom-[17%]"
+          className="absolute inset-x-0 bottom-[14%] z-10 flex flex-col items-center gap-8 px-4"
           style={{ opacity: taglineOpacity, pointerEvents: taglinePointerEvents }}
         >
           <motion.h1
@@ -384,7 +384,7 @@ export function HeroScrub({
             animate="visible"
             variants={WORD_CONTAINER_VARIANTS}
             className="flex flex-col items-center text-center font-display-hero font-black uppercase leading-[1.05] tracking-[-0.01em] text-white"
-            style={{ fontSize: "clamp(2rem, 9vw, 4.8rem)", textShadow: SOFT_TEXT_SHADOW }}
+            style={{ fontSize: "clamp(1.1rem, 4.8vw, 3.4rem)", textShadow: SOFT_TEXT_SHADOW }}
           >
             <BlurInWords text={taglineLine1} />
             <BlurInWords text={taglineLine2} />
@@ -437,7 +437,7 @@ export function HeroScrub({
             faded out well before the video's own onset point, leaving a
             real gap of pure video in between. */}
         <motion.div
-          className="pointer-events-none absolute inset-x-0 top-[58%] z-10 flex flex-col items-center gap-1 px-4 text-center sm:top-[52%]"
+          className="pointer-events-none absolute inset-x-0 top-[58%] z-10 flex flex-col items-center gap-1 px-4 text-center"
           style={{ opacity: aboutOpacity, y: aboutY, filter: aboutBlurFilter }}
         >
           <span
@@ -481,9 +481,9 @@ export function HeroScrub({
             its own small settle-down so it doesn't feel pasted on top. */}
         <motion.p
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-[34%] z-10 px-4 text-center font-display-hero font-black uppercase leading-[0.95] tracking-[-0.01em] text-white sm:top-[25%]"
+          className="pointer-events-none absolute inset-x-0 top-[34%] z-10 px-4 text-center font-display-hero font-black uppercase leading-[0.95] tracking-[-0.01em] text-white"
           style={{
-            fontSize: "clamp(2.1rem, 10vw, 5.2rem)",
+            fontSize: "clamp(1.7rem, 7.2vw, 4rem)",
             opacity: iconsOpacity,
             y: iconsHeadingY,
             filter: iconsHeadingBlurFilter,
@@ -498,7 +498,7 @@ export function HeroScrub({
             already fully black. Bigger, with a status pill, so this reads
             as the catalog. */}
         <motion.div
-          className="absolute inset-x-0 top-[56%] z-10 flex justify-center sm:top-[46%]"
+          className="absolute inset-x-0 top-[56%] z-10 flex justify-center"
           style={{ pointerEvents: iconsPointerEvents }}
         >
           <div className="relative h-[34vh] w-full max-w-lg">
