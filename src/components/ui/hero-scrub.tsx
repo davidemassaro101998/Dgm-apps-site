@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useMotionTemplate, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
+import { easeOut } from "motion-utils";
 
 export interface HeroScrubIcon {
   id: string;
@@ -156,7 +157,8 @@ function useIconEntrance(
   foregroundStart: number,
   foregroundEnd: number,
   isFeatured: boolean,
-  foregroundLeftDelta: number
+  foregroundLeftDelta: number,
+  foregroundTopDelta: number
 ) {
   const start = startBase + index * ICON_STAGGER;
   const end = endBase + index * ICON_STAGGER;
@@ -175,13 +177,21 @@ function useIconEntrance(
 
   // Kado in primo piano: una volta che tutte e tre sono arrivate, un
   // ultimo tratto di scroll racconta chi e il prodotto di punta. Kado
-  // cresce e avanza VERAMENTE al centro (il delta e calcolato dal
-  // chiamante come 50 - leftPct, non un numero a caso); Bricolo e Forma
-  // restano ferme ma si ritirano, si smorzano e perdono colore --
-  // coerenti col loro status "presto disponibile", non semplicemente
-  // piu piccole.
-  const foregroundScale = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1.35] : [1, 0.8]);
-  const foregroundLeftShift = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], [0, foregroundLeftDelta]);
+  // cresce, sale leggermente e avanza VERAMENTE al centro (il delta
+  // orizzontale e calcolato dal chiamante come 50 - leftPct, non un
+  // numero a caso); Bricolo e Forma restano ferme in orizzontale (a
+  // parte lo scarto di Bricolo per non finire sotto Kado) ma si
+  // allineano alla STESSA altezza mentre si ritirano -- l'altezza
+  // diversa che avevano (tarata sugli oggetti nel video, non piu
+  // rilevante qui) le faceva sembrare disallineate per errore invece
+  // che deliberatamente ai due lati del prodotto di punta. Curva
+  // "expo-out" (la stessa della cascata di entrata del titolo) invece
+  // di un'interpolazione lineare, cosi il movimento accelera e poi si
+  // adagia invece di scorrere meccanico.
+  const PREMIUM_EASE = easeOut;
+  const foregroundScale = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1.35] : [1, 0.8], { ease: PREMIUM_EASE });
+  const foregroundLeftShift = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], [0, foregroundLeftDelta], { ease: PREMIUM_EASE });
+  const foregroundTopShift = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], [0, foregroundTopDelta], { ease: PREMIUM_EASE });
   const foregroundOpacityMul = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.5]);
   const foregroundSaturate = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.35]);
   const foregroundFilter = useMotionTemplate`saturate(${foregroundSaturate})`;
@@ -198,6 +208,7 @@ function useIconEntrance(
     rotateX,
     foregroundScale,
     foregroundLeftShift,
+    foregroundTopShift,
     foregroundFilter,
   };
 }
@@ -410,6 +421,15 @@ export function HeroScrub({
   // toward roughly where Kado departs from instead, so the two read as
   // trading places rather than colliding.
   const FOREGROUND_LEFT_TARGET: Record<string, number> = { bricolo: 27 };
+  // topPct was tuned to match each object's height IN THE VIDEO (the
+  // wrench sits lower than the gift/dumbbell in the footage) -- once
+  // Bricolo and Forma are just "the two receding sidekicks" that same
+  // height difference reads as a misaligned mistake, not a deliberate
+  // hand-off. Both converge on the SAME height here instead, flanking
+  // evenly below Kado, which rises a little above its own baseline --
+  // an actual pedestal composition, not a leftover video alignment.
+  const FOREGROUND_TOP_TARGET_FEATURED = -8;
+  const FOREGROUND_TOP_TARGET_RECEDING = 9;
   // Each icon gets its own slide-up + brightness-ramp window, offset by
   // ICON_STAGGER -- a real per-tile cascade (left, then center, then right)
   // instead of all three rising as one rigid block. Still driven purely by
@@ -420,15 +440,20 @@ export function HeroScrub({
   // The featured tile's horizontal delta is computed for real (target
   // 50% minus its own leftPct), not a guessed offset -- Kado actually
   // lands center-screen instead of just nudging a few points over.
-  const foregroundDelta = (icon?: HeroScrubIcon) => {
+  const foregroundLeftDelta = (icon?: HeroScrubIcon) => {
     if (!icon) return 0;
     if (icon.featured) return 50 - icon.leftPct;
     const target = FOREGROUND_LEFT_TARGET[icon.id];
     return target !== undefined ? target - icon.leftPct : 0;
   };
-  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0, -9, FOREGROUND_START, FOREGROUND_END, !!icons[0]?.featured, foregroundDelta(icons[0]));
-  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1, 0, FOREGROUND_START, FOREGROUND_END, !!icons[1]?.featured, foregroundDelta(icons[1]));
-  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9, FOREGROUND_START, FOREGROUND_END, !!icons[2]?.featured, foregroundDelta(icons[2]));
+  const foregroundTopDelta = (icon?: HeroScrubIcon) => {
+    if (!icon) return 0;
+    const target = icon.featured ? FOREGROUND_TOP_TARGET_FEATURED : FOREGROUND_TOP_TARGET_RECEDING;
+    return target - icon.topPct;
+  };
+  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0, -9, FOREGROUND_START, FOREGROUND_END, !!icons[0]?.featured, foregroundLeftDelta(icons[0]), foregroundTopDelta(icons[0]));
+  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1, 0, FOREGROUND_START, FOREGROUND_END, !!icons[1]?.featured, foregroundLeftDelta(icons[1]), foregroundTopDelta(icons[1]));
+  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9, FOREGROUND_START, FOREGROUND_END, !!icons[2]?.featured, foregroundLeftDelta(icons[2]), foregroundTopDelta(icons[2]));
   const iconMotions = [icon0, icon1, icon2];
 
   // Snaps the scroll forward or back out of the foreground transition if
@@ -706,7 +731,7 @@ export function HeroScrub({
                 className={`group absolute flex flex-col items-center gap-2 ${isOpenable ? "" : "cursor-default"}`}
                 style={{
                   left: useMotionTemplate`calc(${icon.leftPct}% + ${iconMotions[index].foregroundLeftShift}%)`,
-                  top: `${icon.topPct}%`,
+                  top: useMotionTemplate`calc(${icon.topPct}% + ${iconMotions[index].foregroundTopShift}%)`,
                   x: "-50%",
                   y: iconMotions[index].y,
                   opacity: iconMotions[index].opacity,
