@@ -536,7 +536,7 @@ export function HeroScrub({
             already fully black. Bigger, with a status pill, so this reads
             as the catalog. */}
         <motion.div
-          className="absolute inset-x-0 top-[56%] z-10 flex justify-center"
+          className="absolute inset-x-0 top-[47%] z-10 flex justify-center"
           style={{ pointerEvents: iconsPointerEvents }}
         >
           <div className="relative h-[34vh] w-full max-w-lg">
@@ -556,7 +556,7 @@ export function HeroScrub({
                 }}
               >
                 <motion.span
-                  className="relative block h-24 w-24 shrink-0 sm:h-36 sm:w-36"
+                  className="relative block h-28 w-28 shrink-0 sm:h-40 sm:w-40"
                   style={{ filter: iconMotions[index].brightnessFilter }}
                 >
                   {/* Against the near-solid-black backdrop at this point in
