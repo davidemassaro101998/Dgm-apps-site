@@ -164,7 +164,7 @@ const PREMIUM_EASE = easeOut;
 // come "presto disponibile", non sparisce nel nulla).
 const FLICKER_OPACITY_KEYFRAMES = [1, 0.15, 0.82, 0.05, 0.55, 0, 0.4];
 const FLICKER_TIMES = [0, 0.08, 0.17, 0.27, 0.4, 0.55, 1];
-const FLICKER_DURATION = 0.95;
+const FLICKER_DURATION = 0.475;
 
 function useIconEntrance(
   scrollYProgress: MotionValue<number>,
@@ -217,9 +217,9 @@ function useIconEntrance(
       // Kado avanza un attimo dopo che le altre due iniziano a
       // sfarfallare -- si legge come una vera staffetta, non due cose
       // scollegate che partono nello stesso istante.
-      controls.push(animate(phaseScale, 1.35, { duration: 0.9, delay: 0.25, ease: PREMIUM_EASE }));
-      controls.push(animate(phaseLeftShift, targetLeftDelta, { duration: 0.9, delay: 0.25, ease: PREMIUM_EASE }));
-      controls.push(animate(phaseTopShift, targetTopDelta, { duration: 0.9, delay: 0.25, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseScale, 1.35, { duration: 0.45, delay: 0.125, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseLeftShift, targetLeftDelta, { duration: 0.45, delay: 0.125, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseTopShift, targetTopDelta, { duration: 0.45, delay: 0.125, ease: PREMIUM_EASE }));
     } else {
       controls.push(
         animate(phaseOpacity, FLICKER_OPACITY_KEYFRAMES, {
@@ -232,7 +232,7 @@ function useIconEntrance(
       controls.push(animate(phaseLeftShift, targetLeftDelta, { duration: FLICKER_DURATION, ease: PREMIUM_EASE }));
       controls.push(animate(phaseTopShift, targetTopDelta, { duration: FLICKER_DURATION, ease: PREMIUM_EASE }));
       controls.push(animate(phaseSaturate, 0.28, { duration: FLICKER_DURATION, ease: PREMIUM_EASE }));
-      controls.push(animate(phaseBlur, 1.5, { duration: FLICKER_DURATION, delay: 0.5, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseBlur, 1.5, { duration: FLICKER_DURATION, delay: 0.25, ease: PREMIUM_EASE }));
     }
     return () => controls.forEach((c) => c.stop());
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -491,7 +491,7 @@ export function HeroScrub({
   // Il momento finale ("Kado in primo piano") non e piu legato allo
   // scroll: una volta che il visitatore raggiunge davvero il fondo
   // della sezione (le tre app sono gia ferme al loro posto), si aspetta
-  // 2s -- il tempo di "vederle tutte e tre" -- poi parte la sequenza a
+  // 1s -- il tempo di "vederle tutte e tre" -- poi parte la sequenza a
   // tempo (sfarfallio + spegnimento di Bricolo/Forma, Kado che avanza).
   // Tornando indietro con lo scroll oltre l'arrivo delle icone, la
   // sequenza si resetta e puo ripartire da capo.
@@ -511,9 +511,9 @@ export function HeroScrub({
         clearTimers();
         const startTimer = setTimeout(() => {
           setSequencePhase("flicker");
-          const settleTimer = setTimeout(() => setSequencePhase("settled"), (FLICKER_DURATION + 0.3) * 1000);
+          const settleTimer = setTimeout(() => setSequencePhase("settled"), (FLICKER_DURATION + 0.15) * 1000);
           sequenceTimersRef.current.push(settleTimer);
-        }, 2000);
+        }, 1000);
         sequenceTimersRef.current.push(startTimer);
       } else if (p < ICONS_POP_END && sequenceArmedRef.current) {
         sequenceArmedRef.current = false;
