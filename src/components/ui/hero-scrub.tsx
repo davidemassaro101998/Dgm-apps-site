@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useMotionTemplate, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useMotionTemplate, useTransform, useReducedMotion, animate, type MotionValue } from "framer-motion";
 import { easeOut } from "motion-utils";
 
 export interface HeroScrubIcon {
@@ -148,17 +148,34 @@ function remapScrubProgress(p: number): number {
   return 1;
 }
 
+// Le tre app arrivano e restano ferme al loro posto (scroll-scrubbed,
+// come prima). Cosa succede DOPO -- Kado che avanza in primo piano,
+// Bricolo e Forma che si spengono -- non e piu una funzione dello
+// scroll: e un vero momento a tempo, innescato una volta raggiunta la
+// fine dello scroll, che una tenue interpolazione continua non
+// potrebbe mai vendere bene (uno sfarfallio non e un tween lineare).
+export type HeroSequencePhase = "idle" | "flicker" | "settled";
+
+const PREMIUM_EASE = easeOut;
+
+// Sfarfallio irregolare da lampadina morente: alcuni cali bruschi,
+// una risalita parziale, poi un altro calo -- non un semplice
+// fade-out -- prima di assestarsi su un residuo fioco (resta leggibile
+// come "presto disponibile", non sparisce nel nulla).
+const FLICKER_OPACITY_KEYFRAMES = [1, 0.15, 0.82, 0.05, 0.55, 0, 0.4];
+const FLICKER_TIMES = [0, 0.08, 0.17, 0.27, 0.4, 0.55, 1];
+const FLICKER_DURATION = 0.95;
+
 function useIconEntrance(
   scrollYProgress: MotionValue<number>,
   startBase: number,
   endBase: number,
   index: number,
   restTiltY: number,
-  foregroundStart: number,
-  foregroundEnd: number,
+  phase: HeroSequencePhase,
   isFeatured: boolean,
-  foregroundLeftDelta: number,
-  foregroundTopDelta: number
+  targetLeftDelta: number,
+  targetTopDelta: number
 ) {
   const start = startBase + index * ICON_STAGGER;
   const end = endBase + index * ICON_STAGGER;
@@ -175,28 +192,53 @@ function useIconEntrance(
   const rotateY = useTransform(scrollYProgress, [start, end], [restTiltY * 2.6, restTiltY]);
   const rotateX = useTransform(scrollYProgress, [start, end], [-24, -6]);
 
-  // Kado in primo piano: una volta che tutte e tre sono arrivate, un
-  // ultimo tratto di scroll racconta chi e il prodotto di punta. Kado
-  // cresce, sale leggermente e avanza VERAMENTE al centro (il delta
-  // orizzontale e calcolato dal chiamante come 50 - leftPct, non un
-  // numero a caso); Bricolo e Forma restano ferme in orizzontale (a
-  // parte lo scarto di Bricolo per non finire sotto Kado) ma si
-  // allineano alla STESSA altezza mentre si ritirano -- l'altezza
-  // diversa che avevano (tarata sugli oggetti nel video, non piu
-  // rilevante qui) le faceva sembrare disallineate per errore invece
-  // che deliberatamente ai due lati del prodotto di punta. Curva
-  // "expo-out" (la stessa della cascata di entrata del titolo) invece
-  // di un'interpolazione lineare, cosi il movimento accelera e poi si
-  // adagia invece di scorrere meccanico.
-  const PREMIUM_EASE = easeOut;
-  const foregroundScale = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1.35] : [1, 0.8], { ease: PREMIUM_EASE });
-  const foregroundLeftShift = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], [0, foregroundLeftDelta], { ease: PREMIUM_EASE });
-  const foregroundTopShift = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], [0, foregroundTopDelta], { ease: PREMIUM_EASE });
-  const foregroundOpacityMul = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.42]);
-  const foregroundSaturate = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [1, 1] : [1, 0.28]);
-  const foregroundBlur = useTransform(scrollYProgress, [foregroundStart, foregroundEnd], isFeatured ? [0, 0] : [0, 1.5]);
-  const foregroundFilter = useMotionTemplate`saturate(${foregroundSaturate}) blur(${foregroundBlur}px)`;
-  const combinedOpacity = useTransform([opacity, foregroundOpacityMul], (values) => {
+  // Valori del "momento finale", animati a tempo (non da scroll) via
+  // animate() quando la fase cambia -- mai resettati a "idle" durante
+  // un semplice re-render, solo quando lo scroll torna davvero indietro
+  // oltre l'arrivo delle icone (vedi l'effetto nel componente).
+  const phaseOpacity = useMotionValue(1);
+  const phaseScale = useMotionValue(1);
+  const phaseLeftShift = useMotionValue(0);
+  const phaseTopShift = useMotionValue(0);
+  const phaseSaturate = useMotionValue(1);
+  const phaseBlur = useMotionValue(0);
+  const phaseFilter = useMotionTemplate`saturate(${phaseSaturate}) blur(${phaseBlur}px)`;
+
+  useEffect(() => {
+    const controls: ReturnType<typeof animate>[] = [];
+    if (phase === "idle") {
+      controls.push(animate(phaseOpacity, 1, { duration: 0.3 }));
+      controls.push(animate(phaseScale, 1, { duration: 0.3 }));
+      controls.push(animate(phaseLeftShift, 0, { duration: 0.3 }));
+      controls.push(animate(phaseTopShift, 0, { duration: 0.3 }));
+      controls.push(animate(phaseSaturate, 1, { duration: 0.3 }));
+      controls.push(animate(phaseBlur, 0, { duration: 0.3 }));
+    } else if (isFeatured) {
+      // Kado avanza un attimo dopo che le altre due iniziano a
+      // sfarfallare -- si legge come una vera staffetta, non due cose
+      // scollegate che partono nello stesso istante.
+      controls.push(animate(phaseScale, 1.35, { duration: 0.9, delay: 0.25, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseLeftShift, targetLeftDelta, { duration: 0.9, delay: 0.25, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseTopShift, targetTopDelta, { duration: 0.9, delay: 0.25, ease: PREMIUM_EASE }));
+    } else {
+      controls.push(
+        animate(phaseOpacity, FLICKER_OPACITY_KEYFRAMES, {
+          duration: FLICKER_DURATION,
+          times: FLICKER_TIMES,
+          ease: "linear",
+        })
+      );
+      controls.push(animate(phaseScale, 0.8, { duration: FLICKER_DURATION, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseLeftShift, targetLeftDelta, { duration: FLICKER_DURATION, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseTopShift, targetTopDelta, { duration: FLICKER_DURATION, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseSaturate, 0.28, { duration: FLICKER_DURATION, ease: PREMIUM_EASE }));
+      controls.push(animate(phaseBlur, 1.5, { duration: FLICKER_DURATION, delay: 0.5, ease: PREMIUM_EASE }));
+    }
+    return () => controls.forEach((c) => c.stop());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
+
+  const combinedOpacity = useTransform([opacity, phaseOpacity], (values) => {
     const [a, b] = values as number[];
     return a * b;
   });
@@ -207,10 +249,10 @@ function useIconEntrance(
     brightnessFilter,
     rotateY,
     rotateX,
-    foregroundScale,
-    foregroundLeftShift,
-    foregroundTopShift,
-    foregroundFilter,
+    phaseScale,
+    phaseLeftShift,
+    phaseTopShift,
+    phaseFilter,
   };
 }
 
@@ -409,13 +451,6 @@ export function HeroScrub({
   const iconsPointerEvents = useTransform(scrollYProgress, (v) =>
     v > ICONS_POP_END + ICON_STAGGER * 2 ? "auto" : "none"
   );
-  // Last beat of the scroll: Kado (the flagship) advances toward center
-  // and grows further; Bricolo and Forma -- "coming soon", not open to
-  // visitors yet -- recede and fade instead. Starts safely after every
-  // tile has finished arriving (including index 2's own staggered
-  // entrance window) and stays inside the [0,1] scroll budget.
-  const FOREGROUND_START = ICONS_POP_END + 0.025;
-  const FOREGROUND_END = FOREGROUND_START + 0.028;
   // Bricolo sits at leftPct 50 -- exactly where Kado advances to. Left
   // alone it would end up stacked dead-center under Kado, reading as a
   // layout bug rather than "Kado stepping to the front". Both pushed
@@ -453,45 +488,49 @@ export function HeroScrub({
     const target = icon.featured ? FOREGROUND_TOP_TARGET_FEATURED : FOREGROUND_TOP_TARGET_RECEDING;
     return target - icon.topPct;
   };
-  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0, -9, FOREGROUND_START, FOREGROUND_END, !!icons[0]?.featured, foregroundLeftDelta(icons[0]), foregroundTopDelta(icons[0]));
-  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1, 0, FOREGROUND_START, FOREGROUND_END, !!icons[1]?.featured, foregroundLeftDelta(icons[1]), foregroundTopDelta(icons[1]));
-  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9, FOREGROUND_START, FOREGROUND_END, !!icons[2]?.featured, foregroundLeftDelta(icons[2]), foregroundTopDelta(icons[2]));
-  const iconMotions = [icon0, icon1, icon2];
+  // Il momento finale ("Kado in primo piano") non e piu legato allo
+  // scroll: una volta che il visitatore raggiunge davvero il fondo
+  // della sezione (le tre app sono gia ferme al loro posto), si aspetta
+  // 2s -- il tempo di "vederle tutte e tre" -- poi parte la sequenza a
+  // tempo (sfarfallio + spegnimento di Bricolo/Forma, Kado che avanza).
+  // Tornando indietro con lo scroll oltre l'arrivo delle icone, la
+  // sequenza si resetta e puo ripartire da capo.
+  const [sequencePhase, setSequencePhase] = useState<HeroSequencePhase>("idle");
+  const sequenceArmedRef = useRef(false);
+  const sequenceTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  // Snaps the scroll forward or back out of the foreground transition if
-  // it comes to rest partway through -- without this a light flick could
-  // leave Kado half-grown and Bricolo/Forma half-faded, a visibly broken
-  // in-between frame. Debounced on the scroll event itself (fires once
-  // scrolling has actually stopped, not on every tick), and only acts
-  // when the rest position falls strictly inside the transition window;
-  // everywhere else on the page scrolls exactly as normal.
   useEffect(() => {
     if (reduced) return;
-    const section = sectionRef.current;
-    if (!section) return;
-    let snapTimer: ReturnType<typeof setTimeout> | null = null;
-
-    function onScroll() {
-      if (snapTimer) clearTimeout(snapTimer);
-      snapTimer = setTimeout(() => {
-        const rect = section!.getBoundingClientRect();
-        const total = rect.height - window.innerHeight;
-        if (total <= 0) return;
-        const p = Math.min(1, Math.max(0, -rect.top / total));
-        if (p > FOREGROUND_START && p < FOREGROUND_END) {
-          const target = FOREGROUND_END - p <= p - FOREGROUND_START ? FOREGROUND_END : FOREGROUND_START;
-          const docTop = rect.top + window.scrollY;
-          window.scrollTo({ top: docTop + target * total, behavior: "smooth" });
-        }
-      }, 140);
+    function clearTimers() {
+      sequenceTimersRef.current.forEach(clearTimeout);
+      sequenceTimersRef.current = [];
     }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const unsubscribe = scrollYProgress.on("change", (p) => {
+      if (p >= 0.99 && !sequenceArmedRef.current) {
+        sequenceArmedRef.current = true;
+        clearTimers();
+        const startTimer = setTimeout(() => {
+          setSequencePhase("flicker");
+          const settleTimer = setTimeout(() => setSequencePhase("settled"), (FLICKER_DURATION + 0.3) * 1000);
+          sequenceTimersRef.current.push(settleTimer);
+        }, 2000);
+        sequenceTimersRef.current.push(startTimer);
+      } else if (p < ICONS_POP_END && sequenceArmedRef.current) {
+        sequenceArmedRef.current = false;
+        clearTimers();
+        setSequencePhase("idle");
+      }
+    });
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (snapTimer) clearTimeout(snapTimer);
+      unsubscribe();
+      clearTimers();
     };
-  }, [reduced, FOREGROUND_START, FOREGROUND_END]);
+  }, [reduced, scrollYProgress, ICONS_POP_END]);
+
+  const icon0 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 0, -9, sequencePhase, !!icons[0]?.featured, foregroundLeftDelta(icons[0]), foregroundTopDelta(icons[0]));
+  const icon1 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 1, 0, sequencePhase, !!icons[1]?.featured, foregroundLeftDelta(icons[1]), foregroundTopDelta(icons[1]));
+  const icon2 = useIconEntrance(scrollYProgress, ICONS_POP_START, ICONS_POP_END, 2, 9, sequencePhase, !!icons[2]?.featured, foregroundLeftDelta(icons[2]), foregroundTopDelta(icons[2]));
+  const iconMotions = [icon0, icon1, icon2];
 
   // Press feedback: grows the card and fires a light burst instead of the
   // usual press-to-shrink pattern -- these open a whole other app in a new
@@ -732,13 +771,13 @@ export function HeroScrub({
                 onClick={!isOpenable ? (e) => e.preventDefault() : undefined}
                 className={`group absolute flex flex-col items-center gap-2 ${isOpenable ? "" : "cursor-default"}`}
                 style={{
-                  left: useMotionTemplate`calc(${icon.leftPct}% + ${iconMotions[index].foregroundLeftShift}%)`,
-                  top: useMotionTemplate`calc(${icon.topPct}% + ${iconMotions[index].foregroundTopShift}%)`,
+                  left: useMotionTemplate`calc(${icon.leftPct}% + ${iconMotions[index].phaseLeftShift}%)`,
+                  top: useMotionTemplate`calc(${icon.topPct}% + ${iconMotions[index].phaseTopShift}%)`,
                   x: "-50%",
                   y: iconMotions[index].y,
                   opacity: iconMotions[index].opacity,
-                  scale: iconMotions[index].foregroundScale,
-                  filter: iconMotions[index].foregroundFilter,
+                  scale: iconMotions[index].phaseScale,
+                  filter: iconMotions[index].phaseFilter,
                   zIndex: icon.featured ? 20 : 10,
                 }}
               >
