@@ -7,10 +7,11 @@
 
 /* Single static instance (weight 900, width 125% -- true expanded
    letterforms, not synthesized) self-hosted from Google Fonts' own build of
-   Archivo. Reserved for the three big cinematic hero-scrub headline moments
-   only -- everywhere else (nav, footer, small labels) uses the variable
-   "Archivo Variable" family above, which carries a real weight range so
-   font-semibold/font-bold never fall back to faux-bold synthesis either. */
+   Archivo. Reserved for the one big typographic moment on the page (the
+   ghost word behind the carousel) -- everywhere else (nav, app names,
+   small labels) uses the variable "Archivo Variable" family above, which
+   carries a real weight range so font-semibold/font-bold never fall back
+   to faux-bold synthesis either. */
 @font-face {
   font-family: "Archivo Expanded";
   font-style: normal;
@@ -85,21 +86,3 @@ body::-webkit-scrollbar {
   background-image: linear-gradient(120deg, #8B5CF6 0%, #22D3EE 50%, #8B5CF6 100%);
 }
 
-/* The hero background video is driven entirely by scroll (currentTime),
-   never meant to be tapped and "played" by the visitor -- but WebKit
-   browsers draw their own big native play-button overlay on a paused
-   <video poster> without `controls`, regardless of `autoplay`/`muted`.
-   The one actually seen on real iOS Safari is the *overlay* play button
-   (-webkit-media-controls-overlay-play-button), distinct from the small
-   in-bar play button and from Android/WebView's start-playback-button --
-   hide all of them everywhere they can appear. */
-.hero-scrub-video::-webkit-media-controls,
-.hero-scrub-video::-webkit-media-controls-overlay-play-button,
-.hero-scrub-video::-webkit-media-controls-start-playback-button,
-.hero-scrub-video::-webkit-media-controls-play-button,
-.hero-scrub-video::-webkit-media-controls-panel {
-  display: none !important;
-  -webkit-appearance: none;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
