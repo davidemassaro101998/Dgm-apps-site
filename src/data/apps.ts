@@ -2,78 +2,255 @@ import type { Language } from "../context/LanguageContext";
 
 export type AppStatus = "live" | "beta" | "presto";
 
+type L<T> = Record<Language, T>;
+
+export interface AppSpec {
+  label: L<string>;
+  value: L<string>;
+}
+
 export interface AppEntry {
   id: string;
-  name: Record<Language, string>;
-  tagline: Record<Language, string>;
+  name: string;
+  /** Una riga, la promessa. Non uno slogan: cosa fa, detto in chiaro. */
+  tagline: L<string>;
+  /** La frase-tesi comune a tutta la famiglia, declinata sul dominio:
+   *  l'AI capisce cosa ti serve, tu lo compri su Amazon. */
+  thesis: L<string>;
   status: AppStatus;
-  accent: "violet" | "cyan" | "amber";
   href: string;
-  image?: string;
+  iconUrl: string;
+
+  /* ---- Sistema cromatico -------------------------------------------
+   * `core` e la tinta di categoria (congruenza colore-prodotto: il
+   * cervello riconosce la categoria dal colore prima di leggere il
+   * nome). `glow` e l'alone ambientale. Il colore dell'AZIONE non e
+   * qui: la CTA e sempre bianca su fondo scuro, la massima salienza
+   * per luminanza, uguale per tutte e tre -- cosi la tinta fa il
+   * lavoro emotivo e il pulsante fa il lavoro di richiamo, senza che
+   * i due si contendano l'attenzione. */
+  core: string;
+  glow: string;
+
+  /** Cosa fa, in tre affermazioni concrete. Niente aggettivi. */
+  features: L<string[]>;
+  /** Il percorso reale dentro l'app, passo per passo. */
+  steps: L<string[]>;
+  /** Dati verificabili, non promesse. */
+  specs: AppSpec[];
 }
+
+const SPEC_MARKETS: AppSpec = {
+  label: { it: "Mercati", en: "Markets", es: "Mercados", fr: "Marchés", de: "Märkte" },
+  value: {
+    it: "18 store Amazon",
+    en: "18 Amazon stores",
+    es: "18 tiendas Amazon",
+    fr: "18 boutiques Amazon",
+    de: "18 Amazon-Stores",
+  },
+};
+
+const SPEC_LANGUAGES: AppSpec = {
+  label: { it: "Lingue", en: "Languages", es: "Idiomas", fr: "Langues", de: "Sprachen" },
+  value: { it: "5", en: "5", es: "5", fr: "5", de: "5" },
+};
+
+const SPEC_ACCOUNT: AppSpec = {
+  label: { it: "Account", en: "Account", es: "Cuenta", fr: "Compte", de: "Konto" },
+  value: {
+    it: "Non serve",
+    en: "Not required",
+    es: "No hace falta",
+    fr: "Pas nécessaire",
+    de: "Nicht nötig",
+  },
+};
+
+const SPEC_INPUT: AppSpec = {
+  label: { it: "Ingressi", en: "Inputs", es: "Entradas", fr: "Entrées", de: "Eingaben" },
+  value: {
+    it: "Voce, foto, testo",
+    en: "Voice, photo, text",
+    es: "Voz, foto, texto",
+    fr: "Voix, photo, texte",
+    de: "Sprache, Foto, Text",
+  },
+};
 
 export const apps: AppEntry[] = [
   {
     id: "kado",
-    name: {
-      it: "Kado AI",
-      en: "Kado AI",
-      es: "Kado AI",
-      fr: "Kado AI",
-      de: "Kado AI",
-    },
+    name: "Kado AI",
     tagline: {
-      it: "Il regalo perfetto in 3 tap. Parli o scegli, l'AI lo trova su Amazon.",
-      en: "The perfect gift in 3 taps. Speak or pick, AI finds it on Amazon.",
-      es: "El regalo perfecto en 3 toques. Habla o elige, la IA lo encuentra en Amazon.",
-      fr: "Le cadeau parfait en 3 taps. Parlez ou choisissez, l'IA le trouve sur Amazon.",
-      de: "Das perfekte Geschenk in 3 Taps. Sprich oder wähle, die KI findet es bei Amazon.",
+      it: "Il regalo giusto, trovato mentre ci pensi ancora.",
+      en: "The right gift, found while you're still thinking about it.",
+      es: "El regalo justo, encontrado mientras aún lo piensas.",
+      fr: "Le bon cadeau, trouvé pendant que vous y pensez encore.",
+      de: "Das richtige Geschenk, gefunden während du noch überlegst.",
+    },
+    thesis: {
+      it: "Dici per chi è. L'AI capisce. Tu lo compri su Amazon.",
+      en: "Say who it's for. The AI understands. You buy it on Amazon.",
+      es: "Dices para quién es. La IA entiende. Tú lo compras en Amazon.",
+      fr: "Vous dites pour qui. L'IA comprend. Vous l'achetez sur Amazon.",
+      de: "Sag für wen. Die KI versteht. Du kaufst es bei Amazon.",
     },
     status: "live",
-    accent: "cyan",
     href: "https://kado-app-production-d2c1.up.railway.app",
-    image: "/icons/kado.svg",
+    iconUrl: "/icons/kado.svg",
+    core: "#FF2E7E",
+    glow: "#FFB347",
+    features: {
+      it: [
+        "Parla, fotografa o scrivi: l'AI capisce chi è la persona.",
+        "Tre idee vere, con prezzo e link diretto su Amazon.",
+        "Nessun account, nessuna mail, nessuna attesa.",
+      ],
+      en: [
+        "Speak, snap a photo or type: the AI understands the person.",
+        "Three real ideas, with price and a direct Amazon link.",
+        "No account, no email, no waiting.",
+      ],
+      es: [
+        "Habla, haz una foto o escribe: la IA entiende a la persona.",
+        "Tres ideas reales, con precio y enlace directo a Amazon.",
+        "Sin cuenta, sin correo, sin esperas.",
+      ],
+      fr: [
+        "Parlez, photographiez ou écrivez : l'IA comprend la personne.",
+        "Trois idées réelles, avec prix et lien direct sur Amazon.",
+        "Pas de compte, pas d'e-mail, pas d'attente.",
+      ],
+      de: [
+        "Sprich, fotografiere oder tippe: die KI versteht die Person.",
+        "Drei echte Ideen, mit Preis und direktem Amazon-Link.",
+        "Kein Konto, keine E-Mail, kein Warten.",
+      ],
+    },
+    steps: {
+      it: ["Per chi è", "Che tipo è", "Quanto spendi", "I regali"],
+      en: ["Who it's for", "What they're like", "Your budget", "The gifts"],
+      es: ["Para quién", "Cómo es", "Cuánto gastas", "Los regalos"],
+      fr: ["Pour qui", "Son style", "Votre budget", "Les cadeaux"],
+      de: ["Für wen", "Welcher Typ", "Dein Budget", "Die Geschenke"],
+    },
+    specs: [SPEC_MARKETS, SPEC_INPUT, SPEC_LANGUAGES, SPEC_ACCOUNT],
   },
   {
     id: "bricolo",
-    name: {
-      it: "Bricolo AI",
-      en: "Bricolo AI",
-      es: "Bricolo AI",
-      fr: "Bricolo AI",
-      de: "Bricolo AI",
-    },
+    name: "Bricolo AI",
     tagline: {
-      it: "L'attrezzo giusto per casa, giardino, bricolage e officina, trovato subito.",
-      en: "The right tool for home, garden, DIY and the workshop, found instantly.",
-      es: "La herramienta justa para casa, jardín, bricolaje y taller, encontrada al instante.",
-      fr: "Le bon outil pour la maison, le jardin, le bricolage et l'atelier, trouvé instantanément.",
-      de: "Das richtige Werkzeug für Haus, Garten, Heimwerken und Werkstatt, sofort gefunden.",
+      it: "L'attrezzo giusto, senza chiedere a nessuno.",
+      en: "The right tool, without asking anyone.",
+      es: "La herramienta justa, sin preguntar a nadie.",
+      fr: "Le bon outil, sans demander à personne.",
+      de: "Das richtige Werkzeug, ohne jemanden zu fragen.",
+    },
+    thesis: {
+      it: "Mostri il problema. L'AI capisce. Tu lo risolvi con Amazon.",
+      en: "Show the problem. The AI understands. You fix it with Amazon.",
+      es: "Muestras el problema. La IA entiende. Lo resuelves con Amazon.",
+      fr: "Vous montrez le problème. L'IA comprend. Vous le réglez avec Amazon.",
+      de: "Zeig das Problem. Die KI versteht. Du löst es mit Amazon.",
     },
     status: "presto",
-    accent: "amber",
     href: "https://bricolo-app-production.up.railway.app",
-    image: "/icons/bricolo.svg",
+    iconUrl: "/icons/bricolo.svg",
+    core: "#FF8A1F",
+    glow: "#FFC24D",
+    features: {
+      it: [
+        "Fotografa il guasto o descrivilo: l'AI riconosce il lavoro.",
+        "Ti dice l'attrezzo esatto, non una categoria generica.",
+        "Casa, giardino, officina: tre mondi, una risposta sola.",
+      ],
+      en: [
+        "Photograph the problem or describe it: the AI reads the job.",
+        "It names the exact tool, not a generic category.",
+        "Home, garden, workshop: three worlds, one answer.",
+      ],
+      es: [
+        "Fotografía la avería o descríbela: la IA reconoce el trabajo.",
+        "Te dice la herramienta exacta, no una categoría genérica.",
+        "Casa, jardín, taller: tres mundos, una sola respuesta.",
+      ],
+      fr: [
+        "Photographiez la panne ou décrivez-la : l'IA lit le travail.",
+        "Elle nomme l'outil exact, pas une catégorie générique.",
+        "Maison, jardin, atelier : trois mondes, une seule réponse.",
+      ],
+      de: [
+        "Fotografiere den Schaden oder beschreibe ihn: die KI erkennt die Arbeit.",
+        "Sie nennt das exakte Werkzeug, keine generische Kategorie.",
+        "Haus, Garten, Werkstatt: drei Welten, eine Antwort.",
+      ],
+    },
+    steps: {
+      it: ["Che lavoro", "Dove", "Che livello", "Gli attrezzi"],
+      en: ["The job", "Where", "Your level", "The tools"],
+      es: ["Qué trabajo", "Dónde", "Qué nivel", "Las herramientas"],
+      fr: ["Le travail", "Où", "Votre niveau", "Les outils"],
+      de: ["Welche Arbeit", "Wo", "Dein Level", "Die Werkzeuge"],
+    },
+    specs: [SPEC_MARKETS, SPEC_INPUT, SPEC_LANGUAGES, SPEC_ACCOUNT],
   },
   {
     id: "forma",
-    name: {
-      it: "Forma AI",
-      en: "Forma AI",
-      es: "Forma AI",
-      fr: "Forma AI",
-      de: "Forma AI",
-    },
+    name: "Forma AI",
     tagline: {
-      it: "Il prodotto giusto per allenarti o recuperare, scelto sul tuo obiettivo.",
-      en: "The right product to train or recover, matched to your goal.",
-      es: "El producto justo para entrenar o recuperarte, elegido según tu objetivo.",
-      fr: "Le bon produit pour s'entraîner ou récupérer, choisi selon votre objectif.",
-      de: "Das richtige Produkt zum Trainieren oder Erholen, passend zu deinem Ziel.",
+      it: "L'attrezzatura giusta per l'obiettivo che hai davvero.",
+      en: "The right gear for the goal you actually have.",
+      es: "El equipo justo para el objetivo que tienes de verdad.",
+      fr: "L'équipement adapté à l'objectif que vous avez vraiment.",
+      de: "Die richtige Ausrüstung für dein tatsächliches Ziel.",
+    },
+    thesis: {
+      it: "Dici il tuo obiettivo. L'AI capisce. Tu ti attrezzi su Amazon.",
+      en: "State your goal. The AI understands. You gear up on Amazon.",
+      es: "Dices tu objetivo. La IA entiende. Te equipas en Amazon.",
+      fr: "Vous dites votre objectif. L'IA comprend. Vous vous équipez sur Amazon.",
+      de: "Nenn dein Ziel. Die KI versteht. Du rüstest dich bei Amazon aus.",
     },
     status: "presto",
-    accent: "violet",
     href: "https://forma-app-production.up.railway.app",
-    image: "/icons/forma.svg",
+    iconUrl: "/icons/forma.svg",
+    core: "#38F27A",
+    glow: "#A8FF60",
+    features: {
+      it: [
+        "Obiettivo, spazio e livello: l'AI parte da dove sei davvero.",
+        "Attrezzi che servono, non la lista completa del negozio.",
+        "Allenamento e recupero trattati come la stessa cosa.",
+      ],
+      en: [
+        "Goal, space and level: the AI starts from where you actually are.",
+        "The gear you need, not the shop's whole catalogue.",
+        "Training and recovery treated as one thing.",
+      ],
+      es: [
+        "Objetivo, espacio y nivel: la IA parte de donde estás de verdad.",
+        "El equipo que sirve, no el catálogo entero de la tienda.",
+        "Entrenamiento y recuperación tratados como una sola cosa.",
+      ],
+      fr: [
+        "Objectif, espace et niveau : l'IA part d'où vous êtes vraiment.",
+        "Le matériel utile, pas tout le catalogue du magasin.",
+        "Entraînement et récupération traités comme un seul sujet.",
+      ],
+      de: [
+        "Ziel, Platz und Level: die KI startet da, wo du wirklich stehst.",
+        "Die Ausrüstung, die zählt, nicht der ganze Ladenkatalog.",
+        "Training und Erholung als eine Sache behandelt.",
+      ],
+    },
+    steps: {
+      it: ["L'obiettivo", "Lo spazio", "Il livello", "L'attrezzatura"],
+      en: ["The goal", "The space", "The level", "The gear"],
+      es: ["El objetivo", "El espacio", "El nivel", "El equipo"],
+      fr: ["L'objectif", "L'espace", "Le niveau", "L'équipement"],
+      de: ["Das Ziel", "Der Platz", "Das Level", "Die Ausrüstung"],
+    },
+    specs: [SPEC_MARKETS, SPEC_INPUT, SPEC_LANGUAGES, SPEC_ACCOUNT],
   },
 ];

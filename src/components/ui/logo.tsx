@@ -5,31 +5,40 @@ interface LogoProps {
   iconOnly?: boolean;
 }
 
-// Marchio: due anelli sovrapposti (viola + ciano) con un bagliore al centro
-// dove si incontrano — la stessa idea dei due fari volumetrici della hero
-// e del marchio "due persone" già usato in Chi Siamo, elevata a logo vero.
+/* Il marchio e la famiglia: tre anelli, uno per app, nelle tinte di
+   categoria vere (rosa-oro Kado, ambra Bricolo, verde Forma). Si
+   sovrappongono appena, e dove si toccano la luce sale -- tre prodotti
+   distinti che condividono lo stesso modo di funzionare. Nessun colore
+   inventato per il logo: se una tinta cambia nel catalogo, cambia qui. */
+const RINGS = [
+  { cx: 17, stroke: "#FF2E7E" },
+  { cx: 24, stroke: "#FF8A1F" },
+  { cx: 31, stroke: "#38F27A" },
+];
+
 export function Logo({ className, iconOnly = false }: LogoProps) {
   return (
     <span className={cn("inline-flex items-center gap-2.5 drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]", className)}>
       <svg width="28" height="28" viewBox="0 0 48 48" className="shrink-0" aria-hidden>
         <defs>
           <radialGradient id="logoGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#C4B5FD" stopOpacity="0.9" />
-            <stop offset="45%" stopColor="#8B5CF6" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#22D3EE" stopOpacity="0" />
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
           </radialGradient>
-          <linearGradient id="logoRingA" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#A78BFA" />
-            <stop offset="100%" stopColor="#8B5CF6" />
-          </linearGradient>
-          <linearGradient id="logoRingB" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#67E8F9" />
-            <stop offset="100%" stopColor="#22D3EE" />
-          </linearGradient>
         </defs>
-        <circle cx="24" cy="24" r="13" fill="url(#logoGlow)" opacity="0.55" />
-        <circle cx="18" cy="24" r="12" fill="none" stroke="url(#logoRingA)" strokeWidth="2.75" />
-        <circle cx="30" cy="24" r="12" fill="none" stroke="url(#logoRingB)" strokeWidth="2.75" />
+        <circle cx="24" cy="24" r="14" fill="url(#logoGlow)" opacity="0.5" />
+        {RINGS.map((ring) => (
+          <circle
+            key={ring.cx}
+            cx={ring.cx}
+            cy="24"
+            r="10"
+            fill="none"
+            stroke={ring.stroke}
+            strokeWidth="2.5"
+            opacity="0.92"
+          />
+        ))}
       </svg>
       {!iconOnly && (
         <span className="font-display text-sm font-bold tracking-tight text-mist-50">

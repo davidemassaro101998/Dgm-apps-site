@@ -21,15 +21,26 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* Palette -------------------------------------------------------------
+   Il fondo non e un grigio neutro ne un nero puro: e un quasi-nero con
+   una minima deriva viola. Su un fondo scuro il contrasto di luminanza
+   fa tutto il lavoro di richiamo, quindi le tinte sature restano
+   disponibili per una cosa sola per volta -- la categoria dell'app --
+   invece di essere spese sull'interfaccia.
+
+   Le tinte di categoria non stanno qui ma in data/apps.ts, una per app
+   (congruenza colore-prodotto: rosa-oro = dono, ambra = officina,
+   verde = vitalita). Il colore dell'AZIONE e sempre e solo il bianco:
+   massima luminanza sul fondo piu scuro della scena, uguale in tutti e
+   tre i contesti, cosi il gesto da imparare resta uno. */
 @theme {
-  --color-ink-950: #07070B;
-  --color-ink-900: #0B0B12;
-  --color-mist-400: #8B8B9E;
-  --color-mist-200: #C7C7D6;
-  --color-mist-50: #F5F5F9;
-  --color-violet-500: #8B5CF6;
-  --color-violet-400: #A78BFA;
-  --color-cyan-300: #67E8F9;
+  --color-ink-950: #08070A;
+  --color-ink-900: #0B0A0F;
+  --color-ink-800: #12101A;
+  --color-mist-500: #6E6878;
+  --color-mist-400: #8B8496;
+  --color-mist-200: #C7C2CE;
+  --color-mist-50: #F6F4F8;
   --font-display: "Archivo Variable", sans-serif;
   --font-display-hero: "Archivo Expanded", "Archivo Variable", sans-serif;
   --font-body: "Instrument Sans", sans-serif;
@@ -37,11 +48,15 @@
 
 html, body {
   width: 100%;
-  background-color: #07070b;
-  color: #f5f5f9;
-  scroll-behavior: smooth;
+  height: 100%;
+  overflow: hidden;
+  background-color: #08070a;
+  color: #f6f4f8;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  /* Il tamburo si gira trascinando: il browser non deve interpretare lo
+     stesso gesto come "tira per aggiornare" o rimbalzo di pagina. */
+  overscroll-behavior: none;
 }
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {

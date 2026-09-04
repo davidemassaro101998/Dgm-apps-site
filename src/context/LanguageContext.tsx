@@ -25,16 +25,15 @@ export interface Translations {
   menuTitle: string;
   closeMenu: string;
 
-  // Hero (scroll-scrubbed)
-  heroCta: string;
-  heroScrubTaglineLine1: string;
-  heroScrubTaglineLine2: string;
-  heroScrubAboutLine1: string;
-  heroScrubAboutLine2: string;
-  heroScrubAboutLine3: string;
-  heroScrubAboutLine4: string;
-  heroScrubCatalogHeading: string;
-  heroScrubVideoUnavailable: string;
+  // Hero (tamburo delle app)
+  /** La riga che vale per tutte e tre: l'AI capisce, Amazon consegna. */
+  familyThesis: string;
+  discover: string;
+  useItNow: string;
+  howItWorks: string;
+  prevApp: string;
+  nextApp: string;
+  backToCatalog: string;
 
   // App status labels (used in the Header's "All Apps" menu)
   statusLive: string;
@@ -72,15 +71,13 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menu",
     closeMenu: "Chiudi menu",
 
-    heroCta: "Prova le app",
-    heroScrubTaglineLine1: "La risposta giusta.",
-    heroScrubTaglineLine2: "In 20 secondi.",
-    heroScrubAboutLine1: "Niente account.",
-    heroScrubAboutLine2: "Niente notifiche inutili.",
-    heroScrubAboutLine3: "Apri, risolvi, chiudi.",
-    heroScrubAboutLine4: "Tutto qui.",
-    heroScrubCatalogHeading: "Cosa ti serve oggi?",
-    heroScrubVideoUnavailable: "Video brand in arrivo",
+    familyThesis: "L'AI capisce · Tu trovi su Amazon",
+    discover: "Scopri",
+    useItNow: "Usala ora",
+    howItWorks: "Come funziona",
+    prevApp: "App precedente",
+    nextApp: "App successiva",
+    backToCatalog: "Torna al catalogo",
 
     statusLive: "Disponibile",
     statusBeta: "Beta",
@@ -114,15 +111,13 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menu",
     closeMenu: "Close menu",
 
-    heroCta: "Try the apps",
-    heroScrubTaglineLine1: "The right answer.",
-    heroScrubTaglineLine2: "In 20 seconds.",
-    heroScrubAboutLine1: "No accounts.",
-    heroScrubAboutLine2: "No pointless notifications.",
-    heroScrubAboutLine3: "Open, solve, close.",
-    heroScrubAboutLine4: "That's it.",
-    heroScrubCatalogHeading: "What do you need today?",
-    heroScrubVideoUnavailable: "Brand video coming soon",
+    familyThesis: "AI understands · You find it on Amazon",
+    discover: "Discover",
+    useItNow: "Use it now",
+    howItWorks: "How it works",
+    prevApp: "Previous app",
+    nextApp: "Next app",
+    backToCatalog: "Back to catalogue",
 
     statusLive: "Available",
     statusBeta: "Beta",
@@ -156,15 +151,13 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menú",
     closeMenu: "Cerrar menú",
 
-    heroCta: "Prueba las apps",
-    heroScrubTaglineLine1: "La respuesta correcta.",
-    heroScrubTaglineLine2: "En 20 segundos.",
-    heroScrubAboutLine1: "Sin cuentas.",
-    heroScrubAboutLine2: "Sin notificaciones inútiles.",
-    heroScrubAboutLine3: "Abre, resuelve, cierra.",
-    heroScrubAboutLine4: "Eso es todo.",
-    heroScrubCatalogHeading: "¿Qué necesitas hoy?",
-    heroScrubVideoUnavailable: "Vídeo de marca próximamente",
+    familyThesis: "La IA entiende · Tú lo encuentras en Amazon",
+    discover: "Descubrir",
+    useItNow: "Úsala ya",
+    howItWorks: "Cómo funciona",
+    prevApp: "App anterior",
+    nextApp: "App siguiente",
+    backToCatalog: "Volver al catálogo",
 
     statusLive: "Disponible",
     statusBeta: "Beta",
@@ -198,15 +191,13 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menu",
     closeMenu: "Fermer le menu",
 
-    heroCta: "Essayer les apps",
-    heroScrubTaglineLine1: "La bonne réponse.",
-    heroScrubTaglineLine2: "En 20 secondes.",
-    heroScrubAboutLine1: "Pas de compte.",
-    heroScrubAboutLine2: "Pas de notifications inutiles.",
-    heroScrubAboutLine3: "Ouvrir, résoudre, fermer.",
-    heroScrubAboutLine4: "C'est tout.",
-    heroScrubCatalogHeading: "Il te faut quoi ?",
-    heroScrubVideoUnavailable: "Vidéo de marque bientôt disponible",
+    familyThesis: "L'IA comprend · Vous trouvez sur Amazon",
+    discover: "Découvrir",
+    useItNow: "L'utiliser",
+    howItWorks: "Comment ça marche",
+    prevApp: "App précédente",
+    nextApp: "App suivante",
+    backToCatalog: "Retour au catalogue",
 
     statusLive: "Disponible",
     statusBeta: "Bêta",
@@ -240,15 +231,13 @@ const translations: Record<Language, Translations> = {
     menuTitle: "Menü",
     closeMenu: "Menü schließen",
 
-    heroCta: "Apps ausprobieren",
-    heroScrubTaglineLine1: "Die richtige Antwort.",
-    heroScrubTaglineLine2: "In 20 Sekunden.",
-    heroScrubAboutLine1: "Kein Konto.",
-    heroScrubAboutLine2: "Keine unnötigen Benachrichtigungen.",
-    heroScrubAboutLine3: "Öffnen, lösen, schließen.",
-    heroScrubAboutLine4: "Mehr nicht.",
-    heroScrubCatalogHeading: "Was brauchst du heute?",
-    heroScrubVideoUnavailable: "Markenvideo folgt in Kürze",
+    familyThesis: "Die KI versteht · Du findest es bei Amazon",
+    discover: "Entdecken",
+    useItNow: "Jetzt nutzen",
+    howItWorks: "So funktioniert's",
+    prevApp: "Vorherige App",
+    nextApp: "Nächste App",
+    backToCatalog: "Zurück zum Katalog",
 
     statusLive: "Verfügbar",
     statusBeta: "Beta",
