@@ -13,10 +13,10 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const DUR = 0.65;
 
 /* Dove il pavimento incontra il vuoto. Cade appena sotto la base dei
-   telefoni (che finiscono intorno al 71% dell'altezza con le misure
-   qui sotto): piu in alto l'orizzonte li taglia a meta, piu in basso
-   tornano a galleggiare nel nero. */
-const HORIZON = "72%";
+   telefoni, che con le misure qui sotto finiscono intorno al 77%: piu
+   in alto l'orizzonte li taglia a meta, piu in basso tornano a
+   galleggiare nel nero. */
+const HORIZON = "78%";
 
 function hexToRgba(hex: string, alpha: number): string {
   const v = parseInt(hex.replace("#", ""), 16);
@@ -265,44 +265,46 @@ export function RevolverHero({
           davanti; il rilievo e una pila di ombre che scende in diagonale
           (la stessa direzione della luce del resto della scena) e prende
           la tinta dell'app, non un grigio qualsiasi. */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-[17%] flex select-none justify-center"
-        style={{ perspective: "900px", zIndex: Z.insegna }}
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 top-[13%] flex select-none justify-center px-4"
+        style={{ perspective: "1100px", zIndex: Z.insegna }}
+        /* Con la scheda aperta l'insegna si spegne: il nome grande ce
+           l'ha gia la scheda, e tenerla accesa la faceva finire sotto
+           al testo, illeggibili tutte e due. */
+        animate={{ opacity: selected ? 0 : 1 }}
+        transition={{ duration: 0.35, ease: EASE }}
       >
         <AnimatePresence mode="wait">
           <motion.span
             key={scene.id}
-            initial={{ opacity: 0, y: 30, rotateX: 18, filter: "blur(18px)" }}
-            animate={{ opacity: 1, y: 0, rotateX: 8, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -30, rotateX: 18, filter: "blur(18px)" }}
+            initial={{ opacity: 0, y: 26, rotateX: 14, filter: "blur(16px)" }}
+            animate={{ opacity: 1, y: 0, rotateX: 6, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -26, rotateX: 14, filter: "blur(16px)" }}
             transition={{ duration: DUR, ease: EASE }}
-            className="whitespace-nowrap font-display-hero font-black uppercase leading-none"
+            className="whitespace-nowrap font-display-hero font-black uppercase leading-none text-white"
             style={{
-              /* Su telefono l'insegna deve essere piu larga della
-                 scocca, se no sparisce dietro: a 18vw "KADO" misurava
-                 meno del telefono e non se ne vedeva niente. */
-              fontSize: narrow ? "clamp(84px, 27vw, 132px)" : "clamp(70px, 18vw, 260px)",
-              letterSpacing: "-0.03em",
+              /* Sta SOPRA i telefoni, non in mezzo: quindi puo essere
+                 bianco pieno e va letto per primo. La misura si tiene
+                 dentro la finestra invece di sfondarla -- una parola
+                 tagliata ai lati non e' un titolo, e' un ritaglio. */
+              fontSize: narrow ? "clamp(40px, 13vw, 62px)" : "clamp(62px, 8.5vw, 132px)",
+              letterSpacing: "-0.035em",
               transformOrigin: "50% 100%",
-              // Il volto della lettera resta scuro come la stanza: se
-              // fosse bianco pieno coprirebbe i telefoni invece di
-              // stargli dietro.
-              color: "#131017",
+              /* Rilievo, non contorno: due piani scuri che scendono in
+                 diagonale danno spessore senza sporcare il bianco, e un
+                 alone nella tinta dell'app lo stacca dal fondo. */
               textShadow: [
-                `0 1px 0 ${scene.core}59`,
-                `1px 2px 0 ${hexToRgba(scene.core, 0.26)}`,
-                "2px 4px 0 #0E0C12",
-                "4px 8px 0 #0B0910",
-                "7px 14px 0 #090810",
-                "11px 22px 24px rgba(0,0,0,0.85)",
-                `0 0 90px ${hexToRgba(scene.glow, 0.16)}`,
+                `0 2px 0 ${hexToRgba(scene.core, 0.55)}`,
+                "0 5px 0 rgba(9,8,14,0.9)",
+                "0 10px 22px rgba(0,0,0,0.75)",
+                `0 0 70px ${hexToRgba(scene.glow, 0.35)}`,
               ].join(", "),
             }}
           >
             {scene.name.replace(" AI", "")}
           </motion.span>
         </AnimatePresence>
-      </div>
+      </motion.div>
 
       {/* ---------- La tesi della famiglia ----------
           Una riga sola, sempre presente: e la cosa che tutte e tre le app
@@ -316,7 +318,7 @@ export function RevolverHero({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: DUR, ease: EASE }}
-            className="absolute inset-x-0 top-[11.5%] z-20 px-6 text-center text-[10px] font-semibold uppercase text-white/55 sm:text-xs"
+            className="absolute inset-x-0 top-[8%] z-20 px-6 text-center text-[10px] font-semibold uppercase text-white/55 sm:text-xs"
             style={{ letterSpacing: "0.28em" }}
           >
             {t.familyThesis}
@@ -356,8 +358,8 @@ export function RevolverHero({
                    quella che avanza dopo la riga della tesi in alto e la
                    pulsantiera in basso, altrimenti su finestre basse il
                    nome dell'app finisce sopra lo schermo del telefono. */
-                height: "min(56vh, calc(100dvh - 22rem))",
-                top: "43%",
+                height: "min(50vh, calc(100dvh - 26rem))",
+                top: "52%",
                 zIndex: isCenter || isSelected ? Z.centrale : Z.laterali,
               }}
               animate={
@@ -447,10 +449,10 @@ export function RevolverHero({
                   transition={{ duration: 0.35, ease: EASE }}
                   className="flex flex-col items-center gap-1.5"
                 >
-                  <h1 className="font-display text-xl font-black uppercase tracking-tight text-white sm:text-3xl">
-                    {active.name}
-                  </h1>
-                  <p className="max-w-md text-[13px] leading-snug text-white/70 sm:text-[15px]">
+                  {/* Il nome non si ripete qui: ora sta grande in cima.
+                      Resta la promessa, che e' l'unica cosa che questa
+                      riga deve aggiungere. */}
+                  <p className="max-w-md text-[14px] leading-snug text-white/80 sm:text-[16px]">
                     {active.tagline[language]}
                   </p>
                 </motion.div>
@@ -527,34 +529,51 @@ export function RevolverHero({
               <X className="h-5 w-5" strokeWidth={2.2} />
             </button>
 
+            {/* Penombra, non contenitore: una sfumatura che scurisce la
+                parte di stanza dove atterra il testo. Non ha bordi ne
+                angoli, quindi non legge come un pannello appoggiato
+                sopra -- ma da al bianco il contrasto per essere letto.
+                Sale dal basso su telefono, entra da destra su schermo
+                largo, cioe da dove arriva il testo. */}
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: DUR, ease: EASE }}
+              style={{
+                background:
+                  "linear-gradient(to top, #08070A 0%, #08070A 46%, rgba(8,7,10,0.86) 62%, transparent 88%)",
+              }}
+            />
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 hidden lg:block"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: DUR, ease: EASE }}
+              style={{
+                background:
+                  "linear-gradient(to left, #08070A 0%, rgba(8,7,10,0.94) 30%, rgba(8,7,10,0.55) 44%, transparent 56%)",
+              }}
+            />
+
             <div className="absolute inset-0 flex items-end lg:items-center">
               <motion.div
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 40 }}
                 transition={{ duration: DUR, ease: EASE, delay: 0.12 }}
-                className="relative ml-auto flex h-[64dvh] w-full flex-col gap-5 overflow-y-auto overscroll-contain rounded-t-3xl border-t bg-[#0A0910]/94 px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-7 backdrop-blur-2xl lg:h-auto lg:max-h-[88dvh] lg:w-[47%] lg:rounded-2xl lg:border lg:bg-[#0A0910]/72 lg:px-10 lg:py-9 lg:mr-10 xl:w-[43%]"
-                style={{ borderColor: hexToRgba(selected.core, 0.28) }}
+                /* Niente contenitore: il testo si apre direttamente
+                   nella stanza. Nessun riquadro, nessun bordo, nessun
+                   vetro -- una scheda dentro una scatola sembra un
+                   volantino appoggiato sopra la scena, non parte della
+                   scena. La leggibilita la da lo strato di penombra
+                   qui sotto, che e' una sfumatura e non una scatola. */
+                className="relative ml-auto flex h-[64dvh] w-full flex-col gap-5 overflow-y-auto overscroll-contain px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-7 lg:h-auto lg:max-h-[88dvh] lg:w-[46%] lg:px-0 lg:py-9 lg:mr-14 xl:w-[42%]"
               >
-                {/* Squadre agli angoli: il segno che dice "strumento",
-                    non "volantino". Solo due tratti per angolo, mai un
-                    riquadro chiuso -- un bordo intero chiuderebbe il
-                    pannello invece di inquadrarlo. */}
-                <span aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
-                  {[
-                    "left-0 top-0 border-l-2 border-t-2 rounded-tl-2xl",
-                    "right-0 top-0 border-r-2 border-t-2 rounded-tr-2xl",
-                    "left-0 bottom-0 border-l-2 border-b-2 rounded-bl-2xl",
-                    "right-0 bottom-0 border-r-2 border-b-2 rounded-br-2xl",
-                  ].map((cls) => (
-                    <span
-                      key={cls}
-                      className={`absolute h-7 w-7 ${cls}`}
-                      style={{ borderColor: selected.core }}
-                    />
-                  ))}
-                </span>
-
                 <div className="flex flex-col gap-2">
                   <span className="flex items-center gap-2">
                     <span
