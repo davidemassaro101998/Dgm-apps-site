@@ -78,7 +78,7 @@ export function Header({ onSelectApp }: { onSelectApp?: (id: string) => void }) 
               aria-controls="lang-switcher-listbox"
               className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-zinc-200 backdrop-blur-sm transition-colors hover:border-white/30 hover:text-white"
             >
-              <Globe className="h-3.5 w-3.5 text-white/60" />
+              <Globe className="h-3.5 w-3.5 text-white/75" />
               {LANGUAGES.find((l) => l.code === language)?.label}
             </button>
             {langMenuOpen && (
@@ -111,7 +111,7 @@ export function Header({ onSelectApp }: { onSelectApp?: (id: string) => void }) 
 
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/10 hover:text-white"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/10 hover:text-white"
             aria-label={menuOpen ? t.closeMenu : t.menuTitle}
             aria-expanded={menuOpen}
             aria-controls="site-menu"
@@ -161,7 +161,7 @@ export function Header({ onSelectApp }: { onSelectApp?: (id: string) => void }) 
 
               <div className="flex flex-col gap-5 px-5 pt-2 sm:px-5 sm:pt-5">
                 <div className="flex flex-col gap-2.5">
-                  <span className="font-display text-[10px] font-bold uppercase tracking-[0.24em] text-white/40">
+                  <span className="font-display text-[10px] font-bold uppercase tracking-[0.24em] text-white/60">
                     {t.allApps}
                   </span>
 
@@ -191,15 +191,15 @@ export function Header({ onSelectApp }: { onSelectApp?: (id: string) => void }) 
                               <span className="font-display text-sm font-bold text-white">
                                 {app.name}
                               </span>
-                              <span className="truncate text-xs text-white/50">
+                              <span className="truncate text-xs text-white/70">
                                 {app.tagline[language]}
                               </span>
                             </span>
 
                             {openable ? (
-                              <ArrowUpRight className="h-4 w-4 shrink-0 text-white/45" strokeWidth={2.4} />
+                              <ArrowUpRight className="h-4 w-4 shrink-0 text-white/65" strokeWidth={2.4} />
                             ) : (
-                              <span className="flex shrink-0 items-center gap-1 rounded-full bg-white/6 px-2 py-1 text-[10px] font-semibold text-white/45">
+                              <span className="flex shrink-0 items-center gap-1 rounded-full bg-white/6 px-2 py-1 text-[10px] font-semibold text-white/65">
                                 <Lock className="h-3 w-3" strokeWidth={2.4} />
                                 {t.statusPresto}
                               </span>
@@ -212,28 +212,28 @@ export function Header({ onSelectApp }: { onSelectApp?: (id: string) => void }) 
                 </div>
 
                 <div className="flex flex-col gap-2.5 border-t border-white/10 pt-4">
-                  <span className="font-display text-[10px] font-bold uppercase tracking-[0.24em] text-white/40">
+                  <span className="font-display text-[10px] font-bold uppercase tracking-[0.24em] text-white/60">
                     {t.footerContact}
                   </span>
                   <a
                     href="mailto:info@dgmapps.it"
-                    className="inline-flex w-fit items-center gap-2 py-1 text-sm text-white/85 transition-colors hover:text-white"
+                    className="inline-flex w-fit items-center gap-2 py-1 text-sm text-white transition-colors hover:text-white"
                   >
-                    <Mail className="h-4 w-4 text-white/50" />
+                    <Mail className="h-4 w-4 text-white/70" />
                     info@dgmapps.it
                   </a>
                   <div className="flex flex-wrap gap-x-5">
                     <button
                       type="button"
                       onClick={() => setLegalOpen("privacy")}
-                      className="py-1.5 text-xs text-white/55 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
+                      className="py-1.5 text-xs text-white/75 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
                     >
                       {t.privacyPolicy}
                     </button>
                     <button
                       type="button"
                       onClick={() => setLegalOpen("terms")}
-                      className="py-1.5 text-xs text-white/55 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
+                      className="py-1.5 text-xs text-white/75 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
                     >
                       {t.termsOfService}
                     </button>

@@ -38,7 +38,7 @@ function SectionLabel({ color, children }: { color: string; children: React.Reac
     <span className="flex items-center gap-2">
       <span aria-hidden className="h-px w-4" style={{ backgroundColor: color }} />
       <span
-        className="text-[9px] font-bold uppercase text-white/50"
+        className="text-[9px] font-bold uppercase text-white/70"
         style={{ letterSpacing: "0.24em", fontFamily: MONO }}
       >
         {children}
@@ -318,7 +318,7 @@ export function RevolverHero({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: DUR, ease: EASE }}
-            className="absolute inset-x-0 top-[8%] z-20 px-6 text-center text-[10px] font-semibold uppercase text-white/55 sm:text-xs"
+            className="absolute inset-x-0 top-[8%] z-20 px-6 text-center text-[10px] font-semibold uppercase text-white/75 sm:text-xs"
             style={{ letterSpacing: "0.28em" }}
           >
             {t.familyThesis}
@@ -452,7 +452,7 @@ export function RevolverHero({
                   {/* Il nome non si ripete qui: ora sta grande in cima.
                       Resta la promessa, che e' l'unica cosa che questa
                       riga deve aggiungere. */}
-                  <p className="max-w-md text-[14px] leading-snug text-white/80 sm:text-[16px]">
+                  <p className="max-w-md text-[14px] leading-snug text-white sm:text-[16px]">
                     {active.tagline[language]}
                   </p>
                 </motion.div>
@@ -524,7 +524,7 @@ export function RevolverHero({
               type="button"
               onClick={() => setSelectedId(null)}
               aria-label={t.backToCatalog}
-              className="absolute right-4 top-[max(4.5rem,calc(env(safe-area-inset-top)+4rem))] z-40 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-white/35 hover:text-white sm:right-8"
+              className="absolute right-4 top-[max(4.5rem,calc(env(safe-area-inset-top)+4rem))] z-40 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-colors hover:border-white/35 hover:text-white sm:right-8"
             >
               <X className="h-5 w-5" strokeWidth={2.2} />
             </button>
@@ -600,7 +600,7 @@ export function RevolverHero({
                 {/* Testo piu grande e piu contrastato di prima: questa e
                     la riga che deve convincere, non un sottotitolo da
                     strizzare gli occhi. */}
-                <p className="text-[16px] leading-[1.45] text-white/85 sm:text-xl">
+                <p className="text-[16px] leading-[1.45] text-white sm:text-xl">
                   {selected.tagline[language]}
                 </p>
 
@@ -628,7 +628,7 @@ export function RevolverHero({
                       >
                         <Check className="h-3 w-3" style={{ color: selected.core }} strokeWidth={3.2} />
                       </span>
-                      <span className="text-[15px] leading-[1.45] text-white/85 sm:text-base">{feature}</span>
+                      <span className="text-[15px] leading-[1.45] text-white sm:text-base">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -658,7 +658,7 @@ export function RevolverHero({
                         >
                           {i + 1}
                         </span>
-                        <span className="text-[11px] font-medium leading-tight text-white/70 sm:text-xs">
+                        <span className="text-[11px] font-medium leading-tight text-white/85 sm:text-xs">
                           {step}
                         </span>
                       </li>
@@ -681,7 +681,7 @@ export function RevolverHero({
                         style={{ borderColor: "rgba(255,255,255,0.1)" }}
                       >
                         <dt
-                          className="text-[9px] font-bold uppercase text-white/45"
+                          className="text-[9px] font-bold uppercase text-white/65"
                           style={{ letterSpacing: "0.2em", fontFamily: MONO }}
                         >
                           {spec.label[language]}
@@ -723,8 +723,8 @@ export function RevolverHero({
                     className="mt-1 flex cursor-default items-center justify-center gap-2 rounded-full py-4"
                     style={{ backgroundColor: "rgba(255,255,255,0.06)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.1)" }}
                   >
-                    <Lock className="h-4 w-4 text-white/45" strokeWidth={2.4} />
-                    <span className="font-display text-sm font-black uppercase tracking-[0.1em] text-white/45">
+                    <Lock className="h-4 w-4 text-white/65" strokeWidth={2.4} />
+                    <span className="font-display text-sm font-black uppercase tracking-[0.1em] text-white/65">
                       {t.statusPresto}
                     </span>
                   </div>
