@@ -537,18 +537,6 @@ export function RevolverHero({
                 largo, cioe da dove arriva il testo. */}
             <motion.div
               aria-hidden
-              className="pointer-events-none absolute inset-0 lg:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: DUR, ease: EASE }}
-              style={{
-                background:
-                  "linear-gradient(to top, #08070A 0%, #08070A 46%, rgba(8,7,10,0.86) 62%, transparent 88%)",
-              }}
-            />
-            <motion.div
-              aria-hidden
               className="pointer-events-none absolute inset-0 hidden lg:block"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -572,7 +560,21 @@ export function RevolverHero({
                    volantino appoggiato sopra la scena, non parte della
                    scena. La leggibilita la da lo strato di penombra
                    qui sotto, che e' una sfumatura e non una scatola. */
-                className="relative ml-auto flex h-[64dvh] w-full flex-col gap-5 overflow-y-auto overscroll-contain px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-7 lg:h-auto lg:max-h-[88dvh] lg:w-[46%] lg:px-0 lg:py-9 lg:mr-14 xl:w-[42%]"
+                /* Su telefono scorre TUTTA la schermata, non un riquadro
+                   dentro la schermata: il contenitore e alto quanto la
+                   finestra e il testo comincia sotto al telefono grazie
+                   al padding in cima. Prima era alto 64dvh e il suo
+                   bordo superiore tagliava il testo di netto a meta
+                   parola -- da li l'impressione del riquadro che scorre.
+                   Lo sfondo scuro sta ATTACCATO al contenuto, quindi
+                   scorre con lui e il testo resta leggibile anche quando
+                   passa sopra al telefono. */
+                className="relative ml-auto flex h-full w-full flex-col gap-5 overflow-y-auto overscroll-contain px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[46dvh] lg:h-auto lg:max-h-[88dvh] lg:w-[46%] lg:px-0 lg:pt-9 lg:pb-9 lg:mr-14 xl:w-[42%]"
+                style={{
+                  backgroundImage: narrow
+                    ? "linear-gradient(to bottom, transparent 0, rgba(8,7,10,0.55) 38dvh, #08070A 46dvh)"
+                    : undefined,
+                }}
               >
                 <div className="flex flex-col gap-2">
                   <span className="flex items-center gap-2">
