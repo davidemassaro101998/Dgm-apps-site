@@ -1,18 +1,24 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Globe, Mail } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X, Globe, Mail, ArrowUpRight, Lock } from "lucide-react";
 import { useLanguage, LANGUAGES } from "../context/LanguageContext";
+import { apps } from "../data/apps";
 import { Logo } from "./ui/logo";
 import { LegalModal } from "./ui/legal-modal";
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 /* Il sito e una schermata sola: non ci sono sezioni da raggiungere,
-   quindi non c'e navigazione. Restano le due cose che servono davvero
-   in testa alla pagina -- la lingua e i contatti/legale -- e nient'altro
-   che rubi spazio al tamburo delle app. */
-export function Header() {
+   quindi il menu non e navigazione -- e l'elenco delle app piu i
+   contatti. Su telefono e un pannello a tutta altezza che scorre per
+   conto suo: sceglierne una porta il tamburo su quell'app e ne apre la
+   scheda, cosi il menu fa qualcosa invece di essere una lista morta. */
+export function Header({ onSelectApp }: { onSelectApp?: (id: string) => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [legalOpen, setLegalOpen] = useState<"privacy" | "terms" | null>(null);
   const langMenuRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
@@ -25,6 +31,36 @@ export function Header() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [langMenuOpen]);
+
+  /* Con il pannello aperto la pagina sotto non deve muoversi. La pagina
+     e alta esattamente quanto la finestra e non scorre, ma su iOS il
+     trascinamento la fa comunque rimbalzare sotto il pannello: e' la
+     cosa che fa sembrare rotto un menu a telefono. */
+  useEffect(() => {
+    if (!menuOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    const prevOverscroll = document.body.style.overscrollBehavior;
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+    window.addEventListener("keydown", onKey);
+    // Il pannello prende il fuoco all'apertura: chi naviga da tastiera
+    // continua da qui, non dall'inizio della pagina.
+    panelRef.current?.focus();
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.body.style.overscrollBehavior = prevOverscroll;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
+  const handlePick = (id: string) => {
+    setMenuOpen(false);
+    onSelectApp?.(id);
+  };
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-[60]">
@@ -60,7 +96,7 @@ export function Header() {
                       setLanguage(l.code);
                       setLangMenuOpen(false);
                     }}
-                    className={`px-3 py-1.5 text-left text-xs font-medium transition-colors ${
+                    className={`px-3 py-2.5 text-left text-xs font-medium transition-colors ${
                       language === l.code
                         ? "bg-white/10 text-white"
                         : "text-zinc-300 hover:bg-white/5 hover:text-white"
@@ -78,52 +114,139 @@ export function Header() {
             className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/10 hover:text-white"
             aria-label={menuOpen ? t.closeMenu : t.menuTitle}
             aria-expanded={menuOpen}
-            aria-controls="site-info-panel"
+            aria-controls="site-menu"
           >
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
 
-      {menuOpen && (
-        <div
-          id="site-info-panel"
-          data-overlay="true"
-          role="dialog"
-          aria-modal="true"
-          className="pointer-events-auto absolute right-4 top-16 flex w-[min(20rem,calc(100vw-2rem))] flex-col gap-3 rounded-2xl border border-white/10 bg-[#0B0A0F]/95 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.7)] backdrop-blur-xl sm:right-6"
-        >
-          <span className="font-display text-[10px] font-bold uppercase tracking-[0.24em] text-white/40">
-            {t.footerContact}
-          </span>
-          <a
-            href="mailto:info@dgmapps.it"
-            className="inline-flex w-fit items-center gap-2 text-sm text-white/85 transition-colors hover:text-white"
-          >
-            <Mail className="h-4 w-4 text-white/50" />
-            info@dgmapps.it
-          </a>
-          <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-white/10 pt-3">
-            <button
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            <motion.button
               type="button"
-              onClick={() => setLegalOpen("privacy")}
-              className="text-xs text-white/55 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
+              aria-label={t.closeMenu}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => setMenuOpen(false)}
+              className="pointer-events-auto fixed inset-0 z-[59] cursor-default bg-black/60 backdrop-blur-sm"
+            />
+
+            {/* Da telefono e un pannello pieno che parte da sotto; da
+                schermo largo e una scheda ancorata in alto a destra. Un
+                solo elemento, due forme, cosi non ci sono due menu da
+                tenere allineati. */}
+            <motion.div
+              id="site-menu"
+              ref={panelRef}
+              tabIndex={-1}
+              role="dialog"
+              aria-modal="true"
+              aria-label={t.menuTitle}
+              data-overlay="true"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 24 }}
+              transition={{ duration: 0.36, ease: EASE }}
+              className="pointer-events-auto fixed inset-x-0 bottom-0 z-[61] flex max-h-[86dvh] flex-col overflow-y-auto overscroll-contain rounded-t-3xl border-t border-white/10 bg-[#0B0A0F]/97 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-[0_-30px_80px_rgba(0,0,0,0.75)] backdrop-blur-xl outline-none sm:inset-x-auto sm:bottom-auto sm:right-6 sm:top-16 sm:max-h-[80dvh] sm:w-[22rem] sm:rounded-2xl sm:border sm:pb-5"
             >
-              {t.privacyPolicy}
-            </button>
-            <button
-              type="button"
-              onClick={() => setLegalOpen("terms")}
-              className="text-xs text-white/55 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
-            >
-              {t.termsOfService}
-            </button>
-          </div>
-          <p className="text-[11px] leading-snug text-white/35">
-            © {new Date().getFullYear()} {t.copyright}
-          </p>
-        </div>
-      )}
+              {/* Maniglia: dice che il pannello si trascina/chiude, e da
+                  qualcosa da toccare in cima senza colpire una voce. */}
+              <div className="sticky top-0 z-10 flex justify-center bg-[#0B0A0F]/97 pb-2 pt-3 sm:hidden">
+                <span aria-hidden className="h-1.5 w-10 rounded-full bg-white/20" />
+              </div>
+
+              <div className="flex flex-col gap-5 px-5 pt-2 sm:px-5 sm:pt-5">
+                <div className="flex flex-col gap-2.5">
+                  <span className="font-display text-[10px] font-bold uppercase tracking-[0.24em] text-white/40">
+                    {t.allApps}
+                  </span>
+
+                  <ul className="flex flex-col gap-2">
+                    {apps.map((app) => {
+                      const openable = app.status !== "presto";
+                      return (
+                        <li key={app.id}>
+                          <button
+                            type="button"
+                            onClick={() => handlePick(app.id)}
+                            /* Riga alta 60px: sopra il minimo tattile, e
+                               con tre voci sole non serve comprimerle. */
+                            className="flex w-full items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.03] p-3 text-left transition-colors hover:border-white/20 hover:bg-white/[0.07] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/60"
+                          >
+                            <span
+                              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                              style={{
+                                background: `linear-gradient(150deg, ${app.core}33, ${app.glow}14)`,
+                                boxShadow: `inset 0 0 0 1px ${app.core}59`,
+                              }}
+                            >
+                              <img src={app.iconUrl} alt="" aria-hidden className="h-6 w-6" />
+                            </span>
+
+                            <span className="flex min-w-0 flex-1 flex-col">
+                              <span className="font-display text-sm font-bold text-white">
+                                {app.name}
+                              </span>
+                              <span className="truncate text-xs text-white/50">
+                                {app.tagline[language]}
+                              </span>
+                            </span>
+
+                            {openable ? (
+                              <ArrowUpRight className="h-4 w-4 shrink-0 text-white/45" strokeWidth={2.4} />
+                            ) : (
+                              <span className="flex shrink-0 items-center gap-1 rounded-full bg-white/6 px-2 py-1 text-[10px] font-semibold text-white/45">
+                                <Lock className="h-3 w-3" strokeWidth={2.4} />
+                                {t.statusPresto}
+                              </span>
+                            )}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
+                <div className="flex flex-col gap-2.5 border-t border-white/10 pt-4">
+                  <span className="font-display text-[10px] font-bold uppercase tracking-[0.24em] text-white/40">
+                    {t.footerContact}
+                  </span>
+                  <a
+                    href="mailto:info@dgmapps.it"
+                    className="inline-flex w-fit items-center gap-2 py-1 text-sm text-white/85 transition-colors hover:text-white"
+                  >
+                    <Mail className="h-4 w-4 text-white/50" />
+                    info@dgmapps.it
+                  </a>
+                  <div className="flex flex-wrap gap-x-5">
+                    <button
+                      type="button"
+                      onClick={() => setLegalOpen("privacy")}
+                      className="py-1.5 text-xs text-white/55 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
+                    >
+                      {t.privacyPolicy}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLegalOpen("terms")}
+                      className="py-1.5 text-xs text-white/55 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
+                    >
+                      {t.termsOfService}
+                    </button>
+                  </div>
+                  <p className="text-[11px] leading-snug text-white/35">
+                    © {new Date().getFullYear()} {t.copyright}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       <LegalModal open={legalOpen} onClose={() => setLegalOpen(null)} />
     </header>

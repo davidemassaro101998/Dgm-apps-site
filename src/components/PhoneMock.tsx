@@ -96,6 +96,24 @@ const SCREEN_HINT: Record<Language, string> = {
   de: "Sprich oder ziele",
 };
 
+/* La scocca e un render vero (public/telefono-cornice.png), non un
+   rettangolo disegnato in CSS: e' la stessa cornice usata sul sito
+   Valdiriom, ripulita dal bagliore ciano/oro di quel marchio e resa
+   trasparente fuori dalla sagoma, cosi l'alone dell'app le passa
+   dietro invece di essere coperto da un rettangolo nero.
+
+   Le misure sotto sono il foro dello schermo dentro quel PNG: vanno
+   lasciate come sono, sono state ricavate dall'immagine e non
+   ritoccabili a occhio. */
+const PHONE_ASPECT = "714 / 1264";
+const SCREEN = {
+  left: "15.546%",
+  top: "6.487%",
+  width: "71.429%",
+  height: "86.63%",
+  radius: "8.2% / 4.7%",
+} as const;
+
 export function PhoneMock({
   app,
   language,
@@ -109,23 +127,34 @@ export function PhoneMock({
   const question = (SCREEN_QUESTION[app.id] ?? SCREEN_QUESTION.kado)[language];
 
   return (
-    <div
-      className="relative h-full w-full select-none rounded-[13%/6.4%] p-[2.2%]"
-      style={{
-        // Scocca: un gradiente obliquo con un filo di luce sul bordo
-        // alto-sinistro e ombra sul basso-destro -- e quello che fa
-        // leggere il telefono come un oggetto illuminato da una fonte
-        // sola, non come un rettangolo nero.
-        background: "linear-gradient(150deg, #3A3A46 0%, #16161C 26%, #0B0B10 62%, #26262F 100%)",
-        boxShadow: dimmed
-          ? "0 20px 45px rgba(0,0,0,0.55)"
-          : `0 0 0 1px rgba(255,255,255,0.09), 0 30px 70px -20px rgba(0,0,0,0.9), 0 0 90px -20px ${app.core}66`,
-      }}
-    >
-      {/* Schermo */}
+    <div className="relative h-full w-full select-none" style={{ aspectRatio: PHONE_ASPECT }}>
+      {/* Alone della tinta di categoria dietro la scocca. Sta qui e non
+          nella cornice perche la cornice e neutra apposta: l'immagine e
+          la stessa per tutte e tre le app, il colore lo mette l'app. */}
+      {!dimmed && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-[-14%] -z-10 rounded-full"
+          style={{
+            background: `radial-gradient(closest-side, ${app.core}4D, ${app.glow}1A 55%, transparent)`,
+            filter: "blur(30px)",
+          }}
+        />
+      )}
+
+      {/* Schermo: collocato con le percentuali esatte del foro nella
+          cornice, non a occhio -- se ballano di mezzo punto si vede
+          subito una fessura nera lungo un bordo. */}
       <div
-        className="relative flex h-full w-full flex-col overflow-hidden rounded-[11.5%/5.6%]"
-        style={{ backgroundColor: "#0A070C" }}
+        className="absolute flex flex-col overflow-hidden"
+        style={{
+          left: SCREEN.left,
+          top: SCREEN.top,
+          width: SCREEN.width,
+          height: SCREEN.height,
+          borderRadius: SCREEN.radius,
+          backgroundColor: "#0A070C",
+        }}
       >
         {/* Alone di marca dentro lo schermo: la tinta di categoria che
             fa riconoscere l'app prima ancora di leggerne il nome. */}
@@ -137,15 +166,11 @@ export function PhoneMock({
           }}
         />
 
-        {/* Isola dinamica */}
-        <div className="relative z-10 flex justify-center pt-[4.5%]">
-          <div className="h-[6px] w-[26%] rounded-full bg-black sm:h-[8px]" />
-        </div>
-
         {/* Contenuto distribuito, non impilato in alto con un vuoto in
             mezzo: lo schermo di un telefono vero non lascia mai un buco
-            fra il contenuto e la barra delle azioni. */}
-        <div className="relative z-10 flex flex-1 flex-col justify-between gap-[3%] px-[8%] pb-[7%] pt-[5%]">
+            fra il contenuto e la barra delle azioni. Niente isola
+            dinamica disegnata qui: la porta gia la cornice vera. */}
+        <div className="relative z-10 flex flex-1 flex-col justify-between gap-[3%] px-[8%] pb-[8%] pt-[9%]">
           {/* Barra alta: nome + stato */}
           <div className="flex items-center justify-between">
             <span
@@ -288,6 +313,19 @@ export function PhoneMock({
           </div>
         </div>
       </div>
+
+      {/* La scocca sopra lo schermo: il foro del PNG e trasparente,
+          quindi il contenuto si vede attraverso e i bordi arrotondati
+          sono quelli veri del render, non un border-radius che prova a
+          somigliargli. */}
+      <img
+        src="/telefono-cornice.png"
+        alt=""
+        aria-hidden
+        draggable={false}
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        style={{ filter: dimmed ? "brightness(0.62)" : undefined }}
+      />
     </div>
   );
 }

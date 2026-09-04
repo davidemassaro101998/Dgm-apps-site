@@ -48,7 +48,14 @@ function slotFor(index: number, activeIndex: number, total: number): SlotName {
   return "left";
 }
 
-export function RevolverHero() {
+export function RevolverHero({
+  requestedAppId,
+  onRequestHandled,
+}: {
+  /** Un'app scelta dal menu: il tamburo ci gira sopra e ne apre la scheda. */
+  requestedAppId?: string | null;
+  onRequestHandled?: () => void;
+} = {}) {
   const { language, t } = useLanguage();
   const reduced = useReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -82,6 +89,17 @@ export function RevolverHero() {
     },
     [selectedId]
   );
+
+  // Richiesta dal menu: porta il tamburo su quell'app e apre la scheda.
+  useEffect(() => {
+    if (!requestedAppId) return;
+    const index = apps.findIndex((a) => a.id === requestedAppId);
+    if (index >= 0) {
+      setActiveIndex(index);
+      setSelectedId(requestedAppId);
+    }
+    onRequestHandled?.();
+  }, [requestedAppId, onRequestHandled]);
 
   // Frecce da tastiera: il tamburo si gira anche senza mouse, e Esc
   // chiude la scheda aperta.
@@ -194,7 +212,10 @@ export function RevolverHero() {
               key={app.id}
               className="absolute w-auto"
               style={{
-                aspectRatio: "0.485 / 1",
+                // Le proporzioni del render della scocca, non un valore
+                // scelto a occhio: se non combaciano, l'immagine della
+                // cornice si deforma.
+                aspectRatio: "714 / 1264",
                 transformStyle: "preserve-3d",
                 /* Il telefono non prende un'altezza fissa in vh: prende
                    quella che avanza dopo la riga della tesi in alto e la
