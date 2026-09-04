@@ -411,13 +411,20 @@ export function RevolverHero({
                     bersaglio da toccare. */}
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute inset-x-0 top-full h-full origin-top"
+                  /* Niente origin-top qui: con scaleY(-1) l'elemento si
+                     ribalta ATTORNO AL SUO BORDO ALTO, cioe risale sopra
+                     il telefono invece di restare sotto. Era quella la
+                     "seconda schermata" che si vedeva in fondo alla
+                     scocca: l'intestazione dell'app, specchiata e
+                     sovrapposta. Con l'origine al centro il riflesso
+                     resta nel proprio riquadro, sotto la base. */
+                  className="pointer-events-none absolute inset-x-0 top-full h-full"
                   style={{
                     transform: "scaleY(-1)",
                     opacity: isCenter || isSelected ? 0.26 : 0.14,
                     filter: "blur(3px)",
-                    maskImage: "linear-gradient(to top, transparent 8%, rgba(0,0,0,0.75) 62%)",
-                    WebkitMaskImage: "linear-gradient(to top, transparent 8%, rgba(0,0,0,0.75) 62%)",
+                    maskImage: "linear-gradient(to bottom, transparent 10%, rgba(0,0,0,0.8) 64%)",
+                    WebkitMaskImage: "linear-gradient(to bottom, transparent 10%, rgba(0,0,0,0.8) 64%)",
                   }}
                 >
                   <PhoneMock app={app} language={language} dimmed />
