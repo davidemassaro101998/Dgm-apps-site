@@ -12,6 +12,41 @@ import { PhoneMock } from "./PhoneMock";
 const EASE = [0.16, 1, 0.3, 1] as const;
 const DUR = 0.65;
 
+/* Dove il pavimento incontra il vuoto. Cade appena sotto la base dei
+   telefoni (che finiscono intorno al 71% dell'altezza con le misure
+   qui sotto): piu in alto l'orizzonte li taglia a meta, piu in basso
+   tornano a galleggiare nel nero. */
+const HORIZON = "72%";
+
+function hexToRgba(hex: string, alpha: number): string {
+  const v = parseInt(hex.replace("#", ""), 16);
+  return `rgba(${(v >> 16) & 255}, ${(v >> 8) & 255}, ${v & 255}, ${alpha})`;
+}
+
+/* Monospazio di sistema per le letture tecniche (stato, etichette dei
+   dati, numeri dei passi): dice "strumento" senza caricare un font. */
+const MONO = 'ui-monospace, SFMono-Regular, Menlo, "Roboto Mono", monospace';
+
+/* Piani della scena. L'insegna col nome sta DIETRO il telefono al
+   centro -- che deve restare l'oggetto piu vicino -- ma DAVANTI alle
+   due laterali, che sono in fondo alla stanza: e' quello che fa
+   leggere la profondita invece di appiattire tutto su un piano solo. */
+const Z = { laterali: 1, insegna: 2, centrale: 12 } as const;
+
+function SectionLabel({ color, children }: { color: string; children: React.ReactNode }) {
+  return (
+    <span className="flex items-center gap-2">
+      <span aria-hidden className="h-px w-4" style={{ backgroundColor: color }} />
+      <span
+        className="text-[9px] font-bold uppercase text-white/50"
+        style={{ letterSpacing: "0.24em", fontFamily: MONO }}
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
+
 /* Le tre posizioni del tamburo. Non un cilindro a 120 gradi reale:
    a 120 gradi le due laterali finirebbero di taglio, quasi invisibili,
    e la richiesta e vederle tutte e tre insieme. Angolo piu dolce, spinta
@@ -129,14 +164,85 @@ export function RevolverHero({
         aria-hidden
         className="pointer-events-none absolute inset-0"
         animate={{
-          background: `radial-gradient(120% 85% at 50% 8%, ${scene.core}33 0%, ${scene.glow}14 32%, transparent 68%)`,
+          background: `radial-gradient(120% 85% at 50% 6%, ${scene.core}47 0%, ${scene.glow}1E 30%, transparent 66%)`,
         }}
+        transition={{ duration: DUR, ease: EASE }}
+      />
+      {/* Un secondo alone, largo e basso, dal lato opposto: due sorgenti
+          invece di una sola fanno cambiare la stanza INTERA quando si
+          gira il tamburo, non solo la fascia in alto. */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        animate={{
+          background: `radial-gradient(90% 60% at 50% 78%, ${scene.glow}24 0%, ${scene.core}12 40%, transparent 72%)`,
+        }}
+        transition={{ duration: DUR, ease: EASE }}
+      />
+      {/* ---------- La stanza senza fine ----------
+          Tre strati e nient'altro: un pavimento in prospettiva che
+          scappa verso un orizzonte, una riga di luce dove il pavimento
+          finisce, e la foschia che mangia le linee prima che arrivino
+          al punto di fuga. Basta questo perche i telefoni smettano di
+          galleggiare nel nero e sembrino appoggiati su qualcosa che
+          continua oltre lo schermo. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0"
+        style={{ top: HORIZON, bottom: 0, perspective: "260px", perspectiveOrigin: "50% 0%" }}
+      >
+        <motion.div
+          className="absolute inset-0 origin-top"
+          style={{
+            transform: "rotateX(72deg) scale(2.4)",
+            // Celle grandi: una griglia fitta a questa inclinazione
+            // diventa moire' appena lo schermo non e' a densita' intera.
+            backgroundSize: "84px 84px",
+            /* La griglia si spegne quasi subito, in alto e in basso: in
+               alto perche linee nitide fino al punto di fuga leggono
+               come texture piatta invece che come distanza, in basso
+               perche sotto ci passa il nome dell'app e una griglia
+               dietro al testo lo rende faticoso da leggere. */
+            maskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 48%, transparent 72%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 48%, transparent 72%)",
+          }}
+          animate={{
+            // Appena percepibile: la stanza deve sentirsi, non farsi
+            // guardare. Una griglia squillante e' un fondale anni
+            // Ottanta, non profondita.
+            backgroundImage: `linear-gradient(to right, ${scene.core}17 1px, transparent 1px), linear-gradient(to bottom, ${scene.core}17 1px, transparent 1px)`,
+          }}
+          transition={{ duration: DUR, ease: EASE }}
+        />
+      </div>
+
+      {/* La riga dell'orizzonte: dove il pavimento finisce e comincia
+          il vuoto. E' la cosa che da la scala a tutto il resto. */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 h-px"
+        style={{ top: HORIZON }}
+        animate={{ background: `linear-gradient(to right, transparent, ${scene.core}80 30%, ${scene.glow}99 50%, ${scene.core}80 70%, transparent)` }}
         transition={{ duration: DUR, ease: EASE }}
       />
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[45%]"
-        animate={{ background: `linear-gradient(to top, ${scene.core}1F, transparent)` }}
+        className="pointer-events-none absolute inset-x-0"
+        style={{ top: `calc(${HORIZON} - 14vh)`, height: "28vh" }}
+        animate={{ background: `radial-gradient(60% 50% at 50% 50%, ${scene.core}33, transparent 70%)` }}
+        transition={{ duration: DUR, ease: EASE }}
+      />
+
+      {/* Foschia bassa: da spessore all'aria e, soprattutto, restituisce
+          un fondo pulito sotto il nome dell'app e i comandi. Griglia e
+          riflessi si spengono dentro questa fascia invece di correre
+          dietro al testo. */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[46%]"
+        animate={{
+          background: `linear-gradient(to top, #08070A 0%, #08070A 55%, ${scene.core}14 78%, transparent 100%)`,
+        }}
         transition={{ duration: DUR, ease: EASE }}
       />
 
@@ -152,17 +258,46 @@ export function RevolverHero({
         }}
       />
 
-      {/* ---------- Parola fantasma dietro la scena ---------- */}
-      <div className="pointer-events-none absolute inset-x-0 top-[19%] z-[2] flex select-none justify-center">
+      {/* ---------- Il nome, grande, dentro la stanza ----------
+          Non piu un fantasma quasi invisibile: e un'insegna vera, con
+          spessore. L'inclinazione e la stessa del pavimento, cosi la
+          parola sta NELLA stanza invece che essere incollata sul vetro
+          davanti; il rilievo e una pila di ombre che scende in diagonale
+          (la stessa direzione della luce del resto della scena) e prende
+          la tinta dell'app, non un grigio qualsiasi. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-[17%] flex select-none justify-center"
+        style={{ perspective: "900px", zIndex: Z.insegna }}
+      >
         <AnimatePresence mode="wait">
           <motion.span
             key={scene.id}
-            initial={{ opacity: 0, y: 24, filter: "blur(18px)" }}
-            animate={{ opacity: 0.055, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -24, filter: "blur(18px)" }}
+            initial={{ opacity: 0, y: 30, rotateX: 18, filter: "blur(18px)" }}
+            animate={{ opacity: 1, y: 0, rotateX: 8, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -30, rotateX: 18, filter: "blur(18px)" }}
             transition={{ duration: DUR, ease: EASE }}
-            className="whitespace-nowrap font-display-hero font-black uppercase leading-none text-white"
-            style={{ fontSize: "clamp(64px, 17vw, 240px)", letterSpacing: "-0.03em" }}
+            className="whitespace-nowrap font-display-hero font-black uppercase leading-none"
+            style={{
+              /* Su telefono l'insegna deve essere piu larga della
+                 scocca, se no sparisce dietro: a 18vw "KADO" misurava
+                 meno del telefono e non se ne vedeva niente. */
+              fontSize: narrow ? "clamp(84px, 27vw, 132px)" : "clamp(70px, 18vw, 260px)",
+              letterSpacing: "-0.03em",
+              transformOrigin: "50% 100%",
+              // Il volto della lettera resta scuro come la stanza: se
+              // fosse bianco pieno coprirebbe i telefoni invece di
+              // stargli dietro.
+              color: "#131017",
+              textShadow: [
+                `0 1px 0 ${scene.core}59`,
+                `1px 2px 0 ${hexToRgba(scene.core, 0.26)}`,
+                "2px 4px 0 #0E0C12",
+                "4px 8px 0 #0B0910",
+                "7px 14px 0 #090810",
+                "11px 22px 24px rgba(0,0,0,0.85)",
+                `0 0 90px ${hexToRgba(scene.glow, 0.16)}`,
+              ].join(", "),
+            }}
           >
             {scene.name.replace(" AI", "")}
           </motion.span>
@@ -191,7 +326,7 @@ export function RevolverHero({
 
       {/* ---------- Il tamburo ---------- */}
       <motion.div
-        className="absolute inset-0 z-10"
+        className="absolute inset-0"
         style={{ perspective: 1500 }}
         drag={selected || reduced ? false : "x"}
         dragConstraints={{ left: 0, right: 0 }}
@@ -223,6 +358,7 @@ export function RevolverHero({
                    nome dell'app finisce sopra lo schermo del telefono. */
                 height: "min(56vh, calc(100dvh - 22rem))",
                 top: "43%",
+                zIndex: isCenter || isSelected ? Z.centrale : Z.laterali,
               }}
               animate={
                 hiddenBySelection
@@ -264,6 +400,26 @@ export function RevolverHero({
                 >
                   <PhoneMock app={app} language={language} dimmed={!isCenter && !isSelected} />
                 </button>
+
+                {/* Il riflesso: la stessa scocca ribaltata sotto la
+                    base, sfocata e in dissolvenza. E' questo -- non la
+                    griglia -- a far leggere il telefono come appoggiato
+                    su una superficie invece che incollato sul fondo.
+                    Fuori dal bottone: e decorazione, non un secondo
+                    bersaglio da toccare. */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 top-full h-full origin-top"
+                  style={{
+                    transform: "scaleY(-1)",
+                    opacity: isCenter || isSelected ? 0.26 : 0.14,
+                    filter: "blur(3px)",
+                    maskImage: "linear-gradient(to top, transparent 8%, rgba(0,0,0,0.75) 62%)",
+                    WebkitMaskImage: "linear-gradient(to top, transparent 8%, rgba(0,0,0,0.75) 62%)",
+                  }}
+                >
+                  <PhoneMock app={app} language={language} dimmed />
+                </div>
               </SelectedPositioner>
             </motion.div>
           );
@@ -377,88 +533,144 @@ export function RevolverHero({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 40 }}
                 transition={{ duration: DUR, ease: EASE, delay: 0.12 }}
-                className="ml-auto flex h-[62dvh] w-full flex-col gap-4 overflow-y-auto overscroll-contain rounded-t-3xl border-t border-white/10 bg-[#0B0A0F]/92 px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-6 backdrop-blur-xl lg:h-auto lg:max-h-[86dvh] lg:w-[46%] lg:rounded-none lg:border-l lg:border-t-0 lg:bg-transparent lg:px-12 lg:backdrop-blur-none xl:w-[42%]"
+                className="relative ml-auto flex h-[64dvh] w-full flex-col gap-5 overflow-y-auto overscroll-contain rounded-t-3xl border-t bg-[#0A0910]/94 px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-7 backdrop-blur-2xl lg:h-auto lg:max-h-[88dvh] lg:w-[47%] lg:rounded-2xl lg:border lg:bg-[#0A0910]/72 lg:px-10 lg:py-9 lg:mr-10 xl:w-[43%]"
+                style={{ borderColor: hexToRgba(selected.core, 0.28) }}
               >
-                <div className="flex flex-col gap-1">
-                  <span
-                    className="text-[10px] font-bold uppercase"
-                    style={{ letterSpacing: "0.26em", color: selected.core }}
-                  >
-                    {selected.status === "live" ? t.statusLive : t.statusPresto}
+                {/* Squadre agli angoli: il segno che dice "strumento",
+                    non "volantino". Solo due tratti per angolo, mai un
+                    riquadro chiuso -- un bordo intero chiuderebbe il
+                    pannello invece di inquadrarlo. */}
+                <span aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
+                  {[
+                    "left-0 top-0 border-l-2 border-t-2 rounded-tl-2xl",
+                    "right-0 top-0 border-r-2 border-t-2 rounded-tr-2xl",
+                    "left-0 bottom-0 border-l-2 border-b-2 rounded-bl-2xl",
+                    "right-0 bottom-0 border-r-2 border-b-2 rounded-br-2xl",
+                  ].map((cls) => (
+                    <span
+                      key={cls}
+                      className={`absolute h-7 w-7 ${cls}`}
+                      style={{ borderColor: selected.core }}
+                    />
+                  ))}
+                </span>
+
+                <div className="flex flex-col gap-2">
+                  <span className="flex items-center gap-2">
+                    <span
+                      className="h-1.5 w-1.5 rounded-full"
+                      style={{
+                        backgroundColor: selected.core,
+                        boxShadow: `0 0 10px 2px ${hexToRgba(selected.core, 0.7)}`,
+                      }}
+                    />
+                    <span
+                      className="text-[10px] font-bold uppercase"
+                      style={{ letterSpacing: "0.3em", color: selected.core, fontFamily: MONO }}
+                    >
+                      {selected.status === "live" ? t.statusLive : t.statusPresto}
+                    </span>
                   </span>
-                  <h2 className="font-display text-3xl font-black uppercase leading-none tracking-tight text-white sm:text-5xl">
+                  <h2 className="font-display text-[2rem] font-black uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">
                     {selected.name}
                   </h2>
                 </div>
 
-                <p className="text-[15px] leading-snug text-white/75 sm:text-lg">
+                {/* Testo piu grande e piu contrastato di prima: questa e
+                    la riga che deve convincere, non un sottotitolo da
+                    strizzare gli occhi. */}
+                <p className="text-[16px] leading-[1.45] text-white/85 sm:text-xl">
                   {selected.tagline[language]}
                 </p>
 
                 {/* La tesi, declinata: e la riga che spiega il modello --
-                    l'AI capisce, Amazon consegna. */}
+                    l'AI capisce, Amazon consegna. Barra di colore a
+                    sinistra invece di una cornice tutt'intorno: guida
+                    l'occhio all'inizio della riga. */}
                 <p
-                  className="rounded-xl px-4 py-3 text-[13px] font-semibold leading-snug sm:text-[15px]"
-                  style={{
-                    color: "#FFFFFF",
-                    background: `linear-gradient(135deg, ${selected.core}22, ${selected.glow}0D)`,
-                    boxShadow: `inset 0 0 0 1px ${selected.core}44`,
-                  }}
+                  className="py-1 pl-4 text-[15px] font-semibold leading-[1.45] text-white sm:text-[17px]"
+                  style={{ borderLeft: `2px solid ${selected.core}` }}
                 >
                   {selected.thesis[language]}
                 </p>
 
                 {/* Cosa fa */}
-                <ul className="flex flex-col gap-2.5">
+                <ul className="flex flex-col gap-3">
                   {selected.features[language].map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2.5">
+                    <li key={i} className="flex items-start gap-3">
                       <span
-                        className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
-                        style={{ backgroundColor: `${selected.core}26` }}
+                        className="mt-[3px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md"
+                        style={{
+                          backgroundColor: hexToRgba(selected.core, 0.16),
+                          boxShadow: `inset 0 0 0 1px ${hexToRgba(selected.core, 0.45)}`,
+                        }}
                       >
-                        <Check className="h-2.5 w-2.5" style={{ color: selected.core }} strokeWidth={3.2} />
+                        <Check className="h-3 w-3" style={{ color: selected.core }} strokeWidth={3.2} />
                       </span>
-                      <span className="text-[13px] leading-snug text-white/80 sm:text-[15px]">{feature}</span>
+                      <span className="text-[15px] leading-[1.45] text-white/85 sm:text-base">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
-                {/* Il percorso dentro l'app */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-[10px] font-bold uppercase text-white/40" style={{ letterSpacing: "0.22em" }}>
-                    {t.howItWorks}
-                  </span>
-                  <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2">
-                    {selected.steps[language].map((step, i, arr) => (
-                      <span key={i} className="flex items-center gap-1.5">
+                {/* Il percorso: quattro passi numerati su una riga di
+                    luce, non pillole sparse. Il numero dice che e una
+                    sequenza -- qui lo e davvero. */}
+                <div className="flex flex-col gap-3">
+                  <SectionLabel color={selected.core}>{t.howItWorks}</SectionLabel>
+                  <ol className="relative flex justify-between gap-1">
+                    <span
+                      aria-hidden
+                      className="absolute left-0 right-0 top-[11px] h-px"
+                      style={{
+                        background: `linear-gradient(to right, ${hexToRgba(selected.core, 0.55)}, ${hexToRgba(selected.core, 0.12)})`,
+                      }}
+                    />
+                    {selected.steps[language].map((step, i) => (
+                      <li key={i} className="relative flex flex-1 flex-col items-center gap-2 text-center">
                         <span
-                          className="rounded-full px-2.5 py-1 text-[11px] font-semibold text-white/85"
-                          style={{ backgroundColor: "rgba(255,255,255,0.06)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.08)" }}
+                          className="flex h-[22px] w-[22px] items-center justify-center rounded-full text-[10px] font-bold text-white"
+                          style={{
+                            backgroundColor: "#0A0910",
+                            boxShadow: `inset 0 0 0 1.5px ${selected.core}`,
+                            fontFamily: MONO,
+                          }}
                         >
+                          {i + 1}
+                        </span>
+                        <span className="text-[11px] font-medium leading-tight text-white/70 sm:text-xs">
                           {step}
                         </span>
-                        {i < arr.length - 1 && (
-                          <ArrowRight className="h-3 w-3 text-white/25" strokeWidth={2.5} />
-                        )}
-                      </span>
+                      </li>
                     ))}
-                  </div>
+                  </ol>
                 </div>
 
-                {/* Dati verificabili */}
-                <div className="grid grid-cols-2 gap-2">
-                  {selected.specs.map((spec, i) => (
-                    <div
-                      key={i}
-                      className="flex flex-col gap-0.5 rounded-xl px-3 py-2.5"
-                      style={{ backgroundColor: "rgba(255,255,255,0.04)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" }}
-                    >
-                      <span className="text-[9px] font-bold uppercase text-white/40" style={{ letterSpacing: "0.16em" }}>
-                        {spec.label[language]}
-                      </span>
-                      <span className="text-[13px] font-semibold text-white/90">{spec.value[language]}</span>
-                    </div>
-                  ))}
+                {/* Dati verificabili, presentati come una lettura da
+                    strumento: etichetta minuta in monospazio, valore
+                    grande. Righe separate da un filo, non scatole --
+                    quattro scatole in fila leggono come quattro bottoni
+                    da premere. */}
+                <div className="flex flex-col gap-2">
+                  <SectionLabel color={selected.core}>{t.specsLabel}</SectionLabel>
+                  <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
+                    {selected.specs.map((spec, i) => (
+                      <div
+                        key={i}
+                        className="flex flex-col gap-1 border-t pt-2"
+                        style={{ borderColor: "rgba(255,255,255,0.1)" }}
+                      >
+                        <dt
+                          className="text-[9px] font-bold uppercase text-white/45"
+                          style={{ letterSpacing: "0.2em", fontFamily: MONO }}
+                        >
+                          {spec.label[language]}
+                        </dt>
+                        <dd className="text-[15px] font-semibold leading-tight text-white">
+                          {spec.value[language]}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
                 </div>
 
                 {/* L'azione. Bianca e piena quando l'app e aperta al

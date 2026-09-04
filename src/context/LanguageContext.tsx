@@ -31,6 +31,7 @@ export interface Translations {
   discover: string;
   useItNow: string;
   howItWorks: string;
+  specsLabel: string;
   prevApp: string;
   nextApp: string;
   backToCatalog: string;
@@ -75,6 +76,7 @@ const translations: Record<Language, Translations> = {
     discover: "Scopri",
     useItNow: "Usala ora",
     howItWorks: "Come funziona",
+    specsLabel: "Dati",
     prevApp: "App precedente",
     nextApp: "App successiva",
     backToCatalog: "Torna al catalogo",
@@ -115,6 +117,7 @@ const translations: Record<Language, Translations> = {
     discover: "Discover",
     useItNow: "Use it now",
     howItWorks: "How it works",
+    specsLabel: "Specs",
     prevApp: "Previous app",
     nextApp: "Next app",
     backToCatalog: "Back to catalogue",
@@ -155,6 +158,7 @@ const translations: Record<Language, Translations> = {
     discover: "Descubrir",
     useItNow: "Úsala ya",
     howItWorks: "Cómo funciona",
+    specsLabel: "Datos",
     prevApp: "App anterior",
     nextApp: "App siguiente",
     backToCatalog: "Volver al catálogo",
@@ -195,6 +199,7 @@ const translations: Record<Language, Translations> = {
     discover: "Découvrir",
     useItNow: "L'utiliser",
     howItWorks: "Comment ça marche",
+    specsLabel: "Données",
     prevApp: "App précédente",
     nextApp: "App suivante",
     backToCatalog: "Retour au catalogue",
@@ -235,6 +240,7 @@ const translations: Record<Language, Translations> = {
     discover: "Entdecken",
     useItNow: "Jetzt nutzen",
     howItWorks: "So funktioniert's",
+    specsLabel: "Daten",
     prevApp: "Vorherige App",
     nextApp: "Nächste App",
     backToCatalog: "Zurück zum Katalog",
