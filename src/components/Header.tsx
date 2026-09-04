@@ -76,7 +76,7 @@ export function Header({ onSelectApp }: { onSelectApp?: (id: string) => void }) 
               aria-haspopup="listbox"
               aria-expanded={langMenuOpen}
               aria-controls="lang-switcher-listbox"
-              className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-zinc-200 backdrop-blur-sm transition-colors hover:border-white/30 hover:text-white"
+              className="tocco-44 relative flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-zinc-200 backdrop-blur-sm transition-colors hover:border-white/30 hover:text-white"
             >
               <Globe className="h-3.5 w-3.5 text-white/75" />
               {LANGUAGES.find((l) => l.code === language)?.label}
@@ -111,7 +111,7 @@ export function Header({ onSelectApp }: { onSelectApp?: (id: string) => void }) 
 
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/10 hover:text-white"
+            className="tocco-44 relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/10 hover:text-white"
             aria-label={menuOpen ? t.closeMenu : t.menuTitle}
             aria-expanded={menuOpen}
             aria-controls="site-menu"

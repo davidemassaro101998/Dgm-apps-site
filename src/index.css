@@ -86,3 +86,30 @@ body::-webkit-scrollbar {
   background-image: linear-gradient(120deg, #8B5CF6 0%, #22D3EE 50%, #8B5CF6 100%);
 }
 
+
+/* ── Un bersaglio tattile deve essere 44px anche quando il disegno ne
+   chiede 30 o 40. Non si ingrassa il pulsante — quel disegno e' stato
+   deciso — si allarga l'AREA CHE RISPONDE AL DITO lasciando fermo il
+   pixel che si vede: uno pseudo-elemento centrato e invisibile porta la
+   zona sensibile a 44x44, e il tocco lo riceve comunque il pulsante
+   perche' lo pseudo-elemento e' suo.
+   Da NON usare su elementi affiancati a meno di 44px l'uno dall'altro:
+   le aree si sovrapporrebbero e si premerebbe il vicino. Per quelli
+   (le tacche del tamburo) si allarga il pulsante con il padding e la
+   tacca resta un elemento interno. */
+/* ATTENZIONE, gia' sbagliato una volta: questa regola sta FUORI dai
+   layer, quindi batte le utility di Tailwind. Se qui dentro si scrive
+   `position: relative`, un pulsante che nel markup e' `absolute` smette
+   di esserlo -- e' successo al pulsante «Torna al catalogo», finito a
+   x=-32 cioe' fuori dallo schermo. Quindi la posizione NON si tocca: la
+   decide il markup, e chi usa `tocco-44` deve gia' essere posizionato
+   (`relative` o `absolute`). Qui si aggiunge solo l'area. */
+.tocco-44::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  transform: translate(-50%, -50%);
+}

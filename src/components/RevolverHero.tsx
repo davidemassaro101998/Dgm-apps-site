@@ -479,7 +479,7 @@ export function RevolverHero({
               <button
                 type="button"
                 onClick={() => setSelectedId(active.id)}
-                className="group flex items-center gap-2 rounded-full bg-white px-6 py-3 transition-transform duration-200 hover:scale-[1.04] active:scale-95 sm:px-8 sm:py-3.5"
+                className="tocco-44 relative group flex items-center gap-2 rounded-full bg-white px-6 py-3 transition-transform duration-200 hover:scale-[1.04] active:scale-95 sm:px-8 sm:py-3.5"
                 style={{ boxShadow: `0 10px 40px -8px ${active.core}` }}
               >
                 <span className="font-display text-[13px] font-black uppercase tracking-[0.1em] text-black sm:text-sm">
@@ -496,19 +496,37 @@ export function RevolverHero({
             {/* Indicatori: tre tacche, quella attiva si allunga e prende
                 la tinta dell'app -- posizione nel tamburo leggibile a
                 colpo d'occhio senza contare i telefoni. */}
-            <div className="flex items-center gap-1.5">
+            {/* La tacca e alta 4px: da premere con un dito e' niente. Il
+                pulsante quindi non e' la tacca -- e' un'area alta 44px che
+                la contiene, con il riempimento laterale che tiene le tre
+                aree separate (qui non si puo' usare `tocco-44`: allargate
+                a 44px si sovrapporrebbero e si premerebbe la vicina). La
+                tacca resta identica a prima.
+                Misurato: 24x44 per tacca. In altezza si arriva ai 44px di
+                Apple; in larghezza no, e non ci si puo' arrivare senza
+                rubare lo spazio della tacca accanto -- 24px e' il minimo
+                WCAG 2.2 (2.5.8) e con tre bersagli affiancati e' il piu'
+                largo onesto. Chi non le prende ha comunque le frecce, che
+                fanno la stessa cosa e sono 48px. */}
+            <div className="flex items-center">
               {apps.map((a, i) => (
                 <button
                   key={a.id}
                   type="button"
                   onClick={() => setActiveIndex(i)}
                   aria-label={a.name}
-                  className="h-1 rounded-full transition-all duration-300"
-                  style={{
-                    width: i === activeIndex ? 24 : 8,
-                    backgroundColor: i === activeIndex ? a.core : "rgba(255,255,255,0.22)",
-                  }}
-                />
+                  aria-current={i === activeIndex ? "true" : undefined}
+                  className="flex items-center px-2 py-5"
+                >
+                  <span
+                    aria-hidden
+                    className="block h-1 rounded-full transition-all duration-300"
+                    style={{
+                      width: i === activeIndex ? 24 : 8,
+                      backgroundColor: i === activeIndex ? a.core : "rgba(255,255,255,0.22)",
+                    }}
+                  />
+                </button>
               ))}
             </div>
           </motion.div>
@@ -531,7 +549,7 @@ export function RevolverHero({
               type="button"
               onClick={() => setSelectedId(null)}
               aria-label={t.backToCatalog}
-              className="absolute right-4 top-[max(4.5rem,calc(env(safe-area-inset-top)+4rem))] z-40 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-colors hover:border-white/35 hover:text-white sm:right-8"
+              className="tocco-44 absolute right-4 top-[max(4.5rem,calc(env(safe-area-inset-top)+4rem))] z-40 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-colors hover:border-white/35 hover:text-white sm:right-8"
             >
               <X className="h-5 w-5" strokeWidth={2.2} />
             </button>
