@@ -352,7 +352,7 @@ export function RevolverHero({
                 // Le proporzioni del render della scocca, non un valore
                 // scelto a occhio: se non combaciano, l'immagine della
                 // cornice si deforma.
-                aspectRatio: "714 / 1264",
+                aspectRatio: "696 / 1264",
                 transformStyle: "preserve-3d",
                 /* Il telefono non prende un'altezza fissa in vh: prende
                    quella che avanza dopo la riga della tesi in alto e la

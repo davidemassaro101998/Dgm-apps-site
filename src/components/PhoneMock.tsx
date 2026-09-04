@@ -7,15 +7,18 @@ import type { Language } from "../context/LanguageContext";
    trasparente fuori dalla sagoma, cosi l'alone dell'app le passa
    dietro invece di essere coperto da un rettangolo nero.
 
-   Le misure sotto sono il foro dello schermo dentro quel PNG: vanno
-   lasciate come sono, sono state ricavate dall'immagine e non
-   ritoccabili a occhio. */
-const PHONE_ASPECT = "714 / 1264";
+   Il render originale e un telefono visto leggermente di lato: il
+   fianco sinistro era 1,6 volte il destro (42px contro 27), e dritto
+   in vetrina leggeva storto. La scocca e stata resa simmetrica
+   specchiando il lato buono, quindi le misure qui sotto sono cambiate
+   insieme all'immagine -- sono ricavate dal PNG e non si ritoccano a
+   occhio. */
+const PHONE_ASPECT = "696 / 1264";
 const SCREEN = {
-  left: "15.546%",
+  left: "13.218%",
   top: "6.487%",
-  width: "71.429%",
-  height: "86.63%",
+  width: "73.563%",
+  height: "88.291%",
   radius: "8.2% / 4.7%",
 } as const;
 
