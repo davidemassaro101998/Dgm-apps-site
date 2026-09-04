@@ -569,7 +569,7 @@ export function RevolverHero({
                    Lo sfondo scuro sta ATTACCATO al contenuto, quindi
                    scorre con lui e il testo resta leggibile anche quando
                    passa sopra al telefono. */
-                className="relative ml-auto flex h-full w-full flex-col gap-5 overflow-y-auto overscroll-contain px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[46dvh] lg:h-auto lg:max-h-[88dvh] lg:w-[46%] lg:px-0 lg:pt-9 lg:pb-9 lg:mr-14 xl:w-[42%]"
+                className="relative ml-auto flex h-full w-full flex-col gap-5 overflow-y-auto overflow-x-hidden overscroll-contain px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[46dvh] lg:h-auto lg:max-h-[88dvh] lg:w-[46%] lg:px-0 lg:pt-9 lg:pb-9 lg:mr-14 xl:w-[42%]"
                 style={{
                   backgroundImage: narrow
                     ? "linear-gradient(to bottom, transparent 0, rgba(8,7,10,0.55) 38dvh, #08070A 46dvh)"
@@ -703,7 +703,14 @@ export function RevolverHero({
                     href={selected.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="group mt-1 flex items-center justify-center gap-2 rounded-full bg-white py-4 transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                    /* In hover si SOLLEVA, non si allarga. Ingrandendosi (scale 1.02)
+                       un pulsante largo quanto il pannello sfora di 6px, e
+                       siccome overflow-y:auto costringe l'altro asse da
+                       `visible` ad `auto`, quei 6px facevano comparire una
+                       barra di scorrimento orizzontale sotto. Il movimento
+                       verticale da la stessa risposta al tocco senza
+                       toccare la larghezza. */
+                    className="group mt-1 flex items-center justify-center gap-2 rounded-full bg-white py-4 transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
                     style={{ boxShadow: `0 14px 44px -10px ${selected.core}` }}
                   >
                     <span className="font-display text-sm font-black uppercase tracking-[0.1em] text-black">
