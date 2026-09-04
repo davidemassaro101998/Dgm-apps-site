@@ -51,9 +51,13 @@ const SPEC_MARKETS: AppSpec = {
   },
 };
 
+/* Le app oggi parlano due lingue, non cinque: servono 18 mercati Amazon
+   ma l'interfaccia esiste solo in italiano e inglese. Scritto com'e --
+   una scheda prodotto che gonfia un numero verificabile in dieci secondi
+   e' il modo piu veloce per perdere la fiducia che deve costruire. */
 const SPEC_LANGUAGES: AppSpec = {
   label: { it: "Lingue", en: "Languages", es: "Idiomas", fr: "Langues", de: "Sprachen" },
-  value: { it: "5", en: "5", es: "5", fr: "5", de: "5" },
+  value: { it: "IT · EN", en: "IT · EN", es: "IT · EN", fr: "IT · EN", de: "IT · EN" },
 };
 
 const SPEC_ACCOUNT: AppSpec = {
