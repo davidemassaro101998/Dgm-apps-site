@@ -38,7 +38,7 @@ function SectionLabel({ color, children }: { color: string; children: React.Reac
     <span className="flex items-center gap-2">
       <span aria-hidden className="h-px w-4" style={{ backgroundColor: color }} />
       <span
-        className="text-[9px] font-bold uppercase text-white/70"
+        className="text-[10px] font-bold uppercase text-white/80"
         style={{ letterSpacing: "0.24em", fontFamily: MONO }}
       >
         {children}
@@ -706,7 +706,7 @@ export function RevolverHero({
                         style={{ borderColor: "rgba(255,255,255,0.1)" }}
                       >
                         <dt
-                          className="text-[9px] font-bold uppercase text-white/65"
+                          className="text-[10px] font-bold uppercase text-white/80"
                           style={{ letterSpacing: "0.2em", fontFamily: MONO }}
                         >
                           {spec.label[language]}
@@ -736,7 +736,23 @@ export function RevolverHero({
                        verticale da la stessa risposta al tocco senza
                        toccare la larghezza. */
                     className="group mt-1 flex items-center justify-center gap-2 rounded-full bg-white py-4 transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
-                    style={{ boxShadow: `0 14px 44px -10px ${selected.core}` }}
+                    /* Il bagliore deve spegnersi PRIMA del bordo del
+                       pannello, non esserci tagliato contro. Il pulsante e
+                       largo esattamente quanto il contenitore che ritaglia
+                       (riempimento laterale zero), quindi un'ombra che sborda
+                       viene tranciata di netto a sinistra, a destra e sotto:
+                       con un colore pieno quel taglio si vede come un
+                       rettangolo rosa, e sembra un secondo elemento incollato
+                       male sotto la pillola.
+                       Due ombre trasparenti con la riduzione maggiore del
+                       raggio effettivo (blur/2 + spread < 0): ai lati restano
+                       dentro la sagoma, e si affacciano solo sotto, dove le
+                       porta lo scostamento. E' lo stesso accoppiamento di
+                       overflow che aveva gia prodotto la barra di scorrimento
+                       orizzontale. */
+                    style={{
+                      boxShadow: `0 10px 30px -18px ${hexToRgba(selected.core, 0.95)}, 0 22px 60px -34px ${hexToRgba(selected.core, 0.6)}`,
+                    }}
                   >
                     <span className="font-display text-sm font-black uppercase tracking-[0.1em] text-black">
                       {t.useItNow}

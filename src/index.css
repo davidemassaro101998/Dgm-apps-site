@@ -97,13 +97,26 @@ body::-webkit-scrollbar {
    le aree si sovrapporrebbero e si premerebbe il vicino. Per quelli
    (le tacche del tamburo) si allarga il pulsante con il padding e la
    tacca resta un elemento interno. */
-/* ATTENZIONE, gia' sbagliato una volta: questa regola sta FUORI dai
-   layer, quindi batte le utility di Tailwind. Se qui dentro si scrive
-   `position: relative`, un pulsante che nel markup e' `absolute` smette
-   di esserlo -- e' successo al pulsante «Torna al catalogo», finito a
-   x=-32 cioe' fuori dallo schermo. Quindi la posizione NON si tocca: la
-   decide il markup, e chi usa `tocco-44` deve gia' essere posizionato
-   (`relative` o `absolute`). Qui si aggiunge solo l'area. */
+/* ATTENZIONE, questa regola sta FUORI dai layer e batte le utility di
+   Tailwind. Due errori gia' pagati, tutti e due qui dentro.
+
+   1) Scrivere `position: relative` per tutti: un pulsante che nel markup
+      e' `absolute` smetteva di esserlo -- e' successo a «Torna al
+      catalogo», finito a x=-32, cioe' fuori dallo schermo.
+   2) Non scriverlo affatto: su un pulsante STATICO lo pseudo-elemento non
+      ha un riferimento vicino, si ancora a un antenato lontano e i suoi
+      44x44 atterrano da un'altra parte. Nel pannello fotocamera l'area
+      della chiusura e' finita in mezzo al pannello, sopra «Scatta», che
+      ha smesso di rispondere pur essendo visibile e scoperto.
+
+   Quindi il riferimento si mette SOLO a chi non ce l'ha gia': chi porta
+   `absolute`, `fixed` o `sticky` resta dov'e', tutti gli altri diventano
+   `relative` da soli. Cosi' la classe smette di essere una trappola per
+   chi la usera' la prossima volta. */
+.tocco-44:not(.absolute):not(.fixed):not(.sticky) {
+  position: relative;
+}
+
 .tocco-44::after {
   content: "";
   position: absolute;
