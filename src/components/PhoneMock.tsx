@@ -1,7 +1,7 @@
 import type { AppEntry } from "../data/apps";
 import type { Language } from "../context/LanguageContext";
 
-/* La scocca e un render vero (public/telefono-cornice.png), non un
+/* La scocca e un render vero (public/telefono-cornice.webp), non un
    rettangolo disegnato in CSS: e' la stessa cornice usata sul sito
    Valdiriom, ripulita dal bagliore ciano/oro di quel marchio e resa
    trasparente fuori dalla sagoma, cosi l'alone dell'app le passa
@@ -91,10 +91,16 @@ export function PhoneMock({
           sono quelli veri del render, non un border-radius che prova a
           somigliargli. */}
       <img
-        src="/telefono-cornice.png"
+        src="/telefono-cornice.webp"
         alt=""
         aria-hidden
         draggable={false}
+        /* In webp, non in png: la stessa scocca pesava 214 KB ed era
+           l'oggetto piu' pesante di tutto il sito -- piu' del doppio del
+           JavaScript compresso. In webp qualita 92 sono 19 KB, con una
+           differenza media di 1,56 su 255 sui pixel opachi (massima 11) e
+           il canale di trasparenza identico: su fondo scuro non si vede.
+           Su 3G lento erano quasi cinque secondi di sola cornice. */
         className="pointer-events-none absolute inset-0 h-full w-full"
         style={{ filter: dimmed ? "brightness(0.62)" : undefined }}
       />

@@ -23,7 +23,23 @@
     <meta name="theme-color" content="#07070B" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Primo disegno senza aspettare il JavaScript.
+         Misurato su 3G lento: la pagina restava NERA per 3,4 secondi,
+         perche' il primo elemento dipinto era il nome dell'app, cioe'
+         qualcosa che React puo' disegnare solo dopo aver scaricato ed
+         eseguito 116 KB compressi. Qui c'e' il fondo e il marchio,
+         scritti a mano nell'HTML: arrivano con la pagina.
+         Sta nella STESSA posizione dell'intestazione vera, quindi quando
+         React monta non si sposta niente. Nessun testo tradotto: il
+         marchio e' uguale in tutte le lingue, e indovinare la lingua qui
+         vorrebbe dire mostrarne una sbagliata a chi non parla italiano. -->
+    <div id="guscio" aria-hidden="true" style="position:fixed;inset:0;z-index:0;background:#08070A;font-family:system-ui,-apple-system,'Segoe UI',sans-serif">
+      <div style="display:flex;align-items:center;gap:10px;height:64px;padding:0 16px;max-width:72rem;margin:0 auto">
+        <span style="width:26px;height:26px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#FF2E7E,#FF8A1F 55%,#38F27A)"></span>
+        <span style="color:#fff;font-weight:800;letter-spacing:-0.01em;font-size:15px">DGM APPS</span>
+      </div>
+    </div>
+    <div id="root" style="position:relative;z-index:1"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

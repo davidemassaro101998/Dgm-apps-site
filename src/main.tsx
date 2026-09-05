@@ -14,3 +14,10 @@ createRoot(document.getElementById("root")!).render(
     </ErrorBoundary>
   </StrictMode>
 );
+
+/* Il guscio scritto a mano in index.html serve solo finche' React non
+   c'e'. Da qui in poi e' un doppione invisibile sotto l'app: si toglie,
+   dopo un fotogramma, cosi' non si vede nessuno stacco fra i due. */
+requestAnimationFrame(() => {
+  document.getElementById("guscio")?.remove();
+});

@@ -30,6 +30,7 @@ export interface Translations {
   familyThesis: string;
   discover: string;
   useItNow: string;
+  appInInglese: string;
   howItWorks: string;
   specsLabel: string;
   prevApp: string;
@@ -75,6 +76,7 @@ const translations: Record<Language, Translations> = {
     familyThesis: "L'AI capisce · Tu trovi su Amazon",
     discover: "Scopri",
     useItNow: "Usala ora",
+    appInInglese: "L'app è in italiano.",
     howItWorks: "Come funziona",
     specsLabel: "Dati",
     prevApp: "App precedente",
@@ -116,6 +118,7 @@ const translations: Record<Language, Translations> = {
     familyThesis: "AI understands · You find it on Amazon",
     discover: "Discover",
     useItNow: "Use it now",
+    appInInglese: "The app is in English.",
     howItWorks: "How it works",
     specsLabel: "Specs",
     prevApp: "Previous app",
@@ -157,6 +160,7 @@ const translations: Record<Language, Translations> = {
     familyThesis: "La IA entiende · Tú lo encuentras en Amazon",
     discover: "Descubrir",
     useItNow: "Úsala ya",
+    appInInglese: "La app está en inglés.",
     howItWorks: "Cómo funciona",
     specsLabel: "Datos",
     prevApp: "App anterior",
@@ -198,6 +202,7 @@ const translations: Record<Language, Translations> = {
     familyThesis: "L'IA comprend · Vous trouvez sur Amazon",
     discover: "Découvrir",
     useItNow: "L'utiliser",
+    appInInglese: "L'application est en anglais.",
     howItWorks: "Comment ça marche",
     specsLabel: "Données",
     prevApp: "App précédente",
@@ -239,6 +244,7 @@ const translations: Record<Language, Translations> = {
     familyThesis: "Die KI versteht · Du findest es bei Amazon",
     discover: "Entdecken",
     useItNow: "Jetzt nutzen",
+    appInInglese: "Die App ist auf Englisch.",
     howItWorks: "So funktioniert's",
     specsLabel: "Daten",
     prevApp: "Vorherige App",

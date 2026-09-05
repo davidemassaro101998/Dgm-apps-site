@@ -159,6 +159,15 @@ export function RevolverHero({
      CSS, e la geometria del telefono la legge da li'. */
   const radiceRef = useRef<HTMLElement>(null);
   const colonnaRef = useRef<HTMLDivElement>(null);
+  const telefonoRef = useRef<HTMLDivElement>(null);
+  /* La scena e larga quanto la finestra (la sezione e `w-full`), quindi
+     si parte da li e la misura la conferma prima del primo disegno --
+     `useLayoutEffect` gira prima che il browser dipinga, cosi non c'e
+     alcun salto iniziale. */
+  const [larghezzaScena, setLarghezzaScena] = useState(
+    typeof window === "undefined" ? 0 : window.innerWidth
+  );
+  const [larghezzaTelefono, setLarghezzaTelefono] = useState(0);
 
   useLayoutEffect(() => {
     const radice = radiceRef.current;
@@ -169,12 +178,23 @@ export function RevolverHero({
       const c = colonna.getBoundingClientRect();
       const r = radice.getBoundingClientRect();
       radice.style.setProperty("--alto", `${Math.round(c.bottom - r.top)}px`);
+      /* Serve anche la larghezza della scena: il tamburo si posiziona in
+         PIXEL, non in percentuale di `left`. Animare `left` significa
+         animare il LAYOUT -- ogni fotogramma dell'ingresso contava come
+         spostamento, e il CLS misurato era 0,109 su desktop e 0,139 su
+         telefono, sopra la soglia di 0,1 in tutti e due i casi, su 15
+         spostamenti fra 109 e 456ms. `transform` non tocca il layout. */
+      setLarghezzaScena(Math.round(r.width));
+      // `offsetWidth` e la larghezza di LAYOUT: non la tocca la riduzione
+      // in scala del tamburo, quindi e' quella giusta per centrare.
+      if (telefonoRef.current) setLarghezzaTelefono(telefonoRef.current.offsetWidth);
     };
     aggiorna();
 
     const oss = new ResizeObserver(aggiorna);
     oss.observe(colonna);
     oss.observe(radice);
+    if (telefonoRef.current) oss.observe(telefonoRef.current);
     window.addEventListener("resize", aggiorna);
     return () => {
       oss.disconnect();
@@ -374,6 +394,9 @@ export function RevolverHero({
         {apps.map((app, index) => {
           const slot = slotFor(index, activeIndex, apps.length);
           const pos = slots[slot];
+          // Il centro della scena, in pixel: e' dove va la scelta e da dove
+          // escono le altre due.
+          const centro = larghezzaScena / 2 - larghezzaTelefono / 2;
           const isCenter = slot === "center";
           const isSelected = selected?.id === app.id;
           const hiddenBySelection = !!selected && !isSelected;
@@ -381,7 +404,8 @@ export function RevolverHero({
           return (
             <motion.div
               key={app.id}
-              className="absolute w-auto"
+              ref={index === 0 ? telefonoRef : undefined}
+              className="absolute left-0 w-auto"
               style={{
                 // Le proporzioni del render della scocca, non un valore
                 // scelto a occhio: se non combaciano, l'immagine della
@@ -418,17 +442,16 @@ export function RevolverHero({
                   ? // Le due non scelte escono: scendono, rimpiccioliscono
                     // e si spengono. Nessuna resta a mezz'aria a contendere
                     // l'attenzione alla scheda che si sta aprendo.
-                    { left: "50%", x: "-50%", y: "-38%", scale: 0.5, opacity: 0, z: -500, rotateY: 0, filter: "blur(6px)" }
+                    { x: centro, y: "-38%", scale: 0.5, opacity: 0, z: -500, rotateY: 0, filter: "blur(6px)" }
                   : isSelected
                   ? // La scelta prende il posto: al centro su schermo
                     // stretto, a sinistra quando c'e spazio per la scheda
                     // (lo spostamento vero e in SelectedPositioner, che lo
                     // fa via classi responsive invece che misurando la
                     // finestra in JavaScript).
-                    { left: "50%", x: "-50%", y: "-50%", scale: 1, opacity: 1, z: 0, rotateY: 0, filter: "blur(0px)" }
+                    { x: centro, y: "-50%", scale: 1, opacity: 1, z: 0, rotateY: 0, filter: "blur(0px)" }
                   : {
-                      left: `${pos.left}%`,
-                      x: "-50%",
+                      x: (pos.left / 100) * larghezzaScena - larghezzaTelefono / 2,
                       y: "-50%",
                       scale: pos.scale,
                       opacity: pos.opacity,
@@ -691,7 +714,7 @@ export function RevolverHero({
                    Lo sfondo scuro sta ATTACCATO al contenuto, quindi
                    scorre con lui e il testo resta leggibile anche quando
                    passa sopra al telefono. */
-                className="relative ml-auto flex h-full w-full flex-col gap-5 overflow-y-auto overflow-x-hidden overscroll-contain px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[54dvh] lg:h-auto lg:max-h-[88dvh] lg:w-[46%] lg:px-0 lg:pt-9 lg:pb-9 lg:mr-14 xl:w-[42%]"
+                className="relative ml-auto flex h-full w-full flex-col gap-5 overflow-y-auto overflow-x-hidden overscroll-contain px-6 pb-0 pt-[54dvh] lg:h-auto lg:max-h-[88dvh] lg:w-[46%] lg:px-0 lg:pt-9 lg:pb-9 lg:mr-14 xl:w-[42%]"
                 style={{
                   backgroundImage: narrow
                     ? "linear-gradient(to bottom, transparent 0, rgba(8,7,10,0.55) 48dvh, #08070A 54dvh)"
@@ -820,6 +843,19 @@ export function RevolverHero({
                     pubblico; spenta e bloccata quando non lo e ancora --
                     l'app gira, ma il sito non ci manda nessuno finche
                     non e davvero pronta. */}
+                {/* L'azione si INCOLLA in fondo al pannello che scorre.
+                    Misurato prima: dopo aver toccato «Scopri», su ogni
+                    telefono e tablet «Usala ora» stava FUORI SCHERMO e
+                    bisognava scorrere da 129 a 433px per trovarla -- su
+                    320x568 erano 433px, cioe' quasi un'altra schermata.
+                    L'unico posto dove si vedeva subito era il desktop.
+                    Incollata in basso resta sempre a portata di pollice
+                    mentre le specifiche scorrono sotto; da lg in su torna
+                    a scorrere con il resto, perche' li' ci stava gia'.
+                    La sfumatura sopra evita che il testo finisca
+                    tagliato di netto contro la pillola. */}
+                <div className="sticky bottom-0 z-10 -mx-6 mt-1 px-6 pb-[max(1rem,env(safe-area-inset-bottom))] pt-10 lg:static lg:mx-0 lg:px-0 lg:pb-0 lg:pt-0"
+                     style={{ backgroundImage: narrow ? "linear-gradient(to bottom, transparent 0, #08070A 62%, #08070A 100%)" : undefined }}>
                 {isOpenable ? (
                   <a
                     href={selected.href}
@@ -832,7 +868,7 @@ export function RevolverHero({
                        barra di scorrimento orizzontale sotto. Il movimento
                        verticale da la stessa risposta al tocco senza
                        toccare la larghezza. */
-                    className="group mt-1 flex items-center justify-center gap-2 rounded-full bg-white py-4 transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
+                    className="group flex w-full items-center justify-center gap-2 rounded-full bg-white py-4 transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
                     /* Il bagliore deve spegnersi PRIMA del bordo del
                        pannello, non esserci tagliato contro. Il pulsante e
                        largo esattamente quanto il contenitore che ritaglia
@@ -858,7 +894,7 @@ export function RevolverHero({
                   </a>
                 ) : (
                   <div
-                    className="mt-1 flex cursor-default items-center justify-center gap-2 rounded-full py-4"
+                    className="flex w-full cursor-default items-center justify-center gap-2 rounded-full py-4"
                     style={{ backgroundColor: "rgba(255,255,255,0.06)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.1)" }}
                   >
                     <Lock className="h-4 w-4 text-white/65" strokeWidth={2.4} />
@@ -867,6 +903,19 @@ export function RevolverHero({
                     </span>
                   </div>
                 )}
+
+                {/* Il sito parla cinque lingue, le app due. Un tedesco
+                    leggeva «Die KI versteht», toccava «Jetzt nutzen» e
+                    finiva in un'app in INGLESE, senza che nessuno glielo
+                    avesse detto -- verificato per tedesco, francese e
+                    spagnolo, atterrano tutti su EN. Una riga prima del
+                    tocco costa molto meno di una sorpresa dopo. */}
+                {isOpenable && language !== "it" && language !== "en" ? (
+                  <p className="mt-2 text-center text-[11px] text-white/60">
+                    {t.appInInglese}
+                  </p>
+                ) : null}
+                </div>
               </motion.div>
             </div>
           </motion.div>
