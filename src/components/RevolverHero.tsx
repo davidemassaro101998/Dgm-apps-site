@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, X, Lock } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
@@ -150,8 +150,41 @@ export function RevolverHero({
 
   const isOpenable = scene.status !== "presto";
 
+  /* Dove finisce davvero la colonna in alto (occhiello + nome) NON si
+     puo' scrivere in percentuale: dipende dalla lingua, da quante righe
+     prende l'occhiello e dalla misura del nome. Provandoci si sbaglia in
+     tutte e due le direzioni -- con una riserva fissa il telefono si
+     riduceva a 84x152 su 320x568, con una percentuale il nome finiva
+     11px DENTRO la scocca. Quindi si misura e si scrive in una variabile
+     CSS, e la geometria del telefono la legge da li'. */
+  const radiceRef = useRef<HTMLElement>(null);
+  const colonnaRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const radice = radiceRef.current;
+    const colonna = colonnaRef.current;
+    if (!radice || !colonna) return;
+
+    const aggiorna = () => {
+      const c = colonna.getBoundingClientRect();
+      const r = radice.getBoundingClientRect();
+      radice.style.setProperty("--alto", `${Math.round(c.bottom - r.top)}px`);
+    };
+    aggiorna();
+
+    const oss = new ResizeObserver(aggiorna);
+    oss.observe(colonna);
+    oss.observe(radice);
+    window.addEventListener("resize", aggiorna);
+    return () => {
+      oss.disconnect();
+      window.removeEventListener("resize", aggiorna);
+    };
+  }, [language, scene.id]);
+
   return (
     <section
+      ref={radiceRef}
       className="relative h-[100dvh] w-full overflow-hidden bg-[#08070A]"
       style={{ fontFamily: "var(--font-body)" }}
     >
@@ -265,15 +298,36 @@ export function RevolverHero({
           davanti; il rilievo e una pila di ombre che scende in diagonale
           (la stessa direzione della luce del resto della scena) e prende
           la tinta dell'app, non un grigio qualsiasi. */}
+      {/* Occhiello e insegna stanno in UNA colonna sola, non in due
+          ancoraggi percentuali indipendenti. Separati si rincorrevano: a
+          320x568 l'occhiello partiva 7px SOPRA il fondo dei pulsanti
+          dell'intestazione, e in inglese -- dove va su due righe -- la
+          seconda riga finiva addosso al nome dell'app. Impilati, due
+          righe spingono giu' il nome invece di sovrapporsi, e
+          `max(4.25rem, 8%)` tiene la colonna sotto l'intestazione anche
+          quando l'8% non basta. */}
       <motion.div
-        className="pointer-events-none absolute inset-x-0 top-[13%] flex select-none justify-center px-4"
-        style={{ perspective: "1100px", zIndex: Z.insegna }}
-        /* Con la scheda aperta l'insegna si spegne: il nome grande ce
+        ref={colonnaRef}
+        className="pointer-events-none absolute inset-x-0 flex select-none flex-col items-center gap-3 px-4"
+        style={{ top: "max(4.25rem, 8%)", perspective: "1100px", zIndex: Z.insegna }}
+        /* Con la scheda aperta la colonna si spegne: il nome grande ce
            l'ha gia la scheda, e tenerla accesa la faceva finire sotto
            al testo, illeggibili tutte e due. */
         animate={{ opacity: selected ? 0 : 1 }}
         transition={{ duration: 0.35, ease: EASE }}
       >
+        {/* La tesi della famiglia: una riga sola, sempre presente, e la
+            cosa che tutte e tre le app fanno. Sparisce con la colonna
+            quando si apre una scheda, dove la stessa tesi torna
+            declinata sul dominio. Resta montata e trasparente invece di
+            smontarsi, cosi' l'insegna non sobbalza mentre svanisce. */}
+        <p
+          className="max-w-full text-center text-[10px] font-semibold uppercase text-white/75 sm:text-xs"
+          style={{ letterSpacing: "0.28em" }}
+        >
+          {t.familyThesis}
+        </p>
+
         <AnimatePresence mode="wait">
           <motion.span
             key={scene.id}
@@ -306,26 +360,6 @@ export function RevolverHero({
         </AnimatePresence>
       </motion.div>
 
-      {/* ---------- La tesi della famiglia ----------
-          Una riga sola, sempre presente: e la cosa che tutte e tre le app
-          fanno. Sparisce quando si apre una scheda, dove la stessa tesi
-          torna declinata sul dominio. */}
-      <AnimatePresence>
-        {!selected && (
-          <motion.p
-            key="thesis"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: DUR, ease: EASE }}
-            className="absolute inset-x-0 top-[8%] z-20 px-6 text-center text-[10px] font-semibold uppercase text-white/75 sm:text-xs"
-            style={{ letterSpacing: "0.28em" }}
-          >
-            {t.familyThesis}
-          </motion.p>
-        )}
-      </AnimatePresence>
-
       {/* ---------- Il tamburo ---------- */}
       <motion.div
         className="absolute inset-0"
@@ -354,12 +388,29 @@ export function RevolverHero({
                 // cornice si deforma.
                 aspectRatio: "696 / 1264",
                 transformStyle: "preserve-3d",
-                /* Il telefono non prende un'altezza fissa in vh: prende
-                   quella che avanza dopo la riga della tesi in alto e la
-                   pulsantiera in basso, altrimenti su finestre basse il
-                   nome dell'app finisce sopra lo schermo del telefono. */
-                height: "min(50vh, calc(100dvh - 26rem))",
-                top: "52%",
+                /* Il telefono prende la BANDA che avanza fra il nome
+                   dell'app e la tesi, e ci sta in mezzo. Prima toglieva
+                   una riserva fissa di 26rem e si metteva al 52% del
+                   viewport: su uno schermo basso restavano 152px di
+                   telefono (misurato a 320x568) e 104px di VUOTO fra
+                   titolo e scocca, con 10px soli sotto. Il buco era piu'
+                   grande di meta' telefono.
+
+                   La cima della banda e' MISURATA (`--alto`, vedi l'effetto
+                   in cima al componente): il nome non finisce a una
+                   percentuale fissa, dipende dalla lingua e da quante
+                   righe prende l'occhiello. Il fondo invece e' stabile:
+                   186px per la tesi su due righe, la pulsantiera e i
+                   puntini. Da li':
+                     banda   = da --alto a 100dvh - 186px
+                     centro  = (--alto + 100dvh - 186px) / 2
+                     altezza = la banda meno 12px di aria sopra e sotto
+                   Il tetto di 50vh resta: su schermi alti il telefono non
+                   deve diventare un manifesto. Il valore di ripiego (9rem)
+                   serve solo al primo fotogramma, prima che la misura
+                   arrivi. */
+                height: "min(50vh, calc(100dvh - var(--alto, 9rem) - 13.125rem))",
+                top: "calc((var(--alto, 9rem) + 100dvh - 11.625rem) / 2)",
                 zIndex: isCenter || isSelected ? Z.centrale : Z.laterali,
               }}
               animate={
@@ -418,16 +469,54 @@ export function RevolverHero({
                      scocca: l'intestazione dell'app, specchiata e
                      sovrapposta. Con l'origine al centro il riflesso
                      resta nel proprio riquadro, sotto la base. */
+                  /* Alto META' del telefono, non quanto il telefono: a
+                     320x568 un riflesso alto 244px arrivava a y=614, cioe
+                     passava DIETRO la tesi, la pulsantiera e i puntini e
+                     usciva dallo schermo. Un riflesso serve a dire che il
+                     telefono e appoggiato, non a raddoppiarlo.
+                     La sfumatura orizzontale sta su questo elemento e
+                     quella verticale su quello dentro: due maschere
+                     separate su due livelli, invece di comporne due sullo
+                     stesso (mask-composite non e sicuro ovunque). Senza
+                     quella orizzontale i fianchi restavano dritti e il
+                     riflesso leggeva come un rettangolo scuro sotto il
+                     telefono -- si vedeva a occhio nudo a 320px. */
                   className="pointer-events-none absolute inset-x-0 top-full h-full"
+                  /* La sfumatura ORIZZONTALE sta qui, quella verticale
+                     sull'elemento dentro: due maschere su due livelli,
+                     invece di comporne due sullo stesso (mask-composite
+                     non e sicuro ovunque). Senza quella orizzontale i
+                     fianchi del riflesso restavano dritti e a 320px si
+                     leggeva come un rettangolo scuro dietro la tesi e la
+                     pulsantiera -- si vedeva a occhio nudo. */
                   style={{
-                    transform: "scaleY(-1)",
-                    opacity: isCenter || isSelected ? 0.26 : 0.14,
-                    filter: "blur(3px)",
-                    maskImage: "linear-gradient(to bottom, transparent 10%, rgba(0,0,0,0.8) 64%)",
-                    WebkitMaskImage: "linear-gradient(to bottom, transparent 10%, rgba(0,0,0,0.8) 64%)",
+                    maskImage: "linear-gradient(to right, transparent, #000 20%, #000 80%, transparent)",
+                    WebkitMaskImage: "linear-gradient(to right, transparent, #000 20%, #000 80%, transparent)",
                   }}
                 >
-                  <PhoneMock app={app} language={language} dimmed />
+                  <div
+                    className="h-full w-full"
+                    style={{
+                      transform: "scaleY(-1)",
+                      opacity: isCenter || isSelected ? 0.26 : 0.14,
+                      filter: "blur(3px)",
+                      /* Attenzione alle coordinate: la maschera si applica
+                         PRIMA del ribaltamento, quindi il basso locale e
+                         cio che si vede in ALTO, attaccato alla base. Con
+                         `to bottom` il primo estremo e' il visuale piu'
+                         lontano dal telefono.
+                         Trasparente gia' a meta': prima svaniva al 90%
+                         dell'altezza del telefono, e su uno schermo basso
+                         (568px) quei 244px arrivavano a y=614, cioe
+                         passavano dietro tesi, pulsantiera e puntini e
+                         uscivano dallo schermo. Un riflesso dice che il
+                         telefono e appoggiato, non lo raddoppia. */
+                      maskImage: "linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.85) 96%)",
+                      WebkitMaskImage: "linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.85) 96%)",
+                    }}
+                  >
+                    <PhoneMock app={app} language={language} dimmed />
+                  </div>
                 </div>
               </SelectedPositioner>
             </motion.div>
@@ -480,7 +569,15 @@ export function RevolverHero({
                 type="button"
                 onClick={() => setSelectedId(active.id)}
                 className="tocco-44 relative group flex items-center gap-2 rounded-full bg-white px-6 py-3 transition-transform duration-200 hover:scale-[1.04] active:scale-95 sm:px-8 sm:py-3.5"
-                style={{ boxShadow: `0 10px 40px -8px ${active.core}` }}
+                /* Stessa regola della CTA della scheda: colore con
+                   trasparenza e riduzione maggiore del raggio effettivo,
+                   cosi' il bagliore si spegne prima di diventare una
+                   macchia piena. A tinta piena, su 320px, sotto il
+                   pulsante restava un alone saturo con i fianchi
+                   riconoscibili. */
+                style={{
+                  boxShadow: `0 8px 26px -16px ${hexToRgba(active.core, 0.95)}, 0 18px 52px -30px ${hexToRgba(active.core, 0.6)}`,
+                }}
               >
                 <span className="font-display text-[13px] font-black uppercase tracking-[0.1em] text-black sm:text-sm">
                   {t.discover}
@@ -594,10 +691,10 @@ export function RevolverHero({
                    Lo sfondo scuro sta ATTACCATO al contenuto, quindi
                    scorre con lui e il testo resta leggibile anche quando
                    passa sopra al telefono. */
-                className="relative ml-auto flex h-full w-full flex-col gap-5 overflow-y-auto overflow-x-hidden overscroll-contain px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[46dvh] lg:h-auto lg:max-h-[88dvh] lg:w-[46%] lg:px-0 lg:pt-9 lg:pb-9 lg:mr-14 xl:w-[42%]"
+                className="relative ml-auto flex h-full w-full flex-col gap-5 overflow-y-auto overflow-x-hidden overscroll-contain px-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[54dvh] lg:h-auto lg:max-h-[88dvh] lg:w-[46%] lg:px-0 lg:pt-9 lg:pb-9 lg:mr-14 xl:w-[42%]"
                 style={{
                   backgroundImage: narrow
-                    ? "linear-gradient(to bottom, transparent 0, rgba(8,7,10,0.55) 38dvh, #08070A 46dvh)"
+                    ? "linear-gradient(to bottom, transparent 0, rgba(8,7,10,0.55) 48dvh, #08070A 54dvh)"
                     : undefined,
                 }}
               >
@@ -784,12 +881,25 @@ export function RevolverHero({
    occupa la meta bassa e il telefono resta centrato in alto. Due
    posizioni diverse per lo stesso elemento, gestite con le classi
    invece che misurando la finestra in JavaScript. */
+/* Su schermo stretto la scheda occupa il basso e al telefono resta la
+   fascia fra l'intestazione e l'inizio della sfumatura del pannello.
+   Lo spostamento era di -22%: il telefono restava piu' o meno dov'era da
+   chiuso, quindi il suo terzo inferiore finiva SOTTO la sfumatura -- a
+   320x568 si vedeva un telefono tagliato a meta'.
+   Ora si RICENTRA in quella fascia (-40%). E la fascia stessa e' stata
+   allargata: la scheda parte da 54dvh invece che da 46, e la sfumatura
+   da 48 invece che da 38 -- e' la SFUMATURA il vincolo vero, non il
+   testo: il telefono che la supera si annerisce anche se il testo e'
+   piu' in basso. Non si perde contenuto, il pannello scorre comunque,
+   e il telefono passa da 63x115 tagliato a 88x159 intero su 320x568.
+   Su schermo largo non cambia niente: li' la scheda sta a fianco, non
+   sotto, e la riduzione resta 0.92. */
 function SelectedPositioner({ isSelected, children }: { isSelected: boolean; children: React.ReactNode }) {
   return (
     <div
       className={
         isSelected
-          ? "h-full w-full origin-center transition-transform duration-[650ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] -translate-y-[22%] scale-[0.62] lg:-translate-x-[62%] lg:translate-y-0 lg:scale-[0.92]"
+          ? "h-full w-full origin-center transition-transform duration-[650ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] -translate-y-[40%] scale-[0.72] lg:-translate-x-[62%] lg:translate-y-0 lg:scale-[0.92]"
           : "h-full w-full"
       }
     >
