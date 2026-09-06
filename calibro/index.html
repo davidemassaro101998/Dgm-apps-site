@@ -1,0 +1,749 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calibro AI</title>
+<meta name="theme-color" content="#0A0D14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&display=swap">
+
+<style>
+/* ============================================================
+   CALIBRO AI — DGM Apps
+   «Cosa serve al MIO oggetto», non «cosa compro».
+
+   La tesi del prodotto, in una riga: la compatibilità NON si
+   indovina. L'AI serve a capire cosa hai in mano (testo libero,
+   voce, foto dell'etichetta); il codice del pezzo esce da una
+   tabella verificata. Un'AI che tira a indovinare una sigla è
+   peggio di niente: fa comprare la cartuccia sbagliata.
+
+   Identità: base quasi-nera tinta blu e un solo dispositivo
+   luminoso — il bagliore cobalto dietro la superficie scelta.
+   Cobalto per l'associazione precisione/strumento, distinto
+   dall'ambra di Bricolo, dal magenta di Kado, dal lime di Forma.
+   ============================================================ */
+
+:root{
+  --bg-main:#0A0D14; --bg-header:rgba(10,13,20,.85);
+  --bg-card:#121722; --bg-card-2:#171D2B;
+  --text-main:#EEF2F8; --text-sub:#8B93A5; --text-dim:#5C6577;
+  --border-card:rgba(255,255,255,.07);
+  --brand:#3D7BFF; --brand-2:#6AA0FF; --brand-3:#9CC4FF;
+  --brand-grad:linear-gradient(135deg,#2F6BFF 0%,#4C8BFF 55%,#7FB0FF 100%);
+  --ok:#34D399; --warn:#FBBF24;
+  --font-display:"Archivo",system-ui,sans-serif;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100dvh;width:100vw;overflow:hidden;position:fixed;inset:0;margin:0;padding:0}
+body{background:var(--bg-main);color:var(--text-main);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+input{font:inherit}
+:focus-visible{outline:2px solid var(--brand-2);outline-offset:2px}
+[hidden]{display:none!important}
+
+#shell{display:flex;flex-direction:column;height:100dvh;max-width:520px;margin:0 auto;position:relative}
+
+/* ---- testata ---- */
+.hd{flex:0 0 auto;padding:calc(var(--sat) + 12px) 18px 12px;display:flex;align-items:center;gap:12px;
+  background:var(--bg-header);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-card);z-index:5}
+.hd__b{flex:0 0 auto;width:40px;height:40px;border-radius:12px;background:var(--bg-card);
+  display:flex;align-items:center;justify-content:center;border:1px solid var(--border-card)}
+.hd__t{flex:1 1 auto;min-width:0}
+.hd__n{font-family:var(--font-display);font-weight:800;font-size:17px;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd__s{font-size:12px;color:var(--text-sub);margin-top:-1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lang{flex:0 0 auto;display:flex;gap:2px;background:var(--bg-card);border-radius:10px;padding:3px;
+  border:1px solid var(--border-card)}
+.lang button{min-width:30px;height:30px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:.04em;
+  color:var(--text-dim);display:flex;align-items:center;justify-content:center}
+.lang button[aria-pressed="true"]{background:var(--brand);color:#fff}
+
+/* ---- corpo ---- */
+.bd{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  padding:18px 18px calc(var(--sab) + 22px)}
+.bd::-webkit-scrollbar{width:0}
+.pane{animation:up .3s cubic-bezier(.22,.7,.2,1) both}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+h1{font-family:var(--font-display);font-weight:800;font-size:27px;line-height:1.12;letter-spacing:-.025em;margin:0}
+h2{font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:-.015em;margin:0}
+.sub{font-size:14.5px;color:var(--text-sub);margin:9px 0 0;line-height:1.45}
+.kick{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-2);
+  display:block;margin-bottom:9px}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);
+  display:block;margin:0 0 10px}
+
+/* ---- ricerca libera: la promessa dei due secondi ---- */
+.sr{position:relative;margin:16px 0 6px}
+.sr input{width:100%;min-height:56px;padding:15px 46px 15px 46px;font-size:16px;border-radius:16px;
+  background:var(--bg-card);border:1px solid var(--border-card);color:var(--text-main);
+  -webkit-appearance:none;appearance:none}
+.sr input::placeholder{color:var(--text-dim)}
+.sr input:focus{border-color:var(--brand);background:var(--bg-card-2)}
+.sr__i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-dim);pointer-events:none}
+.sr__v{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;color:var(--brand-2)}
+
+/* ---- griglia categorie ---- */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:6px}
+.cat{aspect-ratio:1/1;border-radius:18px;background:var(--bg-card);border:1px solid var(--border-card);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:10px;
+  transition:transform .15s,border-color .15s,background .15s;position:relative;overflow:hidden}
+.cat:active{transform:scale(.96)}
+.cat__n{font-size:12.5px;font-weight:600;text-align:center;line-height:1.2;color:var(--text-main)}
+.cat svg{color:var(--brand-2)}
+.cat::after{content:"";position:absolute;inset:auto -30% -60% -30%;height:80%;
+  background:radial-gradient(closest-side,rgba(61,123,255,.22),transparent);opacity:0;transition:opacity .2s}
+.cat:active::after{opacity:1}
+
+/* ---- elenchi ---- */
+.row{display:flex;align-items:center;gap:13px;width:100%;padding:15px;border-radius:15px;
+  background:var(--bg-card);border:1px solid var(--border-card);margin-bottom:9px;
+  transition:transform .14s,border-color .14s}
+.row:active{transform:scale(.985);border-color:var(--brand)}
+.row__b{flex:1 1 auto;min-width:0}
+.row__n{display:block;font-size:15.5px;font-weight:600;line-height:1.25}
+.row__m{display:block;font-size:12.5px;color:var(--text-sub);margin-top:2px}
+.row__a{flex:0 0 auto;color:var(--text-dim)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.04em;
+  padding:4px 9px;border-radius:20px;background:rgba(61,123,255,.14);color:var(--brand-3)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chips button{padding:10px 15px;border-radius:22px;background:var(--bg-card);border:1px solid var(--border-card);
+  font-size:14.5px;font-weight:600;min-height:44px;display:inline-flex;align-items:center}
+.chips button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+
+/* ---- l'oggetto scelto ---- */
+.obj{border-radius:18px;padding:16px;background:var(--bg-card-2);border:1px solid rgba(61,123,255,.28);
+  margin-bottom:16px;position:relative;overflow:hidden}
+.obj::before{content:"";position:absolute;inset:-40% 40% 55% -20%;
+  background:radial-gradient(closest-side,rgba(61,123,255,.20),transparent);pointer-events:none}
+.obj__m{font-size:12px;color:var(--brand-3);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.obj__n{font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.02em;margin-top:5px}
+.obj__x{font-size:13px;color:var(--text-sub);margin-top:4px}
+
+/* ---- il pezzo ---- */
+.pc{border-radius:18px;background:var(--bg-card);border:1px solid var(--border-card);
+  padding:16px;margin-bottom:11px}
+.pc__h{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.pc__i{flex:0 0 auto;width:42px;height:42px;border-radius:12px;background:rgba(61,123,255,.12);
+  display:flex;align-items:center;justify-content:center;color:var(--brand-2)}
+.pc__t{flex:1 1 auto;min-width:0}
+.pc__n{font-size:16px;font-weight:650;line-height:1.25}
+.pc__w{font-size:12.5px;color:var(--text-sub);margin-top:2px}
+.code{display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;font-weight:600;
+  letter-spacing:.02em;color:var(--text-main);background:#0D1219;border:1px solid var(--border-card);
+  border-radius:11px;padding:11px 13px;margin-bottom:9px;word-break:break-word}
+.code b{color:var(--brand-3);font-weight:700}
+.fit{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--ok);margin-bottom:12px}
+.fit span{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:0 0 auto}
+.pc__b{display:flex;gap:9px}
+.buy{flex:1 1 auto;min-height:50px;border-radius:14px;background:var(--brand-grad);color:#fff;
+  font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .14s;text-decoration:none}
+.buy:active{transform:scale(.97)}
+.bell{flex:0 0 auto;width:50px;min-height:50px;border-radius:14px;background:var(--bg-card-2);
+  border:1px solid var(--border-card);display:flex;align-items:center;justify-content:center;color:var(--text-sub)}
+.bell[aria-pressed="true"]{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.4);color:var(--ok)}
+.price{font-size:12.5px;color:var(--text-dim);margin-top:10px;text-align:center}
+
+/* ---- i miei oggetti ---- */
+.mine{border-radius:16px;background:var(--bg-card);border:1px solid var(--border-card);padding:14px;margin-bottom:9px}
+.mine__h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.mine__n{font-size:15px;font-weight:650}
+.mine__d{font-size:12.5px;font-weight:700;white-space:nowrap}
+.mine__p{font-size:13px;color:var(--text-sub);margin-top:3px}
+.due{color:var(--warn)} .far{color:var(--text-dim)} .now{color:var(--ok)}
+
+.empty{text-align:center;padding:34px 10px;color:var(--text-sub)}
+.empty b{display:block;color:var(--text-main);font-size:17px;font-weight:700;margin-bottom:6px}
+
+.why{border-radius:16px;background:rgba(61,123,255,.08);border:1px solid rgba(61,123,255,.2);
+  padding:14px 15px;font-size:13.5px;color:var(--text-sub);line-height:1.5;margin-top:4px}
+.why b{color:var(--text-main)}
+
+.foot{font-size:11.5px;color:var(--text-dim);line-height:1.5;margin-top:20px;text-align:center}
+
+/* ---- barra in fondo ---- */
+.tabs{flex:0 0 auto;display:flex;border-top:1px solid var(--border-card);background:var(--bg-header);
+  backdrop-filter:blur(12px);padding-bottom:var(--sab)}
+.tabs button{flex:1 1 0;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;font-size:10.5px;font-weight:600;color:var(--text-dim);letter-spacing:.02em}
+.tabs button[aria-pressed="true"]{color:var(--brand-2)}
+.tabs i{font-style:normal;position:relative}
+.tabs .n{position:absolute;top:-3px;right:-9px;min-width:16px;height:16px;border-radius:9px;background:var(--warn);
+  color:#000;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* ---- apertura ---- */
+#splash{position:fixed;inset:0;z-index:60;background:var(--bg-main);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;transition:opacity .45s ease,visibility .45s}
+#splash.via{opacity:0;visibility:hidden}
+.sp__l{width:78px;height:78px;border-radius:24px;background:var(--brand-grad);display:flex;align-items:center;
+  justify-content:center;animation:pop .6s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+.sp__n{font-family:var(--font-display);font-weight:900;font-size:29px;letter-spacing:-.03em;
+  animation:up .5s .16s cubic-bezier(.22,.7,.2,1) both}
+.sp__c{font-size:13.5px;color:var(--text-sub);text-align:center;max-width:280px;
+  animation:up .5s .26s cubic-bezier(.22,.7,.2,1) both}
+</style>
+
+<div id="splash">
+  <div class="sp__l"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h6v12H3z"/><path d="M9 9h12"/><path d="M9 15h12"/>
+    <path d="M18 6v3"/><path d="M18 15v3"/></svg></div>
+  <div class="sp__n">Calibro AI</div>
+  <div class="sp__c" id="sp-c"></div>
+</div>
+
+<div id="shell">
+  <header class="hd" id="hd"></header>
+  <main class="bd" id="bd"></main>
+  <nav class="tabs" id="tabs"></nav>
+</div>
+
+<script>
+"use strict";
+
+/* ================= i mercati: la lingua sceglie anche il negozio ================= */
+
+const MERCATI={
+  it:{host:"www.amazon.it",   tag:"dgmapps-21", val:"€"},
+  en:{host:"www.amazon.co.uk",tag:"dgmapps-21", val:"£"},
+  de:{host:"www.amazon.de",   tag:"dgmapps0e-21",val:"€"},
+  fr:{host:"www.amazon.fr",   tag:"dgmapps0c-21",val:"€"},
+  es:{host:"www.amazon.es",   tag:"dgmapps0d-21",val:"€"}
+};
+
+/* ================= i testi ================= */
+
+const T={
+it:{claim:"Il pezzo giusto per l'oggetto che hai già.",
+  h1:"Cosa devi far durare?", sub:"Dimmi che oggetto hai. Ti do il codice esatto del ricambio che ci entra — verificato, non indovinato.",
+  cerca:"Scrivi il modello: «DeskJet 3760»", nores:"Nessun modello con questo nome.",
+  scegliMarca:"Scegli la marca", scegliModello:"Scegli il modello", cerca2:"Cerca il tuo modello",
+  pz1:"ricambio", pzN:"ricambi", pz1:"part", pzN:"parts", pz1:"recambio", pzN:"recambios", pz1:"pièce", pzN:"pièces", pz1:"Teil", pzN:"Teile", pz1:"ricambio", pzN:"ricambi",
+  serve:"Cosa ci entra", combacia:"Combacia con il tuo modello", ogni:"Da cambiare ogni {n} mesi",
+  compra:"Vedi su Amazon", indicativo:"Prezzo indicativo {p} · cambia spesso, controlla su Amazon",
+  tabHome:"Cerca", tabMiei:"I miei oggetti",
+  mieiT:"I miei oggetti", mieiV:"Non hai ancora salvato niente.",
+  mieiVp:"Quando trovi il pezzo giusto, tocca la campanella: ti avviso quando è ora di ricomprarlo.",
+  tolgo:"Togli", scade:"fra {n} giorni", scaduto:"da ricomprare", oggi:"proprio oggi",
+  why:"<b>La compatibilità non si indovina.</b> L'AI capisce cosa hai in mano; il codice del pezzo esce da una tabella verificata. Una sigla inventata ti fa comprare la cartuccia sbagliata.",
+  disc:"In qualità di Affiliato Amazon, riceviamo un guadagno dagli acquisti idonei. I prezzi e la disponibilità sono quelli di Amazon al momento dell'acquisto.",
+  fam:"Parte della famiglia DGM Apps", indietro:"Indietro"},
+en:{claim:"The right part for the thing you already own.",
+  h1:"What needs to keep going?", sub:"Tell me what you own. I give you the exact code of the part that fits — verified, not guessed.",
+  cerca:"Type your model: “DeskJet 3760”", nores:"No model with that name.",
+  scegliMarca:"Pick the brand", scegliModello:"Pick the model", cerca2:"Search your model",
+  pz1:"part", pzN:"parts",
+  serve:"What fits", combacia:"Fits your model", ogni:"Replace every {n} months",
+  compra:"See on Amazon", indicativo:"Around {p} · prices move, check on Amazon",
+  tabHome:"Search", tabMiei:"My things",
+  mieiT:"My things", mieiV:"Nothing saved yet.",
+  mieiVp:"When you find the right part, tap the bell: I'll tell you when it's time to buy it again.",
+  tolgo:"Remove", scade:"in {n} days", scaduto:"time to reorder", oggi:"today",
+  why:"<b>Fit is never guessed.</b> The AI works out what you own; the part code comes from a verified table. An invented code makes you buy the wrong cartridge.",
+  disc:"As an Amazon Associate we earn from qualifying purchases. Prices and availability are Amazon's at the time of purchase.",
+  fam:"Part of the DGM Apps family", indietro:"Back"},
+es:{claim:"La pieza correcta para lo que ya tienes.",
+  h1:"¿Qué quieres que dure?", sub:"Dime qué tienes. Te doy el código exacto del recambio que encaja — verificado, no adivinado.",
+  cerca:"Escribe tu modelo: «DeskJet 3760»", nores:"Ningún modelo con ese nombre.",
+  scegliMarca:"Elige la marca", scegliModello:"Elige el modelo", cerca2:"Busca tu modelo",
+  pz1:"recambio", pzN:"recambios",
+  serve:"Qué encaja", combacia:"Encaja con tu modelo", ogni:"Cambiar cada {n} meses",
+  compra:"Ver en Amazon", indicativo:"Precio orientativo {p} · cambia, comprueba en Amazon",
+  tabHome:"Buscar", tabMiei:"Mis cosas",
+  mieiT:"Mis cosas", mieiV:"Aún no has guardado nada.",
+  mieiVp:"Cuando encuentres la pieza, toca la campana: te aviso cuando toque recomprarla.",
+  tolgo:"Quitar", scade:"en {n} días", scaduto:"toca recomprar", oggi:"hoy",
+  why:"<b>La compatibilidad no se adivina.</b> La IA entiende qué tienes; el código sale de una tabla verificada. Un código inventado te hace comprar el cartucho equivocado.",
+  disc:"Como Afiliado de Amazon, obtenemos ingresos por las compras adscritas que cumplen los requisitos aplicables.",
+  fam:"Parte de la familia DGM Apps", indietro:"Atrás"},
+fr:{claim:"La bonne pièce pour ce que vous avez déjà.",
+  h1:"Qu'est-ce qui doit durer ?", sub:"Dites-moi ce que vous avez. Je vous donne le code exact de la pièce qui va — vérifié, pas deviné.",
+  cerca:"Tapez votre modèle : « DeskJet 3760 »", nores:"Aucun modèle à ce nom.",
+  scegliMarca:"Choisissez la marque", scegliModello:"Choisissez le modèle", cerca2:"Cherchez votre modèle",
+  pz1:"pièce", pzN:"pièces",
+  serve:"Ce qui va", combacia:"Compatible avec votre modèle", ogni:"À changer tous les {n} mois",
+  compra:"Voir sur Amazon", indicativo:"Prix indicatif {p} · ça bouge, vérifiez sur Amazon",
+  tabHome:"Chercher", tabMiei:"Mes objets",
+  mieiT:"Mes objets", mieiV:"Rien d'enregistré pour l'instant.",
+  mieiVp:"Quand vous trouvez la bonne pièce, touchez la cloche : je vous préviens quand il faut la racheter.",
+  tolgo:"Retirer", scade:"dans {n} jours", scaduto:"à racheter", oggi:"aujourd'hui",
+  why:"<b>La compatibilité ne se devine pas.</b> L'IA comprend ce que vous avez ; le code vient d'une table vérifiée. Un code inventé fait acheter la mauvaise cartouche.",
+  disc:"En tant que Partenaire Amazon, nous réalisons un bénéfice sur les achats remplissant les conditions requises.",
+  fam:"Fait partie de la famille DGM Apps", indietro:"Retour"},
+de:{claim:"Das richtige Teil für das, was du schon hast.",
+  h1:"Was soll weiterlaufen?", sub:"Sag mir, was du hast. Ich gebe dir den genauen Code des Teils, das passt — geprüft, nicht geraten.",
+  cerca:"Modell eingeben: „DeskJet 3760“", nores:"Kein Modell mit diesem Namen.",
+  scegliMarca:"Marke wählen", scegliModello:"Modell wählen", cerca2:"Modell suchen",
+  pz1:"Teil", pzN:"Teile",
+  serve:"Was passt", combacia:"Passt zu deinem Modell", ogni:"Alle {n} Monate wechseln",
+  compra:"Bei Amazon ansehen", indicativo:"Richtpreis {p} · ändert sich, bei Amazon prüfen",
+  tabHome:"Suchen", tabMiei:"Meine Sachen",
+  mieiT:"Meine Sachen", mieiV:"Noch nichts gespeichert.",
+  mieiVp:"Wenn du das richtige Teil gefunden hast, tippe auf die Glocke: Ich sage dir, wann es Zeit zum Nachkaufen ist.",
+  tolgo:"Entfernen", scade:"in {n} Tagen", scaduto:"nachkaufen", oggi:"heute",
+  why:"<b>Passgenauigkeit wird nicht geraten.</b> Die KI versteht, was du hast; der Code kommt aus einer geprüften Tabelle. Ein erfundener Code lässt dich die falsche Patrone kaufen.",
+  disc:"Als Amazon-Partner verdienen wir an qualifizierten Verkäufen.",
+  fam:"Teil der DGM-Apps-Familie", indietro:"Zurück"}
+};
+
+/* ================= le categorie ================= */
+
+const ICONE={
+  stampante:'<path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/>',
+  aspirapolvere:'<path d="M12 3a7 7 0 0 1 7 7v4"/><path d="M5 21h6a2 2 0 0 0 2-2v-3a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3z"/><circle cx="19" cy="18" r="3"/>',
+  robot:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3"/>',
+  caffe:'<path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v3"/><path d="M10 2v3"/><path d="M14 2v3"/>',
+  acqua:'<path d="M12 2.7s6 6 6 10.3a6 6 0 0 1-12 0C6 8.7 12 2.7 12 2.7z"/>',
+  bici:'<circle cx="6" cy="17" r="4"/><circle cx="18" cy="17" r="4"/><path d="M6 17 10 7h4"/><path d="m14 7 4 10"/><path d="M9 17h6"/>'
+};
+const CAT=[
+  {id:"stampante",    it:"Stampante", en:"Printer",  es:"Impresora", fr:"Imprimante", de:"Drucker"},
+  {id:"aspirapolvere",it:"Aspirapolvere", en:"Vacuum", es:"Aspiradora", fr:"Aspirateur", de:"Staubsauger"},
+  {id:"robot",        it:"Robot", en:"Robot vac", es:"Robot", fr:"Robot", de:"Saugroboter"},
+  {id:"caffe",        it:"Caffè", en:"Coffee", es:"Café", fr:"Café", de:"Kaffee"},
+  {id:"acqua",        it:"Acqua", en:"Water", es:"Agua", fr:"Eau", de:"Wasser"},
+  {id:"bici",         it:"Bici", en:"Bike", es:"Bici", fr:"Vélo", de:"Fahrrad"}
+];
+
+/* tipi di pezzo — servono l'etichetta tradotta e un'icona */
+const TIPI={
+  nero:      {it:"Cartuccia nera", en:"Black cartridge", es:"Cartucho negro", fr:"Cartouche noire", de:"Schwarze Patrone"},
+  colore:    {it:"Cartuccia a colori", en:"Colour cartridge", es:"Cartucho de color", fr:"Cartouche couleur", de:"Farbpatrone"},
+  toner:     {it:"Toner", en:"Toner", es:"Tóner", fr:"Toner", de:"Toner"},
+  sacchetti: {it:"Sacchetti", en:"Dust bags", es:"Bolsas", fr:"Sacs", de:"Staubbeutel"},
+  filtro:    {it:"Filtro", en:"Filter", es:"Filtro", fr:"Filtre", de:"Filter"},
+  spazzola:  {it:"Spazzola", en:"Brush", es:"Cepillo", fr:"Brosse", de:"Bürste"},
+  decal:     {it:"Decalcificante", en:"Descaler", es:"Descalcificador", fr:"Détartrant", de:"Entkalker"},
+  filtroacqua:{it:"Filtro dell'acqua", en:"Water filter", es:"Filtro de agua", fr:"Filtre à eau", de:"Wasserfilter"},
+  catena:    {it:"Catena", en:"Chain", es:"Cadena", fr:"Chaîne", de:"Kette"},
+  camera:    {it:"Camera d'aria", en:"Inner tube", es:"Cámara", fr:"Chambre à air", de:"Schlauch"},
+  pastiglie: {it:"Pastiglie freno", en:"Brake pads", es:"Pastillas", fr:"Plaquettes", de:"Bremsbeläge"}
+};
+const ICOTIPO={nero:"stampante",colore:"stampante",toner:"stampante",sacchetti:"aspirapolvere",
+  filtro:"acqua",spazzola:"robot",decal:"caffe",filtroacqua:"acqua",catena:"bici",camera:"bici",pastiglie:"bici"};
+
+/* ================= LA TABELLA =================
+   Qui sta il valore del prodotto: sigle vere, non generate.
+   Ogni riga è una compatibilità verificata a mano — è questo che
+   nessun modello linguistico può darti al posto nostro, ed è anche
+   il motivo per cui l'app resta piccola e si allarga a mano. */
+
+const MODELLI=[
+ /* ---------- stampanti ---------- */
+ {cat:"stampante",marca:"HP",nome:"DeskJet 3750 · 3760 · 3762 · 3764",alias:"deskjet 3750 3760 3762 3764",parti:[
+   {t:"nero",  cod:"HP 304",   full:"HP 304 nero (N9K06AE)",     xl:"304XL (N9K08AE)", mesi:6, p:"14–22"},
+   {t:"colore",cod:"HP 304",   full:"HP 304 colore (N9K05AE)",   xl:"304XL (N9K07AE)", mesi:6, p:"17–26"}]},
+ {cat:"stampante",marca:"HP",nome:"DeskJet 2710 · 2720 · 2721 · 2723",alias:"deskjet 2710 2720 2721 2723 envy 6020 6030",parti:[
+   {t:"nero",  cod:"HP 305",   full:"HP 305 nero (3YM61AE)",     xl:"305XL (3YM62AE)", mesi:6, p:"13–20"},
+   {t:"colore",cod:"HP 305",   full:"HP 305 colore (3YM60AE)",   xl:"305XL (3YM63AE)", mesi:6, p:"16–25"}]},
+ {cat:"stampante",marca:"HP",nome:"OfficeJet 3830 · 3831 · 3833 · 4650",alias:"officejet 3830 3831 3833 4650 deskjet 2130 3630",parti:[
+   {t:"nero",  cod:"HP 302",   full:"HP 302 nero (F6U66AE)",     xl:"302XL (F6U68AE)", mesi:6, p:"15–23"},
+   {t:"colore",cod:"HP 302",   full:"HP 302 colore (F6U65AE)",   xl:"302XL (F6U67AE)", mesi:6, p:"18–28"}]},
+ {cat:"stampante",marca:"HP",nome:"LaserJet M110we · M140we · M141w",alias:"laserjet m110we m140we m141w",parti:[
+   {t:"toner", cod:"HP 150A",  full:"HP 150A (W1500A)",          xl:"150X (W1500X)",   mesi:14,p:"55–80"}]},
+ {cat:"stampante",marca:"Canon",nome:"PIXMA TS3150 · TS3350 · TS3450",alias:"pixma ts3150 ts3350 ts3450 ts3451",parti:[
+   {t:"nero",  cod:"PG-545",   full:"Canon PG-545 nero",         xl:"PG-545XL",        mesi:6, p:"16–24"},
+   {t:"colore",cod:"CL-546",   full:"Canon CL-546 colore",       xl:"CL-546XL",        mesi:6, p:"18–28"}]},
+ {cat:"stampante",marca:"Canon",nome:"PIXMA TR4550 · TR4551 · MG3050",alias:"pixma tr4550 tr4551 mg3050 mg2550",parti:[
+   {t:"nero",  cod:"PG-545",   full:"Canon PG-545 nero",         xl:"PG-545XL",        mesi:6, p:"16–24"},
+   {t:"colore",cod:"CL-546",   full:"Canon CL-546 colore",       xl:"CL-546XL",        mesi:6, p:"18–28"}]},
+ {cat:"stampante",marca:"Epson",nome:"Expression XP-2100 · 3100 · 4100",alias:"xp-2100 xp2100 xp-3100 xp-4100 xp-2105 xp-3105",parti:[
+   {t:"nero",  cod:"Epson 603",full:"Epson 603 nero (arancia)",  xl:"603XL",           mesi:6, p:"11–18"},
+   {t:"colore",cod:"Epson 603",full:"Epson 603 multipack colore",xl:"603XL multipack", mesi:6, p:"28–42"}]},
+ {cat:"stampante",marca:"Epson",nome:"Expression XP-2200 · 3200 · 4200",alias:"xp-2200 xp2200 xp-3200 xp-4200 xp-4205",parti:[
+   {t:"nero",  cod:"Epson 604",full:"Epson 604 nero (ananas)",   xl:"604XL",           mesi:6, p:"12–19"},
+   {t:"colore",cod:"Epson 604",full:"Epson 604 multipack colore",xl:"604XL multipack", mesi:6, p:"30–45"}]},
+ {cat:"stampante",marca:"Brother",nome:"DCP-J1050DW · J1140DW · MFC-J1010DW",alias:"dcp-j1050dw j1140dw mfc-j1010dw",parti:[
+   {t:"nero",  cod:"LC421",    full:"Brother LC421 nero",        xl:"LC421XL",         mesi:6, p:"14–22"},
+   {t:"colore",cod:"LC421",    full:"Brother LC421 multipack",   xl:"LC421XL VAL",     mesi:6, p:"38–55"}]},
+
+ /* ---------- aspirapolvere ---------- */
+ {cat:"aspirapolvere",marca:"Miele",nome:"Complete C3 · Classic C1 (attacco FJM)",alias:"miele c1 c3 fjm compact",parti:[
+   {t:"sacchetti",cod:"FJM",     full:"Miele HyClean 3D FJM",     xl:"", mesi:4, p:"14–22"},
+   {t:"filtro",   cod:"SF-AH50", full:"Miele SF-AH 50 HEPA",      xl:"", mesi:12,p:"24–35"}]},
+ {cat:"aspirapolvere",marca:"Miele",nome:"Complete C3 grandi (attacco GN)",alias:"miele gn complete c3 s5 s8",parti:[
+   {t:"sacchetti",cod:"GN",      full:"Miele HyClean 3D GN",      xl:"", mesi:4, p:"15–24"},
+   {t:"filtro",   cod:"SF-AH50", full:"Miele SF-AH 50 HEPA",      xl:"", mesi:12,p:"24–35"}]},
+ {cat:"aspirapolvere",marca:"Folletto",nome:"VK200 · VK220S",alias:"folletto vk200 vk220 vorwerk",parti:[
+   {t:"sacchetti",cod:"FP200",   full:"Folletto FP200",           xl:"", mesi:3, p:"22–34"},
+   {t:"filtro",   cod:"FP200",   full:"Filtro motore VK200",      xl:"", mesi:12,p:"12–20"}]},
+ {cat:"aspirapolvere",marca:"Dyson",nome:"V7 · V8 (senza filo)",alias:"dyson v7 v8 filtro",parti:[
+   {t:"filtro",   cod:"V7/V8",   full:"Filtro post-motore V7 · V8",xl:"",mesi:6, p:"14–24"}]},
+ {cat:"aspirapolvere",marca:"Dyson",nome:"V10 · V11 · V15",alias:"dyson v10 v11 v15 filtro",parti:[
+   {t:"filtro",   cod:"V10/V11", full:"Filtro V10 · V11 · V15",   xl:"", mesi:6, p:"18–30"}]},
+
+ /* ---------- robot ---------- */
+ {cat:"robot",marca:"iRobot",nome:"Roomba serie i · j (i3 · i7 · j7)",alias:"roomba i3 i7 j7 i5 sacchetti clean base",parti:[
+   {t:"filtro",   cod:"serie i/j",full:"Filtro serie i · j",      xl:"", mesi:3, p:"12–20"},
+   {t:"spazzola", cod:"serie i/j",full:"Spazzole in gomma i · j", xl:"", mesi:9, p:"22–36"},
+   {t:"sacchetti",cod:"Clean Base",full:"Sacchetti Clean Base",   xl:"", mesi:2, p:"18–28"}]},
+ {cat:"robot",marca:"iRobot",nome:"Roomba serie e · 600 (e5 · 671)",alias:"roomba e5 600 671 605 filtro",parti:[
+   {t:"filtro",   cod:"serie 600",full:"Filtro serie 600 · e",    xl:"", mesi:3, p:"9–16"},
+   {t:"spazzola", cod:"serie 600",full:"Spazzola laterale 600 · e",xl:"",mesi:6, p:"8–15"}]},
+ {cat:"robot",marca:"Roborock",nome:"S7 · S7 MaxV · S8",alias:"roborock s7 s8 maxv filtro mop",parti:[
+   {t:"filtro",   cod:"S7/S8",   full:"Filtro lavabile S7 · S8",  xl:"", mesi:3, p:"12–22"},
+   {t:"spazzola", cod:"S7/S8",   full:"Spazzola laterale S7 · S8",xl:"", mesi:6, p:"9–16"}]},
+
+ /* ---------- caffè ---------- */
+ {cat:"caffe",marca:"De'Longhi",nome:"Magnifica S · Dinamica · Eletta",alias:"delonghi magnifica dinamica eletta ecam filtro",parti:[
+   {t:"filtroacqua",cod:"DLSC002",full:"De'Longhi DLSC002",       xl:"", mesi:2, p:"14–22"},
+   {t:"decal",      cod:"SER3018",full:"EcoDecalk SER3018 · DLSC500",xl:"",mesi:4,p:"10–18"}]},
+ {cat:"caffe",marca:"Nespresso",nome:"Vertuo · Original (tutte)",alias:"nespresso vertuo original decalcificante",parti:[
+   {t:"decal",      cod:"kit",    full:"Kit decalcificante Nespresso",xl:"",mesi:6,p:"8–14"}]},
+ {cat:"caffe",marca:"Philips",nome:"Saeco · serie 2200 · 3200 · 5400",alias:"philips saeco 2200 3200 5400 aquaclean",parti:[
+   {t:"filtroacqua",cod:"CA6903", full:"AquaClean CA6903",        xl:"", mesi:3, p:"16–28"},
+   {t:"decal",      cod:"CA6700", full:"Decalcificante CA6700",   xl:"", mesi:6, p:"9–16"}]},
+
+ /* ---------- acqua ---------- */
+ {cat:"acqua",marca:"Brita",nome:"Caraffe Maxtra Pro (Marella · Style)",alias:"brita maxtra pro marella style caraffa",parti:[
+   {t:"filtro",cod:"Maxtra Pro",full:"Brita Maxtra Pro",          xl:"", mesi:1, p:"18–32"}]},
+ {cat:"acqua",marca:"BWT",nome:"Caraffe con magnesio",alias:"bwt magnesium caraffa filtro",parti:[
+   {t:"filtro",cod:"BWT Mg2+", full:"BWT Magnesium Mineralizer",  xl:"", mesi:1, p:"20–34"}]},
+ {cat:"acqua",marca:"Laica",nome:"Caraffe Bi-flux",alias:"laica biflux caraffa filtro",parti:[
+   {t:"filtro",cod:"Bi-flux",  full:"Laica Bi-flux",              xl:"", mesi:1, p:"14–26"}]},
+
+ /* ---------- bici ---------- */
+ {cat:"bici",marca:"Shimano",nome:"Cambio a 10 velocità",alias:"10 velocita catena shimano 10v",parti:[
+   {t:"catena",cod:"CN-HG54",  full:"Shimano CN-HG54 (10v)",      xl:"", mesi:18,p:"18–28"}]},
+ {cat:"bici",marca:"Shimano",nome:"Cambio a 11 velocità",alias:"11 velocita catena shimano 11v 105",parti:[
+   {t:"catena",cod:"CN-HG601", full:"Shimano CN-HG601 (11v)",     xl:"", mesi:18,p:"24–38"}]},
+ {cat:"bici",marca:"Shimano",nome:"Cambio a 8 · 9 velocità",alias:"8 9 velocita catena shimano 8v 9v",parti:[
+   {t:"catena",cod:"CN-HG40",  full:"Shimano CN-HG40 (6·7·8v)",   xl:"CN-HG53 (9v)", mesi:18,p:"12–20"}]},
+ {cat:"bici",marca:"Ruote",nome:"Corsa 700c · copertone 25-32",alias:"700c 700x25 700x28 camera presta corsa",parti:[
+   {t:"camera",cod:"700×25-32",full:"Camera 700×25-32 · valvola Presta",xl:"",mesi:24,p:"6–12"}]},
+ {cat:"bici",marca:"Ruote",nome:"MTB 29\" · copertone 2.1-2.4",alias:"29 pollici mtb camera schrader 29er",parti:[
+   {t:"camera",cod:"29×2.1-2.4",full:"Camera 29×2.1-2.4 · valvola Schrader",xl:"",mesi:24,p:"7–13"}]},
+ {cat:"bici",marca:"Ruote",nome:"City · trekking 28\" · 26\"",alias:"28 pollici 26 city trekking camera dunlop",parti:[
+   {t:"camera",cod:"28×1.5-1.75",full:"Camera 28×1.5-1.75 · valvola Dunlop",xl:"",mesi:24,p:"6–11"}]}
+];
+
+/* ================= memoria ================= */
+
+const KEY="calibro.v1";
+let S={lang:"it", vista:"home", cat:null, marca:null, mod:null, cerca:"", miei:[]};
+
+function salva(){ try{ localStorage.setItem(KEY,JSON.stringify({lang:S.lang,miei:S.miei})); }catch{} }
+function carica(){
+  try{
+    const o=JSON.parse(localStorage.getItem(KEY)||"{}");
+    if(T[o.lang]) S.lang=o.lang;
+    if(Array.isArray(o.miei)) S.miei=o.miei
+      .filter((m)=>m&&m.k&&m.mod&&m.quando)
+      .map((m)=>({k:m.k, mod:m.mod, i:Number.isInteger(m.i)?m.i:(+String(m.k).split("#")[1]||0), quando:m.quando}))
+      .filter((m)=>MODELLI.some((x)=>x.marca+"|"+x.nome===m.mod));
+  }catch{}
+  /* prima volta: la lingua del telefono, se la parliamo */
+  if(!localStorage.getItem(KEY)){
+    const l=(navigator.language||"it").slice(0,2).toLowerCase();
+    if(T[l]) S.lang=l;
+  }
+}
+
+/* ================= attrezzi ================= */
+
+const el=(i)=>document.getElementById(i);
+const esc=(s)=>String(s==null?"":s).replace(/[&<>"]/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const t=(k,v)=>{ let s=T[S.lang][k]||T.it[k]||k; if(v) for(const x in v) s=s.split("{"+x+"}").join(v[x]); return s; };
+const nomeCat=(id)=>{ const c=CAT.find((x)=>x.id===id); return c?(c[S.lang]||c.it):id; };
+const nomeTipo=(id)=>{ const x=TIPI[id]; return x?(x[S.lang]||x.it):id; };
+const svg=(id,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONE[id]||ICONE.robot}</svg>`;
+const oggi=()=>new Date().toISOString().slice(0,10);
+const fraMesi=(m)=>{ const d=new Date(); d.setMonth(d.getMonth()+m); return d.toISOString().slice(0,10); };
+const giorniA=(iso)=>Math.round((new Date(iso+"T12:00:00")-new Date(oggi()+"T12:00:00"))/864e5);
+
+/* il collegamento: cerca il codice esatto sul mercato della lingua scelta */
+function link(parte){
+  const m=MERCATI[S.lang]||MERCATI.it;
+  const q=parte.full+(parte.xl?" "+parte.xl:"");
+  return `https://${m.host}/s?k=${encodeURIComponent(q)}&tag=${m.tag}`;
+}
+const valuta=(p)=>{ const m=MERCATI[S.lang]||MERCATI.it; return p+" "+m.val; };
+
+/* ================= la ricerca libera =================
+   Nel prodotto vero qui ci va Gemini, che dal parlato o dalla foto
+   dell'etichetta tira fuori marca e modello. La parte che segue —
+   quale pezzo ci entra — resta comunque questa tabella. */
+
+function trova(q){
+  const s=q.toLowerCase().trim().replace(/[^\w\s.-]/g," ").replace(/\s+/g," ");
+  if(s.length<2) return [];
+  const parole=s.split(" ").filter((w)=>w.length>1);
+  return MODELLI.map((m)=>{
+    const testo=(m.marca+" "+m.nome+" "+m.alias+" "+nomeCat(m.cat)).toLowerCase();
+    let punti=0;
+    for(const w of parole){ if(testo.includes(w)) punti+= (w.length>3?2:1); }
+    /* la sigla scritta senza spazio o senza trattino deve trovare lo stesso */
+    const compatto=testo.replace(/[\s-]/g,"");
+    for(const w of parole){ if(w.length>3 && compatto.includes(w.replace(/-/g,""))) punti+=2; }
+    return {m,punti};
+  }).filter((x)=>x.punti>=2).sort((a,b)=>b.punti-a.punti).slice(0,8).map((x)=>x.m);
+}
+
+/* ================= le schermate ================= */
+
+function render(){
+  el("hd").innerHTML=testata();
+  el("bd").innerHTML=
+      S.vista==="miei"    ? vistaMiei()
+    : S.mod              ? vistaParti()
+    : S.cat              ? vistaModelli()
+    : vistaHome();
+  el("tabs").innerHTML=barra();
+  const k=S.vista+(S.cat||"")+(S.marca||"")+(S.mod||"");
+  if(k!==render.k){ render.k=k; el("bd").scrollTop=0; }
+}
+
+function testata(){
+  const dietro = S.vista==="home" && (S.mod||S.cat);
+  return `
+    ${dietro?`<button type="button" class="hd__b" id="back" aria-label="${esc(t("indietro"))}">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>`
+    :`<div class="hd__b" style="background:var(--brand-grad);border:0">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h6v12H3z"/><path d="M9 9h12"/><path d="M9 15h12"/>
+        <path d="M18 6v3"/><path d="M18 15v3"/></svg></div>`}
+    <div class="hd__t"><div class="hd__n">Calibro AI</div>
+      <div class="hd__s">${esc(t("claim"))}</div></div>
+    <div class="lang">${["it","en","de","fr","es"].map((l)=>`<button type="button" data-lang="${l}"
+      aria-pressed="${l===S.lang}">${l.toUpperCase()}</button>`).join("")}</div>`;
+}
+
+function barra(){
+  const n=S.miei.filter((m)=>giorniA(m.quando)<=0).length;
+  return `
+    <button type="button" data-tab="home" aria-pressed="${S.vista!=="miei"}">
+      <i>${svg("acqua",21).replace(ICONE.acqua,'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')}</i>
+      ${esc(t("tabHome"))}</button>
+    <button type="button" data-tab="miei" aria-pressed="${S.vista==="miei"}">
+      <i><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+        stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/>
+        <path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>${n?`<span class="n">${n}</span>`:""}</i>
+      ${esc(t("tabMiei"))}</button>`;
+}
+
+function vistaHome(){
+  const ris=trova(S.cerca);
+  return `<div class="pane">
+    <h1>${esc(t("h1"))}</h1>
+    <p class="sub">${esc(t("sub"))}</p>
+
+    <div class="sr">
+      <span class="sr__i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+      <input id="q" type="search" value="${esc(S.cerca)}" placeholder="${esc(t("cerca"))}"
+        autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
+      <button type="button" class="sr__v" id="voce" aria-label="voce">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/>
+          <path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v5"/></svg></button>
+    </div>
+
+    ${S.cerca.trim().length>=2
+      ? (ris.length?`<div style="margin-top:14px">${ris.map(rigaModello).join("")}</div>`
+                   :`<div class="empty">${esc(t("nores"))}</div>`)
+      : `<div class="grid">${CAT.map((c)=>`<button type="button" class="cat" data-cat="${c.id}">
+          ${svg(c.id,27)}<span class="cat__n">${esc(nomeCat(c.id))}</span></button>`).join("")}</div>
+         <div class="why" style="margin-top:16px">${t("why")}</div>`}
+
+    <p class="foot">${esc(t("disc"))}<br><br>${esc(t("fam"))}</p>
+  </div>`;
+}
+
+function rigaModello(m){
+  return `<button type="button" class="row" data-mod="${esc(m.marca+"|"+m.nome)}">
+    <span class="hd__b" style="width:38px;height:38px;border-radius:11px">${svg(m.cat,19)}</span>
+    <span class="row__b"><span class="row__n">${esc(m.marca)} ${esc(m.nome)}</span>
+      <span class="row__m">${esc(nomeCat(m.cat))} · ${m.parti.length} ${esc(m.parti.length===1?t("pz1"):t("pzN"))}</span></span>
+    <span class="row__a"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+  </button>`;
+}
+
+function vistaModelli(){
+  const dellaCat=MODELLI.filter((m)=>m.cat===S.cat);
+  const marche=[...new Set(dellaCat.map((m)=>m.marca))];
+  const marca=S.marca&&marche.includes(S.marca)?S.marca:null;
+  const elenco=marca?dellaCat.filter((m)=>m.marca===marca):dellaCat;
+  return `<div class="pane">
+    <span class="kick">${esc(nomeCat(S.cat))}</span>
+    <h2>${esc(marca?t("scegliModello"):t("scegliMarca"))}</h2>
+    <div style="height:16px"></div>
+    <div class="chips">${marche.map((b)=>`<button type="button" data-marca="${esc(b)}"
+      aria-pressed="${b===marca}">${esc(b)}</button>`).join("")}</div>
+    ${elenco.map(rigaModello).join("")}
+    <p class="foot">${esc(t("disc"))}</p>
+  </div>`;
+}
+
+function vistaParti(){
+  const m=MODELLI.find((x)=>x.marca+"|"+x.nome===S.mod);
+  if(!m) return `<div class="empty">—</div>`;
+  return `<div class="pane">
+    <div class="obj">
+      <div class="obj__m">${esc(nomeCat(m.cat))} · ${esc(m.marca)}</div>
+      <div class="obj__n">${esc(m.nome)}</div>
+      <div class="obj__x">${m.parti.length} ${esc(m.parti.length===1?t("pz1"):t("pzN"))}</div>
+    </div>
+    <span class="lbl">${esc(t("serve"))}</span>
+    ${m.parti.map((p,i)=>schedaParte(m,p,i)).join("")}
+    <p class="foot">${esc(t("disc"))}</p>
+  </div>`;
+}
+
+function schedaParte(m,p,i){
+  const chiave=S.mod+"#"+i;
+  const salvato=S.miei.some((x)=>x.k===chiave);
+  return `<div class="pc">
+    <div class="pc__h">
+      <div class="pc__i">${svg(ICOTIPO[p.t]||"robot",21)}</div>
+      <div class="pc__t"><div class="pc__n">${esc(nomeTipo(p.t))}</div>
+        <div class="pc__w">${esc(t("ogni",{n:p.mesi}))}</div></div>
+    </div>
+    <span class="code"><b>${esc(p.full)}</b>${p.xl?`<br>${esc(p.xl)}`:""}</span>
+    <div class="fit"><span></span>${esc(t("combacia"))}</div>
+    <div class="pc__b">
+      <a class="buy" href="${esc(link(p))}" target="_blank" rel="noopener nofollow sponsored">
+        ${esc(t("compra"))}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
+      <button type="button" class="bell" data-bell="${esc(chiave)}" aria-pressed="${salvato}"
+        aria-label="promemoria">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/>
+          <path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
+    </div>
+    <div class="price">${esc(t("indicativo",{p:valuta(p.p)}))}</div>
+  </div>`;
+}
+
+function vistaMiei(){
+  if(!S.miei.length) return `<div class="pane"><h2>${esc(t("mieiT"))}</h2>
+    <div class="empty" style="margin-top:20px"><b>${esc(t("mieiV"))}</b>${esc(t("mieiVp"))}</div></div>`;
+  const ord=S.miei.slice().sort((a,b)=>String(a.quando).localeCompare(String(b.quando)));
+  return `<div class="pane"><h2>${esc(t("mieiT"))}</h2><div style="height:16px"></div>
+    ${ord.map((x)=>{
+      const m=MODELLI.find((y)=>y.marca+"|"+y.nome===x.mod);
+      const p=m&&m.parti[x.i];
+      if(!p) return "";
+      const g=giorniA(x.quando);
+      const cls=g<0?"now":g<=21?"due":"far";
+      const testo=g<0?t("scaduto"):g===0?t("oggi"):t("scade",{n:g});
+      return `<div class="mine">
+        <div class="mine__h"><div class="mine__n">${esc(p.full)}</div>
+          <div class="mine__d ${cls}">${esc(testo)}</div></div>
+        <div class="mine__p">${esc(x.mod.split("|").join(" "))}</div>
+        <div style="height:11px"></div>
+        <div class="pc__b">
+          <a class="buy" style="min-height:44px;font-size:14px" href="${esc(link(p))}" target="_blank"
+            rel="noopener nofollow sponsored">${esc(t("compra"))}</a>
+          <button type="button" class="bell" style="width:auto;padding:0 15px;font-size:13.5px;min-height:44px"
+            data-tolgo="${esc(x.k)}">${esc(t("tolgo"))}</button>
+        </div>
+      </div>`;
+    }).join("")}
+    <p class="foot">${esc(t("disc"))}</p>
+  </div>`;
+}
+
+/* ================= le azioni ================= */
+
+document.addEventListener("click",(e)=>{
+  const q=(s)=>e.target.closest(s);
+  let h;
+  if((h=q("[data-lang]"))){ S.lang=h.dataset.lang; salva(); return render(); }
+  if((h=q("[data-tab]"))){
+    const v=h.dataset.tab;
+    if(v==="miei"){ S.vista="miei"; }
+    else { S.vista="home"; S.cat=null; S.marca=null; S.mod=null; S.cerca=""; }
+    return render();
+  }
+  if(q("#back")){
+    if(S.mod){ S.mod=null; }
+    else if(S.cat){ if(S.marca) S.marca=null; else S.cat=null; }
+    return render();
+  }
+  if((h=q("[data-cat]"))){ S.cat=h.dataset.cat; S.marca=null; S.mod=null; return render(); }
+  if((h=q("[data-marca]"))){ S.marca=S.marca===h.dataset.marca?null:h.dataset.marca; return render(); }
+  if((h=q("[data-mod]"))){ S.mod=h.dataset.mod; return render(); }
+  if((h=q("[data-bell]"))) return campanella(h.dataset.bell);
+  if((h=q("[data-tolgo]"))){ S.miei=S.miei.filter((x)=>x.k!==h.dataset.tolgo); salva(); return render(); }
+  if(q("#voce")) return voce();
+});
+
+function campanella(chiave){
+  const i=S.miei.findIndex((x)=>x.k===chiave);
+  if(i>=0){ S.miei.splice(i,1); salva(); return render(); }
+  const [mod,idx]=chiave.split("#");
+  const m=MODELLI.find((x)=>x.marca+"|"+x.nome===mod);
+  const p=m&&m.parti[+idx];
+  if(!p) return;
+  S.miei.push({k:chiave, mod, i:+idx, quando:fraMesi(p.mesi)});
+  salva(); render();
+}
+
+document.addEventListener("input",(e)=>{
+  if(e.target.id!=="q") return;
+  S.cerca=e.target.value;
+  /* si ridisegna solo l'elenco: il campo non perde il fuoco né la tastiera */
+  const sr=document.querySelector(".sr");
+  let n=sr.nextElementSibling;
+  const nuovo=document.createElement("div");
+  if(S.cerca.trim().length>=2){
+    const ris=trova(S.cerca);
+    nuovo.innerHTML=ris.length?ris.map(rigaModello).join(""):`<div class="empty">${esc(t("nores"))}</div>`;
+    nuovo.style.marginTop="14px";
+  }else{
+    nuovo.className="grid";
+    nuovo.innerHTML=CAT.map((c)=>`<button type="button" class="cat" data-cat="${c.id}">
+      ${svg(c.id,27)}<span class="cat__n">${esc(nomeCat(c.id))}</span></button>`).join("");
+  }
+  if(n) n.replaceWith(nuovo);
+  const why=document.querySelector(".why");
+  if(why) why.hidden=S.cerca.trim().length>=2;
+});
+
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"&&e.target.id==="q"){ e.preventDefault(); e.target.blur(); }
+});
+
+/* La voce: nel prodotto vero il parlato va a Gemini, che ne tira fuori
+   marca e modello. Qui usa il riconoscimento del telefono e passa il
+   testo alla stessa ricerca — il risultato per chi prova è identico. */
+function voce(){
+  const R=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!R){ el("q")?.focus(); return; }
+  try{
+    const r=new R();
+    r.lang={it:"it-IT",en:"en-GB",de:"de-DE",fr:"fr-FR",es:"es-ES"}[S.lang]||"it-IT";
+    r.interimResults=false; r.maxAlternatives=1;
+    r.onresult=(ev)=>{
+      const testo=ev.results[0][0].transcript;
+      S.cerca=testo; render(); const c=el("q"); if(c) c.value=testo;
+    };
+    r.start();
+  }catch{ el("q")?.focus(); }
+}
+
+/* la tastiera non deve coprire il campo su cui si scrive */
+if(window.visualViewport){
+  visualViewport.addEventListener("resize",()=>{
+    const a=document.activeElement;
+    if(a&&a.id==="q") setTimeout(()=>a.scrollIntoView({block:"center",behavior:"smooth"}),120);
+  });
+}
+
+/* ================= via ================= */
+
+carica();
+render();
+el("sp-c").textContent=t("claim");
+setTimeout(()=>el("splash").classList.add("via"),1150);
+</script>
