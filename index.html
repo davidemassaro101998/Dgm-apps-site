@@ -35,6 +35,25 @@
          browser: 320 byte in tutto, contro 117 KB di attesa.
          Misure, posizioni e ombre sono le stesse del componente vero, cosi
          quando React monta non si sposta niente. -->
+    <style>
+      /* Il nome nel guscio, con le STESSE misure e le stesse ombre del
+         componente vero: due scaglioni con lo stacco a 640px, che li' e'
+         una media query in JavaScript.
+         Prima era scritto tutto in uno `style` inline e una patch andata
+         a vuoto in silenzio aveva infilato l'ombra dentro un attributo
+         `data-`: il nome usciva senza rilievo e su desktop restava alla
+         misura stretta, quindi al montaggio di React saltava di colpo.
+         E' il motivo per cui questa roba sta in una regola con un nome,
+         non in un attributo lungo una riga. */
+      #guscio-nome{
+        font-family:"Archivo Expanded","Archivo Variable",Archivo,system-ui,sans-serif;
+        font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-.035em;
+        color:#fff;white-space:nowrap;font-size:clamp(40px,13vw,62px);
+        text-shadow:0 2px 0 rgba(241,75,129,.55),0 5px 0 rgba(9,8,14,.9),
+                    0 10px 22px rgba(0,0,0,.75),0 0 70px rgba(247,182,98,.35);
+      }
+      @media (min-width:640px){#guscio-nome{font-size:clamp(62px,8.5vw,132px)}}
+    </style>
     <div id="guscio" aria-hidden="true" style="position:fixed;inset:0;z-index:0;background:#08070A;overflow:hidden;font-family:system-ui,-apple-system,'Segoe UI',sans-serif">
       <div style="display:flex;align-items:center;gap:10px;height:64px;padding:0 16px;max-width:72rem;margin:0 auto">
         <span style="width:26px;height:26px;border-radius:999px;background:conic-gradient(from 210deg,#F14B81,#FF8A1F,#15CC60,#3D7BFF,#F14B81)"></span>
@@ -42,7 +61,7 @@
       </div>
       <div style="position:absolute;left:0;right:0;top:max(4.25rem,8%);display:flex;flex-direction:column;align-items:center;gap:12px;padding:0 16px">
         <p id="guscio-tesi" style="margin:0;max-width:100%;text-align:center;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.28em;color:rgba(255,255,255,.75)"></p>
-        <span style="font-family:Archivo,system-ui,sans-serif;font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-0.035em;color:#fff;white-space:nowrap;font-size:clamp(40px,13vw,62px)" data-grande="clamp(62px,8.5vw,132px);text-shadow:0 2px 0 rgba(241,75,129,.55),0 5px 0 rgba(9,8,14,.9),0 10px 22px rgba(0,0,0,.75),0 0 70px rgba(247,182,98,.35)">KADO</span>
+        <span id="guscio-nome">KADO</span>
       </div>
     </div>
     <script>
