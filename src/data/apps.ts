@@ -144,8 +144,8 @@ export const apps: AppEntry[] = [
     status: "live",
     href: "https://kado-app-production-d2c1.up.railway.app",
     iconUrl: "/icons/kado.svg",
-    core: "#FF2E7E",
-    glow: "#FFB347",
+    core: "#F14B81",
+    glow: "#F7B662",
     features: {
       it: [
         "Parla, fotografa o scrivi: l'AI capisce chi è la persona.",
@@ -260,8 +260,8 @@ export const apps: AppEntry[] = [
     status: "presto",
     href: "https://forma-app-production.up.railway.app",
     iconUrl: "/icons/forma.svg",
-    core: "#38F27A",
-    glow: "#A8FF60",
+    core: "#15CC60",
+    glow: "#8CD949",
     features: {
       it: [
         "Obiettivo, spazio e livello: l'AI parte da dove sei davvero.",

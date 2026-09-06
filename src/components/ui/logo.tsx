@@ -11,9 +11,9 @@ interface LogoProps {
    distinti che condividono lo stesso modo di funzionare. Nessun colore
    inventato per il logo: se una tinta cambia nel catalogo, cambia qui. */
 const RINGS = [
-  { cx: 17, stroke: "#FF2E7E" },
+  { cx: 17, stroke: "#F14B81" },
   { cx: 24, stroke: "#FF8A1F" },
-  { cx: 31, stroke: "#38F27A" },
+  { cx: 31, stroke: "#15CC60" },
 ];
 
 export function Logo({ className, iconOnly = false }: LogoProps) {
