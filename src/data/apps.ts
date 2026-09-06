@@ -82,6 +82,47 @@ const SPEC_INPUT: AppSpec = {
   },
 };
 
+/* Calibro non condivide le specifiche delle altre tre, e non deve.
+   Parla CINQUE lingue (il selettore in alto ne mostra cinque e i testi
+   ci sono tutti), e i mercati che raggiunge sono i cinque store dei
+   suoi affiliati, non diciotto. Riusare le costanti di famiglia sarebbe
+   stato piu' comodo e avrebbe scritto due numeri falsi in vetrina. */
+const SPEC_MERCATI_CALIBRO: AppSpec = {
+  label: { it: "Mercati", en: "Markets", es: "Mercados", fr: "Marchés", de: "Märkte" },
+  value: {
+    it: "5 store Amazon",
+    en: "5 Amazon stores",
+    es: "5 tiendas Amazon",
+    fr: "5 boutiques Amazon",
+    de: "5 Amazon-Stores",
+  },
+};
+
+const SPEC_LINGUE_CALIBRO: AppSpec = {
+  label: { it: "Lingue", en: "Languages", es: "Idiomas", fr: "Langues", de: "Sprachen" },
+  value: {
+    it: "IT · EN · DE · FR · ES",
+    en: "IT · EN · DE · FR · ES",
+    es: "IT · EN · DE · FR · ES",
+    fr: "IT · EN · DE · FR · ES",
+    de: "IT · EN · DE · FR · ES",
+  },
+};
+
+/* Oggi l'app prende testo e voce. La foto dell'etichetta e' scritta nel
+   suo codice come intenzione, non come funzione: finche' non c'e', qui
+   non si annuncia. */
+const SPEC_INGRESSI_CALIBRO: AppSpec = {
+  label: { it: "Ingressi", en: "Inputs", es: "Entradas", fr: "Entrées", de: "Eingaben" },
+  value: {
+    it: "Voce, testo",
+    en: "Voice, text",
+    es: "Voz, texto",
+    fr: "Voix, texte",
+    de: "Sprache, Text",
+  },
+};
+
 export const apps: AppEntry[] = [
   {
     id: "kado",
@@ -256,5 +297,72 @@ export const apps: AppEntry[] = [
       de: ["Das Ziel", "Der Platz", "Das Level", "Die Ausrüstung"],
     },
     specs: [SPEC_MARKETS, SPEC_INPUT, SPEC_LANGUAGES, SPEC_ACCOUNT],
+  },
+  {
+    /* La quarta della famiglia. Nasce dall'app «Calibro AI» gia
+       costruita: testi, tesi e passi sono presi da li verbatim, non
+       riscritti -- se il sito racconta una cosa e l'app ne fa un'altra,
+       il primo a pagarlo e chi ci arriva.
+       Sta ancora dietro al vetro: l'app esiste ma non ha un indirizzo
+       pubblico, quindi `presto` e nessun collegamento. */
+    id: "calibro",
+    name: "Calibro AI",
+    tagline: {
+      it: "Il pezzo giusto per l'oggetto che hai già.",
+      en: "The right part for the thing you already own.",
+      es: "La pieza correcta para lo que ya tienes.",
+      fr: "La bonne pièce pour ce que vous avez déjà.",
+      de: "Das richtige Teil für das, was du schon hast.",
+    },
+    thesis: {
+      it: "Dici cosa hai. L'AI capisce. Il codice esatto lo compri su Amazon.",
+      en: "Say what you own. The AI understands. You buy the exact code on Amazon.",
+      es: "Dices qué tienes. La IA entiende. Compras el código exacto en Amazon.",
+      fr: "Vous dites ce que vous avez. L'IA comprend. Vous achetez le code exact sur Amazon.",
+      de: "Sag, was du hast. Die KI versteht. Den genauen Code kaufst du bei Amazon.",
+    },
+    status: "presto",
+    href: "",
+    iconUrl: "/icons/calibro.svg",
+    /* Cobalto: precisione, strumento di misura. Distinto dal magenta di
+       Kado, dall'ambra di Bricolo e dal verde di Forma -- quattro tinte
+       che non si confondono nemmeno di sfuggita. */
+    core: "#3D7BFF",
+    glow: "#7FB0FF",
+    features: {
+      it: [
+        "Scrivi il modello o dettalo a voce, come ti viene.",
+        "Il codice del ricambio esce da una tabella verificata, non indovinato.",
+        "La campanella ti avvisa quando è ora di ricomprarlo.",
+      ],
+      en: [
+        "Type the model or just say it out loud.",
+        "The part code comes from a verified table, never guessed.",
+        "The bell tells you when it's time to buy it again.",
+      ],
+      es: [
+        "Escribe el modelo o dilo en voz alta.",
+        "El código del recambio sale de una tabla verificada, no adivinado.",
+        "La campana te avisa cuando toca recomprarlo.",
+      ],
+      fr: [
+        "Tapez le modèle ou dites-le simplement à voix haute.",
+        "Le code de la pièce vient d'une table vérifiée, jamais deviné.",
+        "La cloche vous prévient quand il faut la racheter.",
+      ],
+      de: [
+        "Modell eingeben oder einfach laut sagen.",
+        "Der Teilecode kommt aus einer geprüften Tabelle, nie geraten.",
+        "Die Glocke sagt dir, wann es Zeit zum Nachkaufen ist.",
+      ],
+    },
+    steps: {
+      it: ["L'oggetto", "Il modello", "Il pezzo", "Il promemoria"],
+      en: ["The thing", "The model", "The part", "The reminder"],
+      es: ["El objeto", "El modelo", "La pieza", "El recordatorio"],
+      fr: ["L'objet", "Le modèle", "La pièce", "Le rappel"],
+      de: ["Das Gerät", "Das Modell", "Das Teil", "Die Erinnerung"],
+    },
+    specs: [SPEC_MERCATI_CALIBRO, SPEC_INGRESSI_CALIBRO, SPEC_LINGUE_CALIBRO, SPEC_ACCOUNT],
   },
 ];

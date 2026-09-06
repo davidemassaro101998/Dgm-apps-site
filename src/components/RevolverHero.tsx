@@ -64,6 +64,11 @@ const SLOT_WIDE: Record<SlotName, Slot> = {
   center: { left: 50, z: 0, rotateY: 0, scale: 1, opacity: 1, blur: 0 },
   right: { left: 78, z: -320, rotateY: -40, scale: 0.62, opacity: 0.48, blur: 1.6 },
   left: { left: 22, z: -320, rotateY: 40, scale: 0.62, opacity: 0.48, blur: 1.6 },
+  /* Il retro del tamburo. Con tre app non esisteva; dalla quarta in poi
+     serve un posto dove stiano quelle che non si vedono, altrimenti
+     finiscono TUTTE nello stesso slot, esattamente una sopra l'altra.
+     Spento e dietro: entra ed esce girando, come in un tamburo vero. */
+  back: { left: 50, z: -900, rotateY: 0, scale: 0.4, opacity: 0, blur: 6 },
 };
 
 /* Su schermo stretto le laterali vanno spinte piu fuori e rimpicciolite
@@ -72,15 +77,22 @@ const SLOT_NARROW: Record<SlotName, Slot> = {
   center: { left: 50, z: 0, rotateY: 0, scale: 1, opacity: 1, blur: 0 },
   right: { left: 88, z: -320, rotateY: -38, scale: 0.5, opacity: 0.42, blur: 1.6 },
   left: { left: 12, z: -320, rotateY: 38, scale: 0.5, opacity: 0.42, blur: 1.6 },
+  back: { left: 50, z: -900, rotateY: 0, scale: 0.4, opacity: 0, blur: 6 },
 };
 
-type SlotName = "center" | "right" | "left";
+type SlotName = "center" | "right" | "left" | "back";
 
+/* Chi sta dove: la scelta al centro, la successiva a destra, la
+   PRECEDENTE a sinistra, tutte le altre dietro. La versione con tre app
+   diceva «se non e centro e non e destra allora e sinistra»: con la
+   quarta app due telefoni finivano a sinistra sovrapposti, uno dentro
+   l'altro. Con `total - 1` la sinistra e' una sola, sempre. */
 function slotFor(index: number, activeIndex: number, total: number): SlotName {
   const raw = (index - activeIndex + total) % total;
   if (raw === 0) return "center";
   if (raw === 1) return "right";
-  return "left";
+  if (raw === total - 1) return "left";
+  return "back";
 }
 
 export function RevolverHero({
