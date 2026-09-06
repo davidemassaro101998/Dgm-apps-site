@@ -21,24 +21,47 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="DGM Apps" />
     <meta name="theme-color" content="#07070B" />
+
   </head>
   <body>
     <!-- Primo disegno senza aspettare il JavaScript.
-         Misurato su 3G lento: la pagina restava NERA per 3,4 secondi,
-         perche' il primo elemento dipinto era il nome dell'app, cioe'
-         qualcosa che React puo' disegnare solo dopo aver scaricato ed
-         eseguito 116 KB compressi. Qui c'e' il fondo e il marchio,
-         scritti a mano nell'HTML: arrivano con la pagina.
-         Sta nella STESSA posizione dell'intestazione vera, quindi quando
-         React monta non si sposta niente. Nessun testo tradotto: il
-         marchio e' uguale in tutte le lingue, e indovinare la lingua qui
-         vorrebbe dire mostrarne una sbagliata a chi non parla italiano. -->
-    <div id="guscio" aria-hidden="true" style="position:fixed;inset:0;z-index:0;background:#08070A;font-family:system-ui,-apple-system,'Segoe UI',sans-serif">
+         Misurato su 3G lento: prima la pagina restava NERA per 3,4
+         secondi, perche' il primo elemento dipinto era il NOME DELL'APP e
+         React puo' disegnarlo solo dopo 117 KB compressi.
+         Qui il nome c'e' gia': «KADO» non e' una traduzione, e' lo stesso
+         in tutte le lingue, quindi si puo' scrivere nell'HTML senza
+         rischiare di mostrare la lingua sbagliata. La riga sopra invece e'
+         tradotta, e la sceglie una riga di script dalla lingua del
+         browser: 320 byte in tutto, contro 117 KB di attesa.
+         Misure, posizioni e ombre sono le stesse del componente vero, cosi
+         quando React monta non si sposta niente. -->
+    <div id="guscio" aria-hidden="true" style="position:fixed;inset:0;z-index:0;background:#08070A;overflow:hidden;font-family:system-ui,-apple-system,'Segoe UI',sans-serif">
       <div style="display:flex;align-items:center;gap:10px;height:64px;padding:0 16px;max-width:72rem;margin:0 auto">
-        <span style="width:26px;height:26px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#FF2E7E,#FF8A1F 55%,#38F27A)"></span>
+        <span style="width:26px;height:26px;border-radius:999px;background:conic-gradient(from 210deg,#F14B81,#FF8A1F,#15CC60,#3D7BFF,#F14B81)"></span>
         <span style="color:#fff;font-weight:800;letter-spacing:-0.01em;font-size:15px">DGM APPS</span>
       </div>
+      <div style="position:absolute;left:0;right:0;top:max(4.25rem,8%);display:flex;flex-direction:column;align-items:center;gap:12px;padding:0 16px">
+        <p id="guscio-tesi" style="margin:0;max-width:100%;text-align:center;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.28em;color:rgba(255,255,255,.75)"></p>
+        <span style="font-family:Archivo,system-ui,sans-serif;font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-0.035em;color:#fff;white-space:nowrap;font-size:clamp(40px,13vw,62px)" data-grande="clamp(62px,8.5vw,132px);text-shadow:0 2px 0 rgba(241,75,129,.55),0 5px 0 rgba(9,8,14,.9),0 10px 22px rgba(0,0,0,.75),0 0 70px rgba(247,182,98,.35)">KADO</span>
+      </div>
     </div>
+    <script>
+      /* La riga tradotta del guscio: una mappa di cinque stringhe, non
+         un sistema di traduzioni. Se la lingua non e' fra queste, si
+         mostra l'inglese, che e' il ripiego anche del sito. */
+      (function () {
+        var T = {
+          it: "L\u2019AI capisce \u00b7 Tu trovi su Amazon",
+          en: "AI understands \u00b7 You find it on Amazon",
+          es: "La IA entiende \u00b7 T\u00fa lo encuentras en Amazon",
+          fr: "L\u2019IA comprend \u00b7 Vous trouvez sur Amazon",
+          de: "Die KI versteht \u00b7 Du findest es bei Amazon"
+        };
+        var l = (navigator.language || "en").slice(0, 2).toLowerCase();
+        var e = document.getElementById("guscio-tesi");
+        if (e) e.textContent = T[l] || T.en;
+      })();
+    </script>
     <div id="root" style="position:relative;z-index:1"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

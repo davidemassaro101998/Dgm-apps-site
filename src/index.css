@@ -3,7 +3,11 @@
 @import "@fontsource/instrument-sans/400.css";
 @import "@fontsource/instrument-sans/500.css";
 @import "@fontsource/instrument-sans/600.css";
-@import "@fontsource/instrument-sans/700.css";
+/* Il peso 700 di Instrument Sans NON si importa: misurato su tutti gli
+   stati (menu, modale legale, scheda di ognuna delle quattro app), in tre
+   lingue e a due larghezze, non viene reso da nessun elemento -- i
+   grassetti della pagina stanno su Archivo, non sul carattere del corpo.
+   Erano 17 KB e una richiesta in piu' su ogni visita, per niente. */
 
 /* Single static instance (weight 900, width 125% -- true expanded
    letterforms, not synthesized) self-hosted from Google Fonts' own build of

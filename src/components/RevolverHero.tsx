@@ -180,6 +180,12 @@ export function RevolverHero({
     typeof window === "undefined" ? 0 : window.innerWidth
   );
   const [larghezzaTelefono, setLarghezzaTelefono] = useState(0);
+  /* Lo sguardo: -1 a sinistra, +1 a destra. La stanza si muove di
+     pochissimo dietro i telefoni, e i telefoni un po' di piu' -- e' la
+     parallasse che fa leggere la profondita, quella che tre gradienti
+     sovrapposti da soli non danno. Costa zero byte: nessuna immagine,
+     nessuna libreria, solo due numeri che diventano un `transform`. */
+  const [sguardo, setSguardo] = useState({ x: 0, y: 0 });
 
   useLayoutEffect(() => {
     const radice = radiceRef.current;
@@ -214,6 +220,37 @@ export function RevolverHero({
     };
   }, [language, scene.id]);
 
+  /* Da dove arriva lo sguardo: il puntatore su schermo grande,
+     l'inclinazione del telefono dove c'e'. Su `prefers-reduced-motion`
+     non si registra niente e la stanza resta ferma -- il movimento qui
+     e' decorazione pura, quindi si toglie, non si accorcia. */
+  useEffect(() => {
+    if (reduced) return;
+    let fermo = false;
+    const scrivi = (x: number, y: number) => {
+      if (fermo) return;
+      fermo = true;
+      requestAnimationFrame(() => {
+        fermo = false;
+        setSguardo({ x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) });
+      });
+    };
+    const conMouse = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      scrivi((e.clientX / window.innerWidth - 0.5) * 2, (e.clientY / window.innerHeight - 0.5) * 2);
+    };
+    const conSensore = (e: DeviceOrientationEvent) => {
+      if (e.gamma == null || e.beta == null) return;
+      scrivi(e.gamma / 30, (e.beta - 45) / 30);
+    };
+    window.addEventListener("pointermove", conMouse, { passive: true });
+    window.addEventListener("deviceorientation", conSensore, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", conMouse);
+      window.removeEventListener("deviceorientation", conSensore);
+    };
+  }, [reduced]);
+
   return (
     <section
       ref={radiceRef}
@@ -230,8 +267,10 @@ export function RevolverHero({
         className="pointer-events-none absolute inset-0"
         animate={{
           background: `radial-gradient(120% 85% at 50% 6%, ${scene.core}47 0%, ${scene.glow}1E 30%, transparent 66%)`,
+          x: sguardo.x * -14,
+          y: sguardo.y * -8,
         }}
-        transition={{ duration: DUR, ease: EASE }}
+        transition={{ background: { duration: DUR, ease: EASE }, x: { duration: 0.5, ease: "easeOut" }, y: { duration: 0.5, ease: "easeOut" } }}
       />
       {/* Un secondo alone, largo e basso, dal lato opposto: due sorgenti
           invece di una sola fanno cambiare la stanza INTERA quando si
@@ -241,8 +280,10 @@ export function RevolverHero({
         className="pointer-events-none absolute inset-0"
         animate={{
           background: `radial-gradient(90% 60% at 50% 78%, ${scene.glow}24 0%, ${scene.core}12 40%, transparent 72%)`,
+          x: sguardo.x * -22,
+          y: sguardo.y * -10,
         }}
-        transition={{ duration: DUR, ease: EASE }}
+        transition={{ background: { duration: DUR, ease: EASE }, x: { duration: 0.6, ease: "easeOut" }, y: { duration: 0.6, ease: "easeOut" } }}
       />
       {/* ---------- La stanza senza fine ----------
           Tre strati e nient'altro: un pavimento in prospettiva che
@@ -395,7 +436,17 @@ export function RevolverHero({
       {/* ---------- Il tamburo ---------- */}
       <motion.div
         className="absolute inset-0"
-        style={{ perspective: 1500 }}
+        /* La parallasse dei telefoni NON si fa spostando il tamburo: qui
+           dentro c'e' il trascinamento col dito, e due trasformazioni
+           sullo stesso elemento si litigano. Si sposta il PUNTO DI FUGA:
+           e' il modo giusto in una scena tridimensionale, perche' allora
+           gli oggetti vicini si muovono piu' dei lontani da soli, senza
+           che nessuno scriva di quanto. Costa zero byte e niente layout. */
+        style={{
+          perspective: 1500,
+          perspectiveOrigin: `calc(50% + ${sguardo.x * 46}px) calc(50% + ${sguardo.y * 26}px)`,
+          transition: "perspective-origin 420ms cubic-bezier(0.16,1,0.3,1)",
+        }}
         drag={selected || reduced ? false : "x"}
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.14}
@@ -486,7 +537,12 @@ export function RevolverHero({
                   className="block h-full w-full cursor-pointer focus:outline-none"
                   style={{ pointerEvents: selected ? "none" : "auto" }}
                 >
-                  <PhoneMock app={app} language={language} dimmed={!isCenter && !isSelected} />
+                  <PhoneMock
+                    app={app}
+                    language={language}
+                    dimmed={!isCenter && !isSelected}
+                    visibile={slot !== "back" || isSelected}
+                  />
                 </button>
 
                 {/* Il riflesso: la stessa scocca ribaltata sotto la
@@ -550,7 +606,7 @@ export function RevolverHero({
                       WebkitMaskImage: "linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.85) 96%)",
                     }}
                   >
-                    <PhoneMock app={app} language={language} dimmed />
+                    <PhoneMock app={app} language={language} dimmed visibile={slot !== "back" || isSelected} />
                   </div>
                 </div>
               </SelectedPositioner>
@@ -915,6 +971,22 @@ export function RevolverHero({
                     </span>
                   </div>
                 )}
+
+                {/* Un'app bloccata non deve essere un vicolo cieco. Prima
+                    qui finiva tutto: una pillola spenta che diceva
+                    «presto» e nient'altro -- e su quattro app in vetrina
+                    tre finivano cosi'. Ora c'e' una cosa che si puo' fare
+                    davvero oggi, con l'indirizzo che il sito ha gia' e
+                    l'oggetto gia' scritto. Nessuna data promessa, nessuna
+                    lista d'attesa che non esiste. */}
+                {!isOpenable ? (
+                  <a
+                    href={`mailto:info@dgmapps.it?subject=${encodeURIComponent(selected.name)}`}
+                    className="tocco-44 relative mt-2 block text-center text-[11px] text-white/60 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white/85"
+                  >
+                    {t.avvisami}
+                  </a>
+                ) : null}
 
                 {/* Il sito parla cinque lingue, le app due. Un tedesco
                     leggeva «Die KI versteht», toccava «Jetzt nutzen» e

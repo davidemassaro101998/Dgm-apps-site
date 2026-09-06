@@ -41,6 +41,7 @@ export interface Translations {
   statusLive: string;
   statusBeta: string;
   statusPresto: string;
+  avvisami: string;
 
   // Legal modal close button
   modalClose: string;
@@ -86,6 +87,7 @@ const translations: Record<Language, Translations> = {
     statusLive: "Disponibile",
     statusBeta: "Beta",
     statusPresto: "Presto disponibile",
+    avvisami: "Scrivici e ti avvisiamo quando apre",
 
     modalClose: "Chiudi",
 
@@ -128,6 +130,7 @@ const translations: Record<Language, Translations> = {
     statusLive: "Available",
     statusBeta: "Beta",
     statusPresto: "Coming Soon",
+    avvisami: "Write to us and we'll tell you when it opens",
 
     modalClose: "Close",
 
@@ -170,6 +173,7 @@ const translations: Record<Language, Translations> = {
     statusLive: "Disponible",
     statusBeta: "Beta",
     statusPresto: "Próximamente",
+    avvisami: "Escríbenos y te avisamos cuando abra",
 
     modalClose: "Cerrar",
 
@@ -212,6 +216,7 @@ const translations: Record<Language, Translations> = {
     statusLive: "Disponible",
     statusBeta: "Bêta",
     statusPresto: "Bientôt disponible",
+    avvisami: "Écrivez-nous et on vous prévient à l'ouverture",
 
     modalClose: "Fermer",
 
@@ -254,6 +259,7 @@ const translations: Record<Language, Translations> = {
     statusLive: "Verfügbar",
     statusBeta: "Beta",
     statusPresto: "Demnächst verfügbar",
+    avvisami: "Schreib uns, wir sagen dir Bescheid",
 
     modalClose: "Schließen",
 

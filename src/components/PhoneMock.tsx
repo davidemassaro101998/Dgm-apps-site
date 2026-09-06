@@ -39,10 +39,16 @@ export function PhoneMock({
   app,
   language,
   dimmed = false,
+  /* Quando il telefono e' dietro al tamburo non si vede: opacita zero,
+     scala 0,4, novecento pixel piu' in la. Chiedere la sua schermata
+     costa comunque il download. Con quattro app erano 38 KB su 233 --
+     un sesto della pagina -- per un'immagine che nessuno guarda. */
+  visibile = true,
 }: {
   app: AppEntry;
   language: Language;
   dimmed?: boolean;
+  visibile?: boolean;
 }) {
   return (
     <div className="relative h-full w-full select-none" style={{ aspectRatio: PHONE_ASPECT }}>
@@ -74,6 +80,7 @@ export function PhoneMock({
           backgroundColor: "#0A070C",
         }}
       >
+        {visibile ? (
         <img
           src={screenUrl(app.id, language)}
           alt={app.name}
@@ -82,8 +89,12 @@ export function PhoneMock({
              che differiscono sotto l'1%, quindi `cover` riempie senza
              che si veda alcun ritaglio. */
           className="h-full w-full object-cover"
+          /* La centrale e' quella che si legge: parte per prima. Le due di
+             fianco sono sfocate e al 42-48% di opacita, possono aspettare. */
           loading="eager"
+          fetchPriority={dimmed ? "low" : "high"}
         />
+        ) : null}
       </div>
 
       {/* La scocca sopra lo schermo: il foro del PNG e trasparente,
