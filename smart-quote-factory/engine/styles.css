@@ -1,0 +1,145 @@
+/* ============================================================
+   SMART QUOTE — il motore, parte visiva.
+
+   Una regola sola: il blocco deve sembrare nato nel sito del
+   cliente, non incollato sopra. Quindi qui dentro non c'è
+   NESSUN colore scritto a mano: tutto passa dalle variabili
+   che il file del cliente riempie. Il motore decide il ritmo,
+   il cliente decide l'aspetto.
+
+   Niente ombre pesanti, niente gradienti, niente angoli
+   diversi da quelli del sito ospite: le tre cose che fanno
+   capire in mezzo secondo che un pezzo è stato appiccicato.
+   ============================================================ */
+
+.sq {
+  /* riempite da config.theme — questi sono solo il ripiego */
+  --sq-primary:   #1d1d1b;
+  --sq-accent:    #b93626;
+  --sq-bg:        #ffffff;
+  --sq-surface:   #f7f7f7;
+  --sq-line:      #e2e2e4;
+  --sq-muted:     #6b6b70;
+  --sq-radius:    4px;
+  --sq-font-h:    system-ui, sans-serif;
+  --sq-font-b:    system-ui, sans-serif;
+
+  --sq-gap:  clamp(14px, 2.2vw, 22px);
+  --sq-pad:  clamp(18px, 3.4vw, 34px);
+
+  box-sizing: border-box;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--sq-pad);
+  background: var(--sq-bg);
+  color: var(--sq-primary);
+  font-family: var(--sq-font-b);
+  font-size: 16px;
+  line-height: 1.5;
+  border: 1px solid var(--sq-line);
+  border-radius: var(--sq-radius);
+}
+.sq *, .sq *::before, .sq *::after { box-sizing: border-box; }
+.sq :focus-visible { outline: 2px solid var(--sq-accent); outline-offset: 3px; }
+
+/* ---- testata: dove sei, quanto manca ---- */
+.sq__top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.sq__eyebrow {
+  font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--sq-accent); margin: 0;
+}
+.sq__count { font-size: 13px; color: var(--sq-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.sq__bar { height: 3px; background: var(--sq-line); border-radius: 3px; margin: 12px 0 var(--sq-gap); overflow: hidden; }
+.sq__bar i { display: block; height: 100%; background: var(--sq-accent); transition: width .28s cubic-bezier(.4,0,.2,1); }
+
+.sq__q {
+  font-family: var(--sq-font-h);
+  font-size: clamp(21px, 3.4vw, 27px);
+  font-weight: 700; line-height: 1.2; letter-spacing: -.01em;
+  margin: 0 0 4px;
+}
+.sq__hint { font-size: 14.5px; color: var(--sq-muted); margin: 0 0 var(--sq-gap); }
+
+/* ---- le risposte: bersagli grandi, si tocca col pollice ---- */
+.sq__opts { display: grid; gap: 10px; grid-template-columns: 1fr; margin: 0; padding: 0; border: 0; }
+@media (min-width: 560px) { .sq__opts { grid-template-columns: 1fr 1fr; } }
+
+.sq__opt {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; min-height: 60px; padding: 14px 16px;
+  background: var(--sq-bg); color: var(--sq-primary);
+  border: 1.5px solid var(--sq-line); border-radius: var(--sq-radius);
+  font: inherit; font-size: 16px; text-align: left; cursor: pointer;
+  transition: border-color .16s, background .16s;
+}
+.sq__opt:hover { border-color: var(--sq-accent); background: var(--sq-surface); }
+.sq__opt[aria-pressed="true"] { border-color: var(--sq-accent); border-width: 2px; background: var(--sq-surface); }
+.sq__opt b { font-weight: 600; }
+.sq__opt span { display: block; font-size: 13.5px; color: var(--sq-muted); margin-top: 2px; font-weight: 400; }
+.sq__tick {
+  flex: 0 0 auto; width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid var(--sq-line); position: relative;
+}
+.sq__opt[aria-pressed="true"] .sq__tick { border-color: var(--sq-accent); background: var(--sq-accent); }
+.sq__opt[aria-pressed="true"] .sq__tick::after {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: 6px; height: 10px; border: solid var(--sq-bg);
+  border-width: 0 2px 2px 0; transform: translateY(-1px) rotate(45deg);
+}
+
+/* ---- comandi ---- */
+.sq__nav { display: flex; align-items: center; gap: 12px; margin-top: var(--sq-gap); flex-wrap: wrap; }
+.sq__btn {
+  min-height: 52px; padding: 14px 24px; border-radius: var(--sq-radius);
+  border: 1.5px solid transparent; font: inherit; font-size: 15.5px; font-weight: 600;
+  cursor: pointer; transition: opacity .16s, background .16s;
+}
+.sq__btn--go { background: var(--sq-accent); color: #fff; margin-left: auto; }
+.sq__btn--go:hover { opacity: .88; }
+.sq__btn--go[disabled] { background: var(--sq-line); color: var(--sq-muted); cursor: default; opacity: 1; }
+.sq__btn--back { background: none; color: var(--sq-muted); border-color: var(--sq-line); }
+.sq__btn--back:hover { color: var(--sq-primary); border-color: var(--sq-muted); }
+.sq__restart {
+  background: none; border: 0; padding: 12px 0; min-height: 44px;
+  font: inherit; font-size: 14px; color: var(--sq-muted); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.sq__restart:hover { color: var(--sq-primary); }
+
+/* ---- il risultato: la scheda che vedrebbe l'azienda ---- */
+.sq__done { animation: sq-in .3s cubic-bezier(.3,.6,.2,1) both; }
+@keyframes sq-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .sq__done { animation: none; }
+  .sq__bar i { transition: none; }
+}
+
+.sq__card { border: 1.5px solid var(--sq-primary); border-radius: var(--sq-radius); overflow: hidden; margin: var(--sq-gap) 0; }
+.sq__card h3 {
+  font-family: var(--sq-font-h); font-size: 12px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  margin: 0; padding: 12px 16px; background: var(--sq-primary); color: var(--sq-bg);
+}
+.sq__rows { margin: 0; padding: 4px 16px 14px; }
+.sq__row { display: flex; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--sq-line); }
+.sq__row:last-child { border-bottom: 0; }
+.sq__row dt { flex: 0 0 38%; font-size: 13.5px; color: var(--sq-muted); margin: 0; }
+.sq__row dd { flex: 1 1 auto; margin: 0; font-size: 15.5px; font-weight: 600; }
+
+.sq__prio { display: flex; align-items: center; gap: 9px; padding: 12px 16px; background: var(--sq-surface); font-size: 14.5px; }
+.sq__prio i { width: 9px; height: 9px; border-radius: 50%; background: var(--sq-accent); flex: 0 0 auto; }
+.sq__prio b { font-weight: 700; }
+
+.sq__note { font-size: 13px; color: var(--sq-muted); line-height: 1.5; margin: 0 0 var(--sq-gap); }
+
+/* ---- la scritta che dice che è una dimostrazione ---- */
+.sq__demo {
+  display: block; margin-top: var(--sq-gap); padding-top: 14px;
+  border-top: 1px solid var(--sq-line);
+  font-size: 12.5px; color: var(--sq-muted); line-height: 1.5;
+}
+
+/* Il testo deve reggere lo zoom al 200% senza che niente esca di lato:
+   nessuna larghezza fissa, nessun min-width oltre lo schermo. */
+.sq img, .sq svg { max-width: 100%; height: auto; }

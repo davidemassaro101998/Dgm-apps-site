@@ -1,0 +1,249 @@
+{
+  "client": {
+    "name": "Archimede Infissi",
+    "slug": "archimede",
+    "sourceUrl": "https://archimedeveneto.it/",
+    "place": "Vicenza",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#1d1d1b",
+    "accent": "#b93626",
+    "background": "#ffffff",
+    "surface": "#f7f7f7",
+    "line": "#e5e5e7",
+    "muted": "#6f6f74",
+    "radius": "2px",
+    "fontHeading": "'Inter', system-ui, sans-serif",
+    "fontBody": "'Inter', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Progetto su misura",
+    "title": "Raccontaci il tuo progetto"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Cosa vuoi realizzare?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "finestre",
+          "label": "Finestre e portefinestre"
+        },
+        {
+          "id": "porte",
+          "label": "Porte interne o portoncini"
+        },
+        {
+          "id": "garage",
+          "label": "Porte per garage"
+        },
+        {
+          "id": "zanzariere",
+          "label": "Zanzariere e complementi"
+        }
+      ]
+    },
+    {
+      "id": "materiale",
+      "title": "Che materiale hai in mente?",
+      "summaryLabel": "Materiale",
+      "hint": "Se non lo sai ancora va benissimo: è la prima cosa di cui parliamo insieme.",
+      "options": [
+        {
+          "id": "legno",
+          "label": "Legno"
+        },
+        {
+          "id": "pvc",
+          "label": "PVC"
+        },
+        {
+          "id": "alluminio",
+          "label": "Alluminio"
+        },
+        {
+          "id": "boh",
+          "label": "Non lo so ancora"
+        }
+      ]
+    },
+    {
+      "id": "intervento",
+      "title": "Che tipo di intervento è?",
+      "summaryLabel": "Intervento",
+      "options": [
+        {
+          "id": "ristrutt",
+          "label": "Ristrutturazione"
+        },
+        {
+          "id": "nuova",
+          "label": "Nuova costruzione"
+        },
+        {
+          "id": "sostituz",
+          "label": "Sostituzione di alcuni pezzi"
+        },
+        {
+          "id": "boh",
+          "label": "Da valutare"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanti pezzi, più o meno?",
+      "summaryLabel": "Dimensione",
+      "options": [
+        {
+          "id": "p1",
+          "label": "1–3"
+        },
+        {
+          "id": "p2",
+          "label": "4–7"
+        },
+        {
+          "id": "p3",
+          "label": "8 o più"
+        },
+        {
+          "id": "p0",
+          "label": "Da valutare insieme"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Quando vorresti iniziare?",
+      "summaryLabel": "Tempistica",
+      "options": [
+        {
+          "id": "t3",
+          "label": "Entro 3 mesi"
+        },
+        {
+          "id": "t6",
+          "label": "Tra 3 e 6 mesi"
+        },
+        {
+          "id": "t12",
+          "label": "Più avanti"
+        },
+        {
+          "id": "t0",
+          "label": "Sto raccogliendo informazioni"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si trova l'immobile?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "vi",
+          "label": "Vicenza e provincia"
+        },
+        {
+          "id": "pd",
+          "label": "Padova e provincia"
+        },
+        {
+          "id": "vr",
+          "label": "Verona e provincia"
+        },
+        {
+          "id": "altro",
+          "label": "Altra zona"
+        }
+      ]
+    }
+  ],
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t6",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "vi",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "pd",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "vr",
+        "points": 1
+      },
+      {
+        "question": "intervento",
+        "option": "ristrutt",
+        "points": 2
+      },
+      {
+        "question": "intervento",
+        "option": "nuova",
+        "points": 2
+      },
+      {
+        "question": "materiale",
+        "option": "legno",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  },
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  }
+}
