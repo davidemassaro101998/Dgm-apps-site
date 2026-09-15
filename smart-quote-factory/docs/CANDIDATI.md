@@ -20,6 +20,9 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-15 | AMA Serramenti | amaserramenti.it | Brescia · Sarezzo · Iseo | 12 | `generated/amaserramenti/` | da far vedere a Davide |
 | 2026-09-15 | Sartiani Infissi | sartianiinfissi.it | Scandicci (FI) | 11 | `generated/sartianiinfissi/` | da far vedere a Davide |
 | 2026-09-15 | COA Serramenti | coaserramenti.it | Capaccio Paestum (SA) | 11 | `generated/coaserramenti/` | da far vedere a Davide |
+| 2026-09-16 | Macor Serramenti | macorserramenti.eu | Aquileia (UD) | 10 | `generated/macorserramenti/` | da far vedere a Davide |
+| 2026-09-16 | Infissi Costa | infissicosta.it | Palermo | 11 | `generated/infissicosta/` | da far vedere a Davide |
+| 2026-09-16 | Scuderi Infissi | scuderiinfissi.com | Roma, Borghesiana | 10 | `generated/scuderiinfissi/` | da far vedere a Davide |
 
 ## Scartati
 
@@ -36,6 +39,10 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-15 | Fusi Serramenti (fusiserramenti.it) | showroom a Firenze, Calenzano e Prato, ma la tavolozza del sito è tutta grigi di Bootstrap: nessun colore loro da cui partire. Riserva. |
 | 2026-09-15 | Infac (infac.it) | stessa cosa: colori di serie del tema, sito leggero. Riserva. |
 | 2026-09-15 | Nuzzolo Porte & Finestre (nuzzoloportefinestre.it) | catalogo ottimo (filomuro, bilico, cabine armadio), ma i colori più usati sono i verdi di serie del tema: non si capisce quale sia il loro. Riserva, da riguardare partendo dalle pagine interne. |
+| 2026-09-16 | Modoal Infissi (modoal.it) | hanno già un configuratore da tredici passaggi — intervento, tipo di abitazione, priorità, numero finestre, rumore, materiale, finiture, oscuranti, budget, tempistica, misure di ogni finestra, e il punto vendita. È più completo di quello che facciamo noi: non c'è niente da vendergli. |
+| 2026-09-16 | AL.BO. Serramenti (alboserramenti.it) | dal 1975, partner Tecno Fenster, ma la tavolozza è tutta grigi e i pochi colori sono quelli di serie del tema. Riserva. |
+| 2026-09-16 | Carriglio Serramenti (carriglioserramenti.it) | cinquant'anni a Belpasso, ma il sito usa i colori di serie: niente da cui partire. Riserva. |
+| 2026-09-16 | Menoni 1952 (menoni1952.com) | il foglio di stile del tema non si scarica dal nostro proxy: non sono riuscito a leggere i loro colori. Non è un giudizio sull'azienda, è che non ho i dati. Da riprovare. |
 
 ## Perché questi tre
 
@@ -156,3 +163,47 @@ turchese di COA (`#37b0ba`) col testo bianco sopra facevano 3.70:1 e
 e si leggono. Per COA il carattere è Barlow: il loro sito non ne carica
 nessuno, usa gli stack di sistema, quindi qui non stiamo copiando niente —
 è una scelta nostra, e se a loro non piace si cambia in una riga.
+
+## Perché questi tre — quarto giro (notte del 16 settembre)
+
+**Infissi Costa** (11/12) — fabbrica a Palermo, e sul sito una voce che si
+chiama «Forniture in Sicilia»: vendono anche ad altri serramentisti, non
+solo al privato. Da lì la seconda domanda, che nessun'altra demo ha:
+**«chi fa il montaggio?»** — montate voi chiavi in mano, ho già un'impresa,
+sono un serramentista e mi serve la fornitura, non ci ho pensato. Il terzo
+caso è un cliente completamente diverso, con un listino diverso, e oggi
+arriva nella stessa casella di tutti gli altri. Il loro modulo una cosa
+giusta la fa già: ha un menu a tendina «prodotto di interesse». È l'unico
+dei quindici che chiede qualcosa oltre al nome.
+
+**Macor Serramenti** (10/12) — falegnameria di Aquileia, cinquant'anni,
+legno e legno-alluminio. Il modulo chiede nome, telefono e messaggio: non
+chiede nemmeno l'email. La seconda domanda è quella che in bottega si fa
+per prima: **«il legno all'esterno, chi lo cura?»** — legno vero e me ne
+occupo io, legno dentro e alluminio fuori così non ci penso, non lo so
+ditemi voi, ho già legno-alluminio e lo sostituisco. Decide il prodotto
+prima ancora del prezzo.
+
+**Scuderi Infissi** (10/12) — Borghesiana, Roma est. Metà del catalogo è
+carpenteria in ferro: cancelli, grate, grate combinate con la persiana,
+barriere paravento, coperture. Mettono in evidenza «Detrazione fiscale
+50%» e «Finanziamenti», quindi la seconda domanda è **«come pensi di
+pagarlo?»** — unica soluzione, a rate, con la detrazione, non ci ho
+pensato. Non è la stessa domanda di Serramenti di Classe: lì si chiede chi
+segue la pratica, qui come si paga.
+
+### Due cose di questo giro che vale la pena sapere
+
+**È la seconda volta che un candidato ha già un configuratore.** Prima
+Relax Tende a Brescia, adesso Modoal a Roma — e quello di Modoal fa tredici
+domande, più del nostro. Su ventidue aziende guardate finora fa due. Non è
+ancora un mercato affollato, ma non è nemmeno un'idea che nessuno ha avuto:
+quando si scrive l'email, conviene sapere che qualcuno gliel'ha già
+proposta.
+
+**I colori scelti da noi, non copiati.** Macor e COA non caricano nessun
+carattere: usano gli stack di sistema. Per Macor ho messo Lora e Source
+Sans, per COA Barlow. Non stiamo copiando la loro tipografia — non ne hanno
+una — stiamo proponendone una. Va detto a voce quando si mostra la demo.
+L'ambra di Scuderi (`#a86a00`) faceva 4.44:1 col bianco sopra, quattro
+centesimi sotto la soglia: è scurita a `#985f00`.

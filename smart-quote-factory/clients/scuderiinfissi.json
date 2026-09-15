@@ -1,0 +1,267 @@
+{
+  "client": {
+    "name": "Scuderi Infissi",
+    "slug": "scuderiinfissi",
+    "sourceUrl": "https://scuderiinfissi.com/",
+    "place": "Roma, Borghesiana",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#2c2f31",
+    "accent": "#985f00",
+    "background": "#ffffff",
+    "surface": "#faf7f1",
+    "line": "#e7e0d4",
+    "muted": "#5a5d5f",
+    "radius": "5px",
+    "fontHeading": "Montserrat, system-ui, sans-serif",
+    "fontBody": "'Open Sans', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Dicci che lavoro è"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che lavoro è?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "finestre",
+          "label": "Finestre in alluminio, legno o acciaio"
+        },
+        {
+          "id": "grate",
+          "label": "Grate e inferriate, anche con persiana"
+        },
+        {
+          "id": "cancelli",
+          "label": "Cancelli e carpenteria in ferro"
+        },
+        {
+          "id": "avvolgibili",
+          "label": "Avvolgibili e oscuranti"
+        },
+        {
+          "id": "coperture",
+          "label": "Coperture e barriere paravento"
+        },
+        {
+          "id": "armadi",
+          "label": "Armadi in alluminio da esterno"
+        }
+      ]
+    },
+    {
+      "id": "pagamento",
+      "title": "Come pensi di pagarlo?",
+      "summaryLabel": "Pagamento",
+      "hint": "Rate e detrazione cambiano i documenti da preparare, meglio saperlo subito.",
+      "options": [
+        {
+          "id": "unica",
+          "label": "In un'unica soluzione"
+        },
+        {
+          "id": "rate",
+          "label": "A rate, con un finanziamento"
+        },
+        {
+          "id": "detrazione",
+          "label": "Con la detrazione fiscale"
+        },
+        {
+          "id": "nonso",
+          "label": "Non ci ho ancora pensato"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa ti serve di più?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "sicurezza",
+          "label": "Sicurezza contro le effrazioni"
+        },
+        {
+          "id": "riparo",
+          "label": "Riparare dal sole e dalla pioggia"
+        },
+        {
+          "id": "clima",
+          "label": "Isolare dal caldo e dal freddo"
+        },
+        {
+          "id": "aspetto",
+          "label": "Rimettere a posto l'aspetto"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto c'è da fare?",
+      "summaryLabel": "Dimensione",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Una finestra o un ingresso"
+        },
+        {
+          "id": "p2",
+          "label": "Qualche apertura"
+        },
+        {
+          "id": "p3",
+          "label": "Tutto il perimetro della casa"
+        },
+        {
+          "id": "p4",
+          "label": "Un capannone o un condominio"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "urgente",
+          "label": "Subito, è urgente"
+        },
+        {
+          "id": "t1",
+          "label": "Entro un mese"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "chiedo",
+          "label": "Sto chiedendo in giro"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "est",
+          "label": "Borghesiana, Torre Angela e Roma est"
+        },
+        {
+          "id": "roma",
+          "label": "Roma città"
+        },
+        {
+          "id": "castelli",
+          "label": "Castelli e provincia"
+        },
+        {
+          "id": "fuori",
+          "label": "Fuori provincia"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "urgente",
+        "points": 5
+      },
+      {
+        "question": "tempi",
+        "option": "t1",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "est",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "roma",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "castelli",
+        "points": 1
+      },
+      {
+        "question": "esigenza",
+        "option": "sicurezza",
+        "points": 2
+      },
+      {
+        "question": "pagamento",
+        "option": "unica",
+        "points": 1
+      },
+      {
+        "question": "pagamento",
+        "option": "detrazione",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

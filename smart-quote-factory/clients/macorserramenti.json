@@ -1,0 +1,267 @@
+{
+  "client": {
+    "name": "Macor Serramenti",
+    "slug": "macorserramenti",
+    "sourceUrl": "https://www.macorserramenti.eu/",
+    "place": "Aquileia (UD)",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#2e2a26",
+    "accent": "#a85524",
+    "background": "#ffffff",
+    "surface": "#f8f5f1",
+    "line": "#e6ded4",
+    "muted": "#5d564f",
+    "radius": "3px",
+    "fontHeading": "Lora, Georgia, serif",
+    "fontBody": "'Source Sans 3', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Lavorazione su misura",
+    "title": "Parlaci del legno"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che cosa dobbiamo fare?",
+      "summaryLabel": "Lavorazione",
+      "options": [
+        {
+          "id": "legno",
+          "label": "Finestre in legno"
+        },
+        {
+          "id": "misto",
+          "label": "Finestre in legno-alluminio"
+        },
+        {
+          "id": "porte",
+          "label": "Porte e portoncini"
+        },
+        {
+          "id": "scuri",
+          "label": "Scuri e persiane in legno"
+        },
+        {
+          "id": "scorrevoli",
+          "label": "Portefinestre e scorrevoli"
+        },
+        {
+          "id": "restauro",
+          "label": "Restauro di serramenti esistenti"
+        }
+      ]
+    },
+    {
+      "id": "manutenzione",
+      "title": "Il legno all'esterno, chi lo cura?",
+      "summaryLabel": "Manutenzione",
+      "hint": "È la domanda che in bottega si fa per prima, e decide il prodotto.",
+      "options": [
+        {
+          "id": "io",
+          "label": "Voglio legno vero, alla manutenzione ci penso io"
+        },
+        {
+          "id": "alluminio",
+          "label": "Legno dentro e alluminio fuori, così non ci penso"
+        },
+        {
+          "id": "spiegate",
+          "label": "Non lo so: ditemi voi che differenza c'è"
+        },
+        {
+          "id": "gia",
+          "label": "Ho già legno-alluminio e lo sostituisco"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa conta di più?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "isolamento",
+          "label": "L'isolamento: la casa è fredda"
+        },
+        {
+          "id": "rumore",
+          "label": "Il rumore"
+        },
+        {
+          "id": "estetica",
+          "label": "L'estetica: il legno si deve vedere"
+        },
+        {
+          "id": "comera",
+          "label": "Rifarlo com'era, senza cambiare aspetto"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto è grande il lavoro?",
+      "summaryLabel": "Dimensione",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Un pezzo solo"
+        },
+        {
+          "id": "p2",
+          "label": "Una stanza"
+        },
+        {
+          "id": "p3",
+          "label": "Tutta la casa"
+        },
+        {
+          "id": "p4",
+          "label": "Casa più rustico o dépendance"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "inverno",
+          "label": "Prima dell'inverno"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "anno",
+          "label": "Entro l'anno"
+        },
+        {
+          "id": "preventivi",
+          "label": "Sto raccogliendo preventivi"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si monta?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "bassa",
+          "label": "Aquileia, Cervignano e la Bassa friulana"
+        },
+        {
+          "id": "udine",
+          "label": "Udine e provincia"
+        },
+        {
+          "id": "grado",
+          "label": "Grado e la costa"
+        },
+        {
+          "id": "altra",
+          "label": "Gorizia, Trieste o altra zona"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "inverno",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "anno",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "bassa",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "udine",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "grado",
+        "points": 2
+      },
+      {
+        "question": "manutenzione",
+        "option": "io",
+        "points": 2
+      },
+      {
+        "question": "manutenzione",
+        "option": "alluminio",
+        "points": 2
+      },
+      {
+        "question": "manutenzione",
+        "option": "gia",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

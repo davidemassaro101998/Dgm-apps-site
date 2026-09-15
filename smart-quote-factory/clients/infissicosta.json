@@ -1,0 +1,267 @@
+{
+  "client": {
+    "name": "Infissi Costa",
+    "slug": "infissicosta",
+    "sourceUrl": "https://www.infissicosta.it/",
+    "place": "Palermo",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#222222",
+    "accent": "#c40000",
+    "background": "#ffffff",
+    "surface": "#f6f4f4",
+    "line": "#e2dcdc",
+    "muted": "#575252",
+    "radius": "4px",
+    "fontHeading": "Roboto, system-ui, sans-serif",
+    "fontBody": "Roboto, system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Dicci cosa ti occorre"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che cosa ti occorre?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "finestre",
+          "label": "Finestre e portefinestre"
+        },
+        {
+          "id": "interne",
+          "label": "Porte interne"
+        },
+        {
+          "id": "blindate",
+          "label": "Portoncini e porte blindate"
+        },
+        {
+          "id": "vetro",
+          "label": "Balaustre e parapetti in vetro"
+        },
+        {
+          "id": "pergola",
+          "label": "Pergola bioclimatica"
+        },
+        {
+          "id": "oscuranti",
+          "label": "Zanzariere e oscuranti"
+        }
+      ]
+    },
+    {
+      "id": "montaggio",
+      "title": "Chi fa il montaggio?",
+      "summaryLabel": "Montaggio",
+      "hint": "Fornite anche altri installatori: così la richiesta arriva al banco giusto.",
+      "options": [
+        {
+          "id": "voi",
+          "label": "Montate voi, chiavi in mano"
+        },
+        {
+          "id": "impresa",
+          "label": "Ho già un'impresa che monta"
+        },
+        {
+          "id": "rivenditore",
+          "label": "Sono un serramentista: mi serve la fornitura"
+        },
+        {
+          "id": "nonso",
+          "label": "Non ci ho ancora pensato"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa conta di più?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "caldo",
+          "label": "Il caldo d'estate"
+        },
+        {
+          "id": "sicurezza",
+          "label": "La sicurezza"
+        },
+        {
+          "id": "rumore",
+          "label": "Il rumore della città"
+        },
+        {
+          "id": "finiture",
+          "label": "L'aspetto e le finiture"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto è grande la fornitura?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "1–4 pezzi"
+        },
+        {
+          "id": "p2",
+          "label": "5–12 pezzi"
+        },
+        {
+          "id": "p3",
+          "label": "Un appartamento intero"
+        },
+        {
+          "id": "p4",
+          "label": "Più appartamenti, o un cantiere"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "consegna",
+          "label": "C'è una consegna già fissata"
+        },
+        {
+          "id": "t2",
+          "label": "Entro due mesi"
+        },
+        {
+          "id": "t6",
+          "label": "Entro sei mesi"
+        },
+        {
+          "id": "confronto",
+          "label": "Sto confrontando"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si consegna?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "palermo",
+          "label": "Palermo e provincia"
+        },
+        {
+          "id": "trapani",
+          "label": "Trapani e Agrigento"
+        },
+        {
+          "id": "catania",
+          "label": "Catania e Sicilia orientale"
+        },
+        {
+          "id": "fuori",
+          "label": "Fuori dalla Sicilia"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "consegna",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t2",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t6",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "palermo",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "trapani",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "catania",
+        "points": 1
+      },
+      {
+        "question": "montaggio",
+        "option": "rivenditore",
+        "points": 3
+      },
+      {
+        "question": "montaggio",
+        "option": "impresa",
+        "points": 2
+      },
+      {
+        "question": "montaggio",
+        "option": "voi",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

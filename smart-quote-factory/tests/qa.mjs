@@ -11,7 +11,14 @@ const SCHERMI = [["360×800", 360, 800], ["390×844", 390, 844], ["768×1024", 7
 
 const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
 
-for (const slug of readdirSync("generated")) {
+/* Con quindici demo la batteria intera passa i due minuti. Un argomento
+   sulla riga di comando ne prova una sola: serve mentre si lavora su
+   quella, non al posto del giro completo prima del commit. */
+const chiesti = process.argv.slice(2);
+const daProvare = readdirSync("generated").filter((s) => !chiesti.length || chiesti.includes(s));
+if (!daProvare.length) { console.error("nessuna demo con quel nome"); process.exit(1); }
+
+for (const slug of daProvare) {
   const url = "file://" + QUI + "/generated/" + slug + "/index.html";
 
   /* --- 1. niente contatti reali, niente invii, niente rete --- */
