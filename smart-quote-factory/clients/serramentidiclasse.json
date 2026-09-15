@@ -1,0 +1,277 @@
+{
+  "client": {
+    "name": "Serramenti di Classe",
+    "slug": "serramentidiclasse",
+    "sourceUrl": "https://www.serramentidiclasse.it/",
+    "place": "Modena · Bologna · Reggio Emilia · Parma",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#1f2b33",
+    "accent": "#d63600",
+    "background": "#ffffff",
+    "surface": "#f4f6f7",
+    "line": "#dde2e5",
+    "muted": "#5b6a73",
+    "radius": "0px",
+    "fontHeading": "Montserrat, system-ui, sans-serif",
+    "fontBody": "'Open Sans', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Preventivo guidato",
+    "title": "Due minuti, e la richiesta è fatta"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che cosa vuoi realizzare?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "finestre",
+          "label": "Finestre e portefinestre"
+        },
+        {
+          "id": "vetrate",
+          "label": "Vetrate panoramiche e scorrevoli"
+        },
+        {
+          "id": "pergola",
+          "label": "Pergola bioclimatica"
+        },
+        {
+          "id": "porte",
+          "label": "Porte interne e portoncini"
+        },
+        {
+          "id": "garage",
+          "label": "Portoni per garage"
+        },
+        {
+          "id": "oscuranti",
+          "label": "Oscuranti e zanzariere"
+        }
+      ]
+    },
+    {
+      "id": "bonus",
+      "title": "Vuoi usare una detrazione fiscale?",
+      "summaryLabel": "Detrazione",
+      "hint": "Cambia i documenti da preparare e i tempi del cantiere.",
+      "options": [
+        {
+          "id": "noi",
+          "label": "Sì, e vorrei che la pratica la seguiste voi"
+        },
+        {
+          "id": "io",
+          "label": "Sì, ma la pratica la seguo io"
+        },
+        {
+          "id": "no",
+          "label": "No, preferisco pagare e basta"
+        },
+        {
+          "id": "nonso",
+          "label": "Non so se ne ho diritto"
+        }
+      ]
+    },
+    {
+      "id": "intervento",
+      "title": "Com'è la situazione oggi?",
+      "summaryLabel": "Situazione",
+      "options": [
+        {
+          "id": "sostituzione",
+          "label": "Casa abitata, si sostituisce il vecchio"
+        },
+        {
+          "id": "ristrutturazione",
+          "label": "Ristrutturazione completa in corso"
+        },
+        {
+          "id": "nuova",
+          "label": "Costruzione nuova"
+        },
+        {
+          "id": "esterno",
+          "label": "Uno spazio esterno da coprire o chiudere"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto lavoro è?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Un pezzo solo"
+        },
+        {
+          "id": "p2",
+          "label": "2–5 pezzi"
+        },
+        {
+          "id": "p3",
+          "label": "6–12 pezzi"
+        },
+        {
+          "id": "p4",
+          "label": "Tutta la casa, o più unità"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "fiscale",
+          "label": "Prima della chiusura dell'anno fiscale"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "t6",
+          "label": "Entro sei mesi"
+        },
+        {
+          "id": "valuto",
+          "label": "Sto valutando, senza fretta"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si lavora?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "mo",
+          "label": "Modena e provincia"
+        },
+        {
+          "id": "bo",
+          "label": "Bologna e provincia"
+        },
+        {
+          "id": "re",
+          "label": "Reggio Emilia e Parma"
+        },
+        {
+          "id": "altra",
+          "label": "Altra zona dell'Emilia-Romagna"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "fiscale",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t6",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "mo",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "bo",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "re",
+        "points": 1
+      },
+      {
+        "question": "bonus",
+        "option": "noi",
+        "points": 2
+      },
+      {
+        "question": "bonus",
+        "option": "io",
+        "points": 1
+      },
+      {
+        "question": "intervento",
+        "option": "ristrutturazione",
+        "points": 2
+      },
+      {
+        "question": "intervento",
+        "option": "esterno",
+        "points": 2
+      },
+      {
+        "question": "intervento",
+        "option": "nuova",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

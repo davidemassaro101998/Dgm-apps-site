@@ -1,0 +1,267 @@
+{
+  "client": {
+    "name": "Punto Infissi",
+    "slug": "puntoinfissi",
+    "sourceUrl": "https://www.puntoinfissi.it/",
+    "place": "Conegliano (TV)",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#3a1a12",
+    "accent": "#9f2916",
+    "background": "#ffffff",
+    "surface": "#faf4f2",
+    "line": "#e9dcd8",
+    "muted": "#5f5551",
+    "radius": "2px",
+    "fontHeading": "'Playfair Display', Georgia, serif",
+    "fontBody": "Heebo, system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Heebo:wght@400;500;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Dicci cosa ti serve"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che lavoro hai in mente?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "finestre",
+          "label": "Finestre e portefinestre"
+        },
+        {
+          "id": "ingresso",
+          "label": "Ingresso: portoncino o blindata"
+        },
+        {
+          "id": "interne",
+          "label": "Porte interne"
+        },
+        {
+          "id": "scorrevoli",
+          "label": "Scorrevoli e grandi vetrate"
+        },
+        {
+          "id": "oscuranti",
+          "label": "Oscuranti: scuri, persiane, tapparelle"
+        },
+        {
+          "id": "accessori",
+          "label": "Zanzariere e accessori"
+        }
+      ]
+    },
+    {
+      "id": "intervento",
+      "title": "In che situazione siamo?",
+      "summaryLabel": "Situazione",
+      "hint": "Cambia chi vi segue e come si organizza il sopralluogo.",
+      "options": [
+        {
+          "id": "sostituzione",
+          "label": "Casa abitata, si sostituisce il vecchio"
+        },
+        {
+          "id": "ristrutturazione",
+          "label": "Ristrutturazione già avviata"
+        },
+        {
+          "id": "nuova",
+          "label": "Casa nuova o ampliamento"
+        },
+        {
+          "id": "confronto",
+          "label": "Sto confrontando più preventivi"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa ti pesa di più adesso?",
+      "summaryLabel": "Motivo",
+      "options": [
+        {
+          "id": "spifferi",
+          "label": "Spifferi e bollette"
+        },
+        {
+          "id": "rumore",
+          "label": "Rumore dalla strada"
+        },
+        {
+          "id": "sicurezza",
+          "label": "Sicurezza contro le effrazioni"
+        },
+        {
+          "id": "estetica",
+          "label": "Sono vecchi e si vede"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanti pezzi, più o meno?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "1–3 serramenti"
+        },
+        {
+          "id": "p2",
+          "label": "4–8 serramenti"
+        },
+        {
+          "id": "p3",
+          "label": "9–15 serramenti"
+        },
+        {
+          "id": "p4",
+          "label": "Tutta la casa, più di 15"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "data",
+          "label": "Ho già la data dei lavori"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "anno",
+          "label": "Entro l'anno"
+        },
+        {
+          "id": "idee",
+          "label": "Sto solo raccogliendo idee"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si lavora?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "coneg",
+          "label": "Conegliano e Vittorio Veneto"
+        },
+        {
+          "id": "tv",
+          "label": "Treviso e provincia"
+        },
+        {
+          "id": "pn",
+          "label": "Pordenone e Friuli occidentale"
+        },
+        {
+          "id": "altra",
+          "label": "Altra zona"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "data",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "anno",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "coneg",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "tv",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "pn",
+        "points": 1
+      },
+      {
+        "question": "intervento",
+        "option": "ristrutturazione",
+        "points": 2
+      },
+      {
+        "question": "intervento",
+        "option": "nuova",
+        "points": 2
+      },
+      {
+        "question": "intervento",
+        "option": "sostituzione",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}
