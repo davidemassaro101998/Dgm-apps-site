@@ -25,7 +25,7 @@
   "questions": [
     {
       "id": "prodotto",
-      "title": "Che cosa ti serve?",
+      "title": "Che cosa vuoi cambiare?",
       "summaryLabel": "Prodotto",
       "options": [
         {

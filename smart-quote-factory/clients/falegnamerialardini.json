@@ -1,0 +1,267 @@
+{
+  "client": {
+    "name": "Falegnameria Lardini",
+    "slug": "falegnamerialardini",
+    "sourceUrl": "https://www.falegnamerialardini.it/",
+    "place": "Osimo (AN)",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#292d33",
+    "accent": "#b32400",
+    "background": "#ffffff",
+    "surface": "#f6f4f2",
+    "line": "#e2ddd8",
+    "muted": "#5e5a55",
+    "radius": "2px",
+    "fontHeading": "Raleway, system-ui, sans-serif",
+    "fontBody": "'Open Sans', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Raleway:wght@600;700&family=Open+Sans:wght@400;600&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Lavoro su misura",
+    "title": "Dicci che cosa hai in mente"
+  },
+  "questions": [
+    {
+      "id": "lavoro",
+      "title": "Che cosa ti costruiamo?",
+      "summaryLabel": "Lavoro",
+      "options": [
+        {
+          "id": "infissi",
+          "label": "Finestre, infissi e persiane"
+        },
+        {
+          "id": "porte",
+          "label": "Porte e portoni"
+        },
+        {
+          "id": "cucina",
+          "label": "Cucina su misura"
+        },
+        {
+          "id": "armadi",
+          "label": "Armadi, librerie, vetrine"
+        },
+        {
+          "id": "scale",
+          "label": "Scale in legno"
+        },
+        {
+          "id": "ufficio",
+          "label": "Arredo per ufficio o negozio"
+        }
+      ]
+    },
+    {
+      "id": "progetto",
+      "title": "A che punto sei?",
+      "summaryLabel": "Progetto",
+      "hint": "Un pezzo su misura si preventiva in modo diverso a seconda di quanto è già deciso.",
+      "options": [
+        {
+          "id": "idea",
+          "label": "Ho solo un'idea in testa"
+        },
+        {
+          "id": "misure",
+          "label": "Ho le misure dello spazio"
+        },
+        {
+          "id": "disegno",
+          "label": "Ho un disegno o un progetto"
+        },
+        {
+          "id": "copia",
+          "label": "Devo rifare qualcosa uguale a com'era"
+        }
+      ]
+    },
+    {
+      "id": "legno",
+      "title": "Il legno lo hai già in mente?",
+      "summaryLabel": "Legno",
+      "options": [
+        {
+          "id": "chiaro",
+          "label": "Un legno chiaro, rovere o frassino"
+        },
+        {
+          "id": "scuro",
+          "label": "Un legno scuro, noce o ciliegio"
+        },
+        {
+          "id": "laccato",
+          "label": "Laccato, non a vista"
+        },
+        {
+          "id": "consiglio",
+          "label": "No, vorrei un consiglio"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto è grande il lavoro?",
+      "summaryLabel": "Dimensione",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Un pezzo solo"
+        },
+        {
+          "id": "p2",
+          "label": "Una stanza"
+        },
+        {
+          "id": "p3",
+          "label": "Più stanze"
+        },
+        {
+          "id": "p4",
+          "label": "Tutta la casa, o un locale intero"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "data",
+          "label": "C'è una data: trasloco o cantiere"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "t6",
+          "label": "Entro sei mesi"
+        },
+        {
+          "id": "idee",
+          "label": "Sto raccogliendo idee"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si consegna?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "osimo",
+          "label": "Osimo, Castelfidardo e dintorni"
+        },
+        {
+          "id": "ancona",
+          "label": "Ancona e provincia"
+        },
+        {
+          "id": "macerata",
+          "label": "Macerata e provincia"
+        },
+        {
+          "id": "altra",
+          "label": "Altra zona"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "data",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t6",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "osimo",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "ancona",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "macerata",
+        "points": 1
+      },
+      {
+        "question": "progetto",
+        "option": "disegno",
+        "points": 2
+      },
+      {
+        "question": "progetto",
+        "option": "misure",
+        "points": 2
+      },
+      {
+        "question": "progetto",
+        "option": "copia",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

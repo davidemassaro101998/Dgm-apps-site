@@ -1,0 +1,277 @@
+{
+  "client": {
+    "name": "Fratelli Balice",
+    "slug": "fratellibalice",
+    "sourceUrl": "https://www.fratellibalice.it/",
+    "place": "Casamassima (BA)",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#1b2350",
+    "accent": "#253273",
+    "background": "#ffffff",
+    "surface": "#f2f3f8",
+    "line": "#dcdfec",
+    "muted": "#565d7a",
+    "radius": "0px",
+    "fontHeading": "Archivo, 'Arial Black', sans-serif",
+    "fontBody": "Archivo, Arial, system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta su misura",
+    "title": "Raccontaci il pezzo"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che lavorazione ti serve?",
+      "summaryLabel": "Lavorazione",
+      "options": [
+        {
+          "id": "vetri",
+          "label": "Vetri e cristalli su misura"
+        },
+        {
+          "id": "doccia",
+          "label": "Box doccia"
+        },
+        {
+          "id": "scale",
+          "label": "Scale in acciaio e vetro"
+        },
+        {
+          "id": "serramenti",
+          "label": "Serramenti e porte blindate"
+        },
+        {
+          "id": "facciata",
+          "label": "Facciata ventilata in Alucobond"
+        },
+        {
+          "id": "esterni",
+          "label": "Cancelli, recinzioni, tettoie"
+        }
+      ]
+    },
+    {
+      "id": "misure",
+      "title": "Le misure ce le hai?",
+      "summaryLabel": "Misure",
+      "hint": "È la differenza fra un preventivo oggi e un sopralluogo da fissare.",
+      "options": [
+        {
+          "id": "esatte",
+          "label": "Sì, misure esatte"
+        },
+        {
+          "id": "massima",
+          "label": "Ho misure di massima"
+        },
+        {
+          "id": "rilievo",
+          "label": "No, serve un rilievo sul posto"
+        },
+        {
+          "id": "disegno",
+          "label": "C'è il disegno di un progettista"
+        }
+      ]
+    },
+    {
+      "id": "destinazione",
+      "title": "Per che cosa?",
+      "summaryLabel": "Destinazione",
+      "options": [
+        {
+          "id": "casa",
+          "label": "Casa mia"
+        },
+        {
+          "id": "locale",
+          "label": "Un locale o un negozio"
+        },
+        {
+          "id": "cantiere",
+          "label": "Un cantiere che sto seguendo"
+        },
+        {
+          "id": "edificio",
+          "label": "Un edificio pubblico o industriale"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto lavoro è?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Un pezzo su misura"
+        },
+        {
+          "id": "p2",
+          "label": "2–5 pezzi"
+        },
+        {
+          "id": "p3",
+          "label": "Un ambiente intero"
+        },
+        {
+          "id": "p4",
+          "label": "Un edificio, o più unità"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando serve?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "data",
+          "label": "Ho una data di consegna"
+        },
+        {
+          "id": "t1",
+          "label": "Entro un mese"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "prezzi",
+          "label": "Sto raccogliendo prezzi"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si monta?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "casamassima",
+          "label": "Casamassima e hinterland di Bari"
+        },
+        {
+          "id": "bari",
+          "label": "Bari città"
+        },
+        {
+          "id": "puglia",
+          "label": "Resto della Puglia"
+        },
+        {
+          "id": "fuori",
+          "label": "Fuori regione"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "data",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t1",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "casamassima",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "bari",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "puglia",
+        "points": 1
+      },
+      {
+        "question": "misure",
+        "option": "esatte",
+        "points": 2
+      },
+      {
+        "question": "misure",
+        "option": "disegno",
+        "points": 2
+      },
+      {
+        "question": "destinazione",
+        "option": "cantiere",
+        "points": 2
+      },
+      {
+        "question": "destinazione",
+        "option": "edificio",
+        "points": 2
+      },
+      {
+        "question": "destinazione",
+        "option": "locale",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}
