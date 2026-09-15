@@ -17,6 +17,9 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-15 | TuttoPorte Torino | tuttoporte.com | Druento e Torino | 12 | `generated/tuttoporte/` | da far vedere a Davide |
 | 2026-09-15 | Fratelli Balice | fratellibalice.it | Casamassima (BA) | 11 | `generated/fratellibalice/` | da far vedere a Davide |
 | 2026-09-15 | Falegnameria Lardini | falegnamerialardini.it | Osimo (AN) | 11 | `generated/falegnamerialardini/` | da far vedere a Davide |
+| 2026-09-15 | AMA Serramenti | amaserramenti.it | Brescia · Sarezzo · Iseo | 12 | `generated/amaserramenti/` | da far vedere a Davide |
+| 2026-09-15 | Sartiani Infissi | sartianiinfissi.it | Scandicci (FI) | 11 | `generated/sartianiinfissi/` | da far vedere a Davide |
+| 2026-09-15 | COA Serramenti | coaserramenti.it | Capaccio Paestum (SA) | 11 | `generated/coaserramenti/` | da far vedere a Davide |
 
 ## Scartati
 
@@ -30,6 +33,9 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-15 | Piave Infissi (piaveinfissi.it) | solo PVC, provincia di Treviso: è lo stesso identikit di Pentainfissi, che abbiamo già fatto. Da ripescare quando serviranno più demo nello stesso profilo. |
 | 2026-09-15 | ALPI Serramenti Torino (alpiserramentitorino.com) | buona azienda, ma verde scuro su Torino ce l'ha già TuttoPorte, che ha un contatto più debole da migliorare e quattro punti vendita da smistare. Tenuta in riserva. |
 | 2026-09-15 | Boscolo Porte (boscoloporte.it) | il rosso #cc1818 è loro, ma il resto della tavolozza è quella di serie di WordPress e i caratteri sono lo stack di sistema: poco da cui copiare. Riserva. |
+| 2026-09-15 | Fusi Serramenti (fusiserramenti.it) | showroom a Firenze, Calenzano e Prato, ma la tavolozza del sito è tutta grigi di Bootstrap: nessun colore loro da cui partire. Riserva. |
+| 2026-09-15 | Infac (infac.it) | stessa cosa: colori di serie del tema, sito leggero. Riserva. |
+| 2026-09-15 | Nuzzolo Porte & Finestre (nuzzoloportefinestre.it) | catalogo ottimo (filomuro, bilico, cabine armadio), ma i colori più usati sono i verdi di serie del tema: non si capisce quale sia il loro. Riserva, da riguardare partendo dalle pagine interne. |
 
 ## Perché questi tre
 
@@ -115,3 +121,38 @@ Nota di questo giro: nessuna delle nove demo apre più con la stessa
 frase. Ferrall, Pentainfissi e Lardini dicevano tutte e tre «Che cosa ti
 serve?»: se Davide ne apre due nella stessa riunione, la prima riga non
 deve essere identica.
+
+## Perché questi tre — terzo giro del 15 settembre
+
+**AMA Serramenti** (12/12) — tre showroom, Brescia, Sarezzo in Val Trompia
+e Iseo sul Sebino, e in tutto il sito **nessun modulo**: solo un numero di
+telefono. Vendono anche portoni industriali e facciate Schüco, quindi fra
+le richieste che arrivano ce ne sono da capannone e da appartamento, e
+oggi nessuno lo sa prima di rispondere. La seconda domanda è **«che cosa
+c'è adesso al suo posto?»** — legno vecchio, alluminio datato senza taglio
+termico, PVC ancora buono, oppure niente. È lo smontaggio e il tipo di
+posa, cioè metà del preventivo, e non lo chiede nessun'altra demo. Le
+fasce di quantità arrivano a «più di 25: è un edificio», perché loro quei
+lavori li fanno.
+
+**Sartiani Infissi** (11/12) — bottega di Scandicci dal 1956. Il modulo di
+oggi chiede nome, email, oggetto e messaggio: **non chiede nemmeno il
+telefono**. La seconda domanda è **«l'immobile ha vincoli?»**, con centro
+storico o immobile vincolato, condominio con delibera, nessun vincolo,
+non lo so. A Firenze è la prima cosa che un serramentista deve sapere:
+cambia i tempi, i permessi e a volte il prodotto. Fra i tempi c'è «prima
+dell'estate», perché fanno verande e tende da sole.
+
+**COA Serramenti** (11/12) — Capaccio Paestum, lavorano tutto il Cilento
+costiero. La seconda domanda è **«che casa è?»**: ci abito tutto l'anno,
+è una seconda casa al mare, è una casa vacanze che affitto, è un'attività.
+Al mare quella risposta decide chi c'è d'inverno, quando si può entrare a
+lavorare e chi firma. E fra le esigenze la prima è «resistere alla
+salsedine e al vento», che a Vicenza non avrebbe senso scrivere.
+
+Nota sui colori di questo giro: l'arancione di AMA (`#d8620c`) e il
+turchese di COA (`#37b0ba`) col testo bianco sopra facevano 3.70:1 e
+2.60:1. Sono scuriti a `#b35105` e `#1f7d86`, che sono gli stessi colori
+e si leggono. Per COA il carattere è Barlow: il loro sito non ne carica
+nessuno, usa gli stack di sistema, quindi qui non stiamo copiando niente —
+è una scelta nostra, e se a loro non piace si cambia in una riga.

@@ -1,0 +1,272 @@
+{
+  "client": {
+    "name": "AMA Serramenti",
+    "slug": "amaserramenti",
+    "sourceUrl": "https://www.amaserramenti.it/",
+    "place": "Brescia · Sarezzo · Iseo",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#2b2b2b",
+    "accent": "#b35105",
+    "background": "#ffffff",
+    "surface": "#f8f4f0",
+    "line": "#e5ded8",
+    "muted": "#5d5751",
+    "radius": "6px",
+    "fontHeading": "Outfit, system-ui, sans-serif",
+    "fontBody": "Outfit, system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Dicci su cosa lavoriamo"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Su cosa lavoriamo?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "finestre",
+          "label": "Finestre e serramenti"
+        },
+        {
+          "id": "porte",
+          "label": "Porte, portoncini e blindate"
+        },
+        {
+          "id": "portoni",
+          "label": "Portoni sezionali o industriali"
+        },
+        {
+          "id": "oscuranti",
+          "label": "Persiane e tapparelle blindate"
+        },
+        {
+          "id": "schuco",
+          "label": "Facciate e frangisole Schüco"
+        },
+        {
+          "id": "accessori",
+          "label": "Inferriate, zanzariere, verande"
+        }
+      ]
+    },
+    {
+      "id": "esistente",
+      "title": "Che cosa c'è adesso al suo posto?",
+      "summaryLabel": "Esistente",
+      "hint": "Cambia il lavoro di smontaggio e il tipo di posa, quindi cambia il preventivo.",
+      "options": [
+        {
+          "id": "legno",
+          "label": "Serramenti in legno vecchi"
+        },
+        {
+          "id": "alluminio",
+          "label": "Alluminio datato, senza taglio termico"
+        },
+        {
+          "id": "pvc",
+          "label": "PVC ancora in buono stato"
+        },
+        {
+          "id": "niente",
+          "label": "Niente: è nuovo o è un vano da aprire"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa deve migliorare?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "caldo",
+          "label": "Il caldo d'estate"
+        },
+        {
+          "id": "freddo",
+          "label": "Il freddo e la bolletta"
+        },
+        {
+          "id": "sicurezza",
+          "label": "La sicurezza"
+        },
+        {
+          "id": "rumore",
+          "label": "Il rumore da fuori"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanti serramenti?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "1–3 serramenti"
+        },
+        {
+          "id": "p2",
+          "label": "4–10 serramenti"
+        },
+        {
+          "id": "p3",
+          "label": "11–25 serramenti"
+        },
+        {
+          "id": "p4",
+          "label": "Più di 25: è un edificio"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "cantiere",
+          "label": "Il cantiere è già aperto"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "anno",
+          "label": "Entro l'anno"
+        },
+        {
+          "id": "confronto",
+          "label": "Sto facendo un confronto"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si lavora?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "brescia",
+          "label": "Brescia città e hinterland"
+        },
+        {
+          "id": "valtrompia",
+          "label": "Val Trompia e Sarezzo"
+        },
+        {
+          "id": "sebino",
+          "label": "Sebino, Iseo e Franciacorta"
+        },
+        {
+          "id": "altra",
+          "label": "Altra zona"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "cantiere",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "anno",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "brescia",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "valtrompia",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "sebino",
+        "points": 2
+      },
+      {
+        "question": "prodotto",
+        "option": "portoni",
+        "points": 2
+      },
+      {
+        "question": "prodotto",
+        "option": "schuco",
+        "points": 2
+      },
+      {
+        "question": "esistente",
+        "option": "legno",
+        "points": 1
+      },
+      {
+        "question": "esistente",
+        "option": "alluminio",
+        "points": 2
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

@@ -1,0 +1,267 @@
+{
+  "client": {
+    "name": "Sartiani Infissi",
+    "slug": "sartianiinfissi",
+    "sourceUrl": "https://www.sartianiinfissi.it/",
+    "place": "Scandicci (FI), dal 1956",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#1f2124",
+    "accent": "#9b1111",
+    "background": "#ffffff",
+    "surface": "#f7f4f3",
+    "line": "#e3dcdb",
+    "muted": "#5b5654",
+    "radius": "2px",
+    "fontHeading": "'Roboto Slab', Georgia, serif",
+    "fontBody": "Roboto, system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700&family=Roboto:wght@400;500&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Dicci di che si tratta"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Di che si tratta?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "finestre",
+          "label": "Finestre e persiane"
+        },
+        {
+          "id": "porte",
+          "label": "Porte e portoni"
+        },
+        {
+          "id": "veranda",
+          "label": "Chiudere un balcone o una terrazza"
+        },
+        {
+          "id": "tende",
+          "label": "Tende da sole"
+        },
+        {
+          "id": "cancelli",
+          "label": "Cancelli, recinzioni, serrande"
+        },
+        {
+          "id": "inferriate",
+          "label": "Inferriate e zanzariere"
+        }
+      ]
+    },
+    {
+      "id": "vincoli",
+      "title": "L'immobile ha vincoli?",
+      "summaryLabel": "Vincoli",
+      "hint": "A Firenze è la prima cosa da sapere: cambia i tempi, i permessi e a volte il prodotto.",
+      "options": [
+        {
+          "id": "storico",
+          "label": "Sì: centro storico o immobile vincolato"
+        },
+        {
+          "id": "condominio",
+          "label": "È in condominio, serve l'ok dell'assemblea"
+        },
+        {
+          "id": "nessuno",
+          "label": "No, nessun vincolo"
+        },
+        {
+          "id": "nonso",
+          "label": "Non lo so"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa ti serve di più?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "spazio",
+          "label": "Guadagnare uno spazio chiuso e usabile"
+        },
+        {
+          "id": "sicurezza",
+          "label": "Sicurezza contro i furti"
+        },
+        {
+          "id": "energia",
+          "label": "Caldo, freddo e bolletta"
+        },
+        {
+          "id": "facciata",
+          "label": "Rifare l'aspetto della facciata"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto c'è da fare?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Un pezzo solo"
+        },
+        {
+          "id": "p2",
+          "label": "2–6 pezzi"
+        },
+        {
+          "id": "p3",
+          "label": "Tutto l'appartamento"
+        },
+        {
+          "id": "p4",
+          "label": "Un intero stabile"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "estate",
+          "label": "Prima dell'estate"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "anno",
+          "label": "Entro l'anno"
+        },
+        {
+          "id": "chiedo",
+          "label": "Sto solo chiedendo"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "scandicci",
+          "label": "Scandicci e dintorni"
+        },
+        {
+          "id": "firenze",
+          "label": "Firenze città"
+        },
+        {
+          "id": "provincia",
+          "label": "Provincia di Firenze"
+        },
+        {
+          "id": "altra",
+          "label": "Prato o altra zona"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "estate",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "anno",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "scandicci",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "firenze",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "provincia",
+        "points": 1
+      },
+      {
+        "question": "vincoli",
+        "option": "nessuno",
+        "points": 2
+      },
+      {
+        "question": "vincoli",
+        "option": "condominio",
+        "points": 1
+      },
+      {
+        "question": "esigenza",
+        "option": "spazio",
+        "points": 2
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}
