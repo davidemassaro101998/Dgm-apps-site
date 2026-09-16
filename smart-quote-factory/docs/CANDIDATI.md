@@ -29,6 +29,9 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-16 | Bonadiman Serramenti | bonadiman-serramenti.it | Verona, dal 1956 | 12 | `generated/bonadiman/` | da far vedere a Davide |
 | 2026-09-16 | F.lli Scaccabarozzi — La Tapparella | latapparella.it | Besana in Brianza (MB) | 11 | `generated/latapparella/` | da far vedere a Davide |
 | 2026-09-16 | FAMM Infissi | famminfissi.it | Padova, oltre 50 anni | 10 | `generated/famminfissi/` | da far vedere a Davide |
+| 2026-09-16 | Arredi Fiorelli | arredifiorelli.it | Terni · Perugia · Roma | 12 | `generated/arredifiorelli/` | da far vedere a Davide |
+| 2026-09-16 | Giordani Serramenti | giordaniserramenti.it | Carugo e Como | 11 | `generated/giordani/` | da far vedere a Davide |
+| 2026-09-16 | Serramenti Vinai | serramentivinai.com | Mondovì (CN) | 10 | `generated/serramentivinai/` | da far vedere a Davide |
 
 ## Scartati
 
@@ -54,7 +57,10 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-16 | AS Infissi (asinfissi.it) e Portecò (porteco.it) | la prima usa i colori di serie del tema, la seconda non espone un foglio di stile leggibile dal nostro proxy. Riserva. |
 | 2026-09-16 | Bernocchi Infissi (bernocchiinfissi.it) e De Ninis (deninisserramenti.com) | due buone aziende abruzzesi, ma i colori più usati sono quelli di serie di Elementor e di Ant Design. Riserva. |
 | 2026-09-16 | Leone Infissi (leoneinfissi.it), CVL Next (cvlnext.com), Senna Infissi (sennainfissi.it) | Abruzzo: tavolozze di serie o foglio di stile non leggibile. Riserva. |
-| 2026-09-16 | Giordani Serramenti (giordaniserramenti.it) | rosso #ea1f28 vero e catalogo largo, ma di rossi ne abbiamo già cinque su ventuno: scelta La Tapparella per non fare l'ennesima demo rossa. Riserva vera, da fare al prossimo giro. |
+| 2026-09-16 | Fulcheri Serramenti (fulcheriserramenti.com) | oltre sessant'anni a Cuneo e un verde acqua vero (#08ada7), ma è praticamente lo stesso colore del turchese di Arredi Fiorelli (#0cadbe), scelto in questo stesso giro. Due demo identiche di colore non servono a nessuno. Riserva vera, da fare al prossimo giro. |
+| 2026-09-16 | OMA Serramenti (omaserramenti.it) | azzurro #13aff0, che è lo stesso colore di serie già visto su Apro: è del tema, non loro. Riserva. |
+| 2026-09-16 | Biondini Serramenti (biondini.it) | produzione interna di scorrevoli in legno a Gualdo Cattaneo, ma la tavolozza è tutta Bootstrap. Riserva. |
+| 2026-09-16 | Vilmm Import (vilmmimport.it) | 44 anni e uno showroom a Bastia Umbra, ma il foglio di stile non si scarica dal nostro proxy. Da riprovare. |
 
 ## Perché questi tre
 
@@ -292,3 +298,36 @@ la strada non è cercare più a lungo: è accettare che per un'azienda su tre
 la tavolozza gliela proponiamo noi, e dirlo quando si mostra la demo —
 come già succede per Macor, COA, FN, Saderi, Team Legno e adesso
 La Tapparella.
+
+## Perché questi tre — settimo giro (16 settembre, pomeriggio)
+
+**Arredi Fiorelli** (12/12) — Terni, showroom che serve anche Perugia e
+Roma. Non sono solo serramentisti: fanno falegnameria, arredamento su
+misura (classico, moderno, in stile), pavimenti in legno, grate e persiane
+di sicurezza. È l'unica delle ventiquattro che vende mobili e finestre
+nello stesso negozio, e da lì nasce la seconda domanda: **«che stile ha
+casa?»** — classico, moderno, in stile con pezzi d'epoca, non lo so
+vorrei un'idea. Lo stile decide chi la segue dentro l'azienda, non solo il
+prodotto. Il loro modulo chiede nome, cognome, email e messaggio: **non
+chiede il telefono**.
+
+**Giordani Serramenti** (11/12) — Carugo, più uno showroom a Como. Il loro
+modulo è particolare: chiede nome, cognome, **indirizzo, CAP e città** — e
+niente sul prodotto. Sanno dove abiti al civico e non sanno cosa vuoi. La
+seconda domanda della demo è quella che manca davvero: **«hai già un
+preventivo di qualcun altro?»** — sì e vorrei confrontarlo, sì ma non
+l'ho capito, no siete i primi, sto solo guardando. Chi ha già un preventivo
+in mano decide in giorni, non in mesi, ed è l'unica demo che lo chiede.
+Era la riserva lasciata in sospeso ieri per non fare l'ennesima demo
+rossa: il suo rosso `#ea1f28` faceva 4.44:1, ed è scurito a `#c9151d`.
+
+**Serramenti Vinai** (10/12) — Mondovì, e lavorano dal Monregalese fino
+alla costa ligure. La seconda domanda è **«dov'è la casa?»** — in città o
+in paese, cascina o casa di campagna, in montagna, al mare in Liguria. Fra
+Cuneo e Savona cambia tutto: neve da una parte, salsedine dall'altra. Sono
+un'azienda con un sito Duda: i campi del modulo non si leggono da fuori,
+quindi sul criterio del contatto ha 1 e non 2 — non l'ho visto.
+
+Nota: sia Vinai sia La Tapparella non caricano un carattere proprio. Asap
+e IBM Plex Sans sono scelte nostre. Siamo a sette aziende su ventiquattro
+in questa condizione.

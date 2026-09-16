@@ -1,0 +1,267 @@
+{
+  "client": {
+    "name": "Arredi Fiorelli",
+    "slug": "arredifiorelli",
+    "sourceUrl": "https://www.arredifiorelli.it/",
+    "place": "Terni · Perugia · Roma",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#191919",
+    "accent": "#0a7e8a",
+    "background": "#ffffff",
+    "surface": "#f2f7f8",
+    "line": "#dbe6e8",
+    "muted": "#4f5557",
+    "radius": "2px",
+    "fontHeading": "'Source Sans 3', system-ui, sans-serif",
+    "fontBody": "'Source Sans 3', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Progetto su misura",
+    "title": "Raccontaci il progetto"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che cosa stai pensando di fare?",
+      "summaryLabel": "Lavoro",
+      "options": [
+        {
+          "id": "legno",
+          "label": "Infissi in legno"
+        },
+        {
+          "id": "pvc",
+          "label": "Infissi in PVC o alluminio"
+        },
+        {
+          "id": "blindati",
+          "label": "Portoni e portoncini blindati"
+        },
+        {
+          "id": "grate",
+          "label": "Grate e persiane di sicurezza"
+        },
+        {
+          "id": "arredo",
+          "label": "Arredamento su misura"
+        },
+        {
+          "id": "pavimenti",
+          "label": "Pavimenti in legno"
+        }
+      ]
+    },
+    {
+      "id": "stile",
+      "title": "Che stile ha casa?",
+      "summaryLabel": "Stile",
+      "hint": "Fate falegnameria e interni: lo stile decide chi vi segue, non solo il prodotto.",
+      "options": [
+        {
+          "id": "classico",
+          "label": "Classico"
+        },
+        {
+          "id": "moderno",
+          "label": "Moderno"
+        },
+        {
+          "id": "epoca",
+          "label": "In stile, con pezzi d'epoca"
+        },
+        {
+          "id": "idea",
+          "label": "Non lo so ancora: vorrei un'idea"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa cerchi soprattutto?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "misura",
+          "label": "Che sia su misura, non di serie"
+        },
+        {
+          "id": "sicurezza",
+          "label": "Sicurezza: grate e blindati"
+        },
+        {
+          "id": "energia",
+          "label": "Isolamento e bolletta"
+        },
+        {
+          "id": "progetto",
+          "label": "Un progetto d'insieme, non pezzi sparsi"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto è grande?",
+      "summaryLabel": "Dimensione",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Un pezzo"
+        },
+        {
+          "id": "p2",
+          "label": "Una stanza"
+        },
+        {
+          "id": "p3",
+          "label": "Tutta la casa"
+        },
+        {
+          "id": "p4",
+          "label": "Casa più ufficio o seconda casa"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "data",
+          "label": "C'è una data: trasloco o consegna"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "anno",
+          "label": "Entro l'anno"
+        },
+        {
+          "id": "idee",
+          "label": "Sto raccogliendo idee"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "terni",
+          "label": "Terni e provincia"
+        },
+        {
+          "id": "perugia",
+          "label": "Perugia e provincia"
+        },
+        {
+          "id": "roma",
+          "label": "Roma e Lazio"
+        },
+        {
+          "id": "altra",
+          "label": "Altra zona"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "data",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "anno",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "terni",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "perugia",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "roma",
+        "points": 1
+      },
+      {
+        "question": "esigenza",
+        "option": "progetto",
+        "points": 2
+      },
+      {
+        "question": "esigenza",
+        "option": "misura",
+        "points": 1
+      },
+      {
+        "question": "stile",
+        "option": "idea",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

@@ -1,0 +1,267 @@
+{
+  "client": {
+    "name": "Serramenti Vinai",
+    "slug": "serramentivinai",
+    "sourceUrl": "https://www.serramentivinai.com/",
+    "place": "Mondovì (CN)",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#33302e",
+    "accent": "#c23a12",
+    "background": "#ffffff",
+    "surface": "#f8f5f3",
+    "line": "#e6ddd8",
+    "muted": "#5a5450",
+    "radius": "5px",
+    "fontHeading": "Asap, system-ui, sans-serif",
+    "fontBody": "Asap, system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Asap:wght@400;600;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Dicci dove e cosa"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che serramenti devi fare?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "alluminio",
+          "label": "Finestre in alluminio"
+        },
+        {
+          "id": "misto",
+          "label": "Serramenti alluminio-legno"
+        },
+        {
+          "id": "vetrate",
+          "label": "Vetrate scorrevoli"
+        },
+        {
+          "id": "ingresso",
+          "label": "Porte d'ingresso su misura"
+        },
+        {
+          "id": "termico",
+          "label": "Serramenti a taglio termico"
+        },
+        {
+          "id": "zanzariere",
+          "label": "Zanzariere"
+        }
+      ]
+    },
+    {
+      "id": "dove",
+      "title": "Dov'è la casa?",
+      "summaryLabel": "Casa",
+      "hint": "Fra il Monregalese e la costa ligure cambia tutto: neve da una parte, salsedine dall'altra.",
+      "options": [
+        {
+          "id": "citta",
+          "label": "In città o in paese"
+        },
+        {
+          "id": "campagna",
+          "label": "Cascina o casa di campagna"
+        },
+        {
+          "id": "montagna",
+          "label": "In montagna"
+        },
+        {
+          "id": "mare",
+          "label": "Al mare, in Liguria"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa conta di più?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "freddo",
+          "label": "Il freddo: qui l'inverno è lungo"
+        },
+        {
+          "id": "luce",
+          "label": "La luce e la vista"
+        },
+        {
+          "id": "sicurezza",
+          "label": "La sicurezza"
+        },
+        {
+          "id": "pulizia",
+          "label": "Che si pulisca facile"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto c'è da fare?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "1–3 serramenti"
+        },
+        {
+          "id": "p2",
+          "label": "4–9 serramenti"
+        },
+        {
+          "id": "p3",
+          "label": "Tutta la casa"
+        },
+        {
+          "id": "p4",
+          "label": "Più unità o un cantiere"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "data",
+          "label": "C'è una data di posa"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "primavera",
+          "label": "Alla bella stagione"
+        },
+        {
+          "id": "informo",
+          "label": "Mi sto informando"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si monta?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "mondovi",
+          "label": "Mondovì e Monregalese"
+        },
+        {
+          "id": "cuneo",
+          "label": "Cuneo e provincia"
+        },
+        {
+          "id": "langhe",
+          "label": "Langhe e Alba"
+        },
+        {
+          "id": "liguria",
+          "label": "Liguria e Savonese"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "data",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "primavera",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "mondovi",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "cuneo",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "langhe",
+        "points": 1
+      },
+      {
+        "question": "dove",
+        "option": "citta",
+        "points": 1
+      },
+      {
+        "question": "dove",
+        "option": "montagna",
+        "points": 2
+      },
+      {
+        "question": "dove",
+        "option": "mare",
+        "points": 2
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

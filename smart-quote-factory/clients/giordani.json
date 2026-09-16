@@ -1,0 +1,272 @@
+{
+  "client": {
+    "name": "Giordani Serramenti",
+    "slug": "giordani",
+    "sourceUrl": "https://www.giordaniserramenti.it/",
+    "place": "Carugo e Como",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#303030",
+    "accent": "#c9151d",
+    "background": "#ffffff",
+    "surface": "#f7f4f4",
+    "line": "#e4dede",
+    "muted": "#585252",
+    "radius": "3px",
+    "fontHeading": "'Open Sans', system-ui, sans-serif",
+    "fontBody": "'Open Sans', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Dicci su cosa preventivare"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Su cosa ti serve il preventivo?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "finestre",
+          "label": "Finestre e portefinestre"
+        },
+        {
+          "id": "porte",
+          "label": "Porte interne ed esterne"
+        },
+        {
+          "id": "basculanti",
+          "label": "Portoni per garage e basculanti"
+        },
+        {
+          "id": "industriali",
+          "label": "Portoni industriali"
+        },
+        {
+          "id": "tapparelle",
+          "label": "Tapparelle e oscuranti"
+        },
+        {
+          "id": "zanzariere",
+          "label": "Zanzariere"
+        }
+      ]
+    },
+    {
+      "id": "altripreventivi",
+      "title": "Hai già un preventivo di qualcun altro?",
+      "summaryLabel": "Confronto",
+      "hint": "Chi ha già un preventivo in mano decide in giorni, non in mesi.",
+      "options": [
+        {
+          "id": "confronto",
+          "label": "Sì, e vorrei confrontarlo"
+        },
+        {
+          "id": "capito",
+          "label": "Sì, ma non l'ho capito"
+        },
+        {
+          "id": "primi",
+          "label": "No, siete i primi che sento"
+        },
+        {
+          "id": "guardo",
+          "label": "Sto solo guardando"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa conta di più?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "prezzo",
+          "label": "Il prezzo"
+        },
+        {
+          "id": "isolamento",
+          "label": "L'isolamento"
+        },
+        {
+          "id": "sicurezza",
+          "label": "La sicurezza"
+        },
+        {
+          "id": "durata",
+          "label": "Che duri e non dia problemi"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanti pezzi?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Uno o due"
+        },
+        {
+          "id": "p2",
+          "label": "3–8 pezzi"
+        },
+        {
+          "id": "p3",
+          "label": "Tutta la casa"
+        },
+        {
+          "id": "p4",
+          "label": "Un capannone o più unità"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "data",
+          "label": "Ho già la data"
+        },
+        {
+          "id": "t2",
+          "label": "Entro due mesi"
+        },
+        {
+          "id": "t6",
+          "label": "Entro sei mesi"
+        },
+        {
+          "id": "fretta",
+          "label": "Non ho fretta"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si lavora?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "carugo",
+          "label": "Carugo e Brianza comasca"
+        },
+        {
+          "id": "como",
+          "label": "Como e lago"
+        },
+        {
+          "id": "lecco",
+          "label": "Lecco e Monza"
+        },
+        {
+          "id": "altra",
+          "label": "Milano o altra zona"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "data",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t2",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t6",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "carugo",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "como",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "lecco",
+        "points": 1
+      },
+      {
+        "question": "altripreventivi",
+        "option": "confronto",
+        "points": 3
+      },
+      {
+        "question": "altripreventivi",
+        "option": "capito",
+        "points": 2
+      },
+      {
+        "question": "altripreventivi",
+        "option": "primi",
+        "points": 2
+      },
+      {
+        "question": "prodotto",
+        "option": "industriali",
+        "points": 2
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}
