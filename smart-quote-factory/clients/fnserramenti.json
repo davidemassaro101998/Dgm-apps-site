@@ -1,0 +1,262 @@
+{
+  "client": {
+    "name": "FN Serramenti",
+    "slug": "fnserramenti",
+    "sourceUrl": "https://www.fnserramenti.com/",
+    "place": "Genova, dal 1978",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#232224",
+    "accent": "#b3081b",
+    "background": "#ffffff",
+    "surface": "#f7f4f4",
+    "line": "#e3dddd",
+    "muted": "#565253",
+    "radius": "3px",
+    "fontHeading": "'Libre Franklin', system-ui, sans-serif",
+    "fontBody": "'Libre Franklin', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Preventivo guidato",
+    "title": "Due minuti e sappiamo già tutto"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che cosa devi rifare?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "finestre",
+          "label": "Finestre"
+        },
+        {
+          "id": "porte",
+          "label": "Porte e portoni"
+        },
+        {
+          "id": "tapparelle",
+          "label": "Tapparelle e oscuranti"
+        },
+        {
+          "id": "veranda",
+          "label": "Veranda in alluminio"
+        },
+        {
+          "id": "tende",
+          "label": "Tende"
+        },
+        {
+          "id": "altro",
+          "label": "Zanzariere e armadi a muro"
+        }
+      ]
+    },
+    {
+      "id": "accesso",
+      "title": "Come si arriva a casa tua?",
+      "summaryLabel": "Accesso",
+      "hint": "A Genova è metà del lavoro, e oggi si scopre solo il giorno del sopralluogo.",
+      "options": [
+        {
+          "id": "portone",
+          "label": "Si carica e scarica davanti al portone"
+        },
+        {
+          "id": "ascensore",
+          "label": "C'è l'ascensore, ma è piccolo"
+        },
+        {
+          "id": "scale",
+          "label": "Solo scale, e il piano è alto"
+        },
+        {
+          "id": "vicolo",
+          "label": "Vicolo stretto: si scarica lontano"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa conta di più?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "umidita",
+          "label": "Il freddo e l'umidità"
+        },
+        {
+          "id": "rumore",
+          "label": "Il rumore della strada"
+        },
+        {
+          "id": "sicurezza",
+          "label": "La sicurezza"
+        },
+        {
+          "id": "aspetto",
+          "label": "L'aspetto: il palazzo è vecchio"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto c'è da fare?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "1–3 pezzi"
+        },
+        {
+          "id": "p2",
+          "label": "4–8 pezzi"
+        },
+        {
+          "id": "p3",
+          "label": "Tutto l'appartamento"
+        },
+        {
+          "id": "p4",
+          "label": "Più appartamenti o un palazzo"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "subito",
+          "label": "Ho fretta"
+        },
+        {
+          "id": "t2",
+          "label": "Entro due mesi"
+        },
+        {
+          "id": "t6",
+          "label": "Entro sei mesi"
+        },
+        {
+          "id": "guardo",
+          "label": "Sto guardando"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "centro",
+          "label": "Genova centro e centro storico"
+        },
+        {
+          "id": "levante",
+          "label": "Levante"
+        },
+        {
+          "id": "ponente",
+          "label": "Ponente e Val Polcevera"
+        },
+        {
+          "id": "fuori",
+          "label": "Fuori città"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "subito",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t2",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t6",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "centro",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "levante",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "ponente",
+        "points": 2
+      },
+      {
+        "question": "accesso",
+        "option": "portone",
+        "points": 2
+      },
+      {
+        "question": "accesso",
+        "option": "ascensore",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

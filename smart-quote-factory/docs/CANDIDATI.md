@@ -23,6 +23,9 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-16 | Macor Serramenti | macorserramenti.eu | Aquileia (UD) | 10 | `generated/macorserramenti/` | da far vedere a Davide |
 | 2026-09-16 | Infissi Costa | infissicosta.it | Palermo | 11 | `generated/infissicosta/` | da far vedere a Davide |
 | 2026-09-16 | Scuderi Infissi | scuderiinfissi.com | Roma, Borghesiana | 10 | `generated/scuderiinfissi/` | da far vedere a Davide |
+| 2026-09-16 | Saderi Infissi | infissisaderi.it | Cagliari | 12 | `generated/saderiinfissi/` | da far vedere a Davide |
+| 2026-09-16 | FN Serramenti | fnserramenti.com | Genova, dal 1978 | 11 | `generated/fnserramenti/` | da far vedere a Davide |
+| 2026-09-16 | Team Legno Serramenti | teamlegnoserramenti.it | Rumo (TN), Val di Non | 10 | `generated/teamlegno/` | da far vedere a Davide |
 
 ## Scartati
 
@@ -43,6 +46,9 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-16 | AL.BO. Serramenti (alboserramenti.it) | dal 1975, partner Tecno Fenster, ma la tavolozza è tutta grigi e i pochi colori sono quelli di serie del tema. Riserva. |
 | 2026-09-16 | Carriglio Serramenti (carriglioserramenti.it) | cinquant'anni a Belpasso, ma il sito usa i colori di serie: niente da cui partire. Riserva. |
 | 2026-09-16 | Menoni 1952 (menoni1952.com) | il foglio di stile del tema non si scarica dal nostro proxy: non sono riuscito a leggere i loro colori. Non è un giudizio sull'azienda, è che non ho i dati. Da riprovare. |
+| 2026-09-16 | Matta Serramenti (mattaserramenti.it) | dal 1972 a Cagliari, ma la tavolozza è quella di serie di Divi. Riserva. |
+| 2026-09-16 | Apro Serramenti (aproserramenti.com) | i colori più frequenti del sito sono quelli dei bottoni social (Twitter, Dribbble): sotto non si vede il loro. Riserva. |
+| 2026-09-16 | AS Infissi (asinfissi.it) e Portecò (porteco.it) | la prima usa i colori di serie del tema, la seconda non espone un foglio di stile leggibile dal nostro proxy. Riserva. |
 
 ## Perché questi tre
 
@@ -207,3 +213,34 @@ Sans, per COA Barlow. Non stiamo copiando la loro tipografia — non ne hanno
 una — stiamo proponendone una. Va detto a voce quando si mostra la demo.
 L'ambra di Scuderi (`#a86a00`) faceva 4.44:1 col bianco sopra, quattro
 centesimi sotto la soglia: è scurita a `#985f00`.
+
+## Perché questi tre — quinto giro (16 settembre, notte)
+
+**Saderi Infissi** (12/12) — Cagliari, quasi novant'anni. Il modulo chiede
+nome, cognome, email, telefono e messaggio: i cinque campi standard. La
+seconda domanda è **«i serramenti di adesso quanti anni hanno?»** — meno di
+dieci, venti o trenta, quelli originali della casa, oppure non c'è ancora
+niente. Dall'età si capisce il tipo di telaio e il muro sotto, cioè quanto
+lavoro è davvero: è la domanda che un'azienda con novant'anni di storia fa
+senza accorgersene. Fra i fastidi, il primo è «lo scirocco e la polvere».
+
+**FN Serramenti** (11/12) — Genova, dal 1978. Hanno una pagina che si
+chiama «Richiedi un preventivo» e **dentro non c'è nessun modulo**: solo
+due numeri di telefono, una email e un WhatsApp. La seconda domanda è
+**«come si arriva a casa tua?»** — si scarica davanti al portone,
+l'ascensore c'è ma è piccolo, solo scale e piano alto, vicolo stretto e si
+scarica lontano. A Genova quello è metà del lavoro, e oggi si scopre il
+giorno del sopralluogo.
+
+**Team Legno Serramenti** (10/12) — Rumo, Val di Non. Sono fra i pochissimi
+che **i prezzi li scrivono sul sito**: hanno due pagine, «prezzi serramenti
+in pvc» e «prezzi persiane e antoni». Quindi la loro seconda domanda non è
+sul prodotto ma sul listino: **«hai già guardato i prezzi sul sito?»** —
+sì e mi tornano, sì ma devo capire per la mia misura, no, mi interessa più
+la qualità del prezzo. Chi risponde «sì e mi tornano» è già mezzo cliente.
+Fra i tempi c'è «la prossima primavera», che a mille metri non è una scusa.
+
+Nota: anche FN e Saderi non caricano un carattere proprio. Libre Franklin
+e Plus Jakarta Sans sono scelte nostre, come Lora per Macor e Barlow per
+COA. Va detto a voce quando si mostra la demo: non stiamo copiando la loro
+tipografia, ne stiamo proponendo una.

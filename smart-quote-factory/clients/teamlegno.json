@@ -1,0 +1,263 @@
+{
+  "client": {
+    "name": "Team Legno Serramenti",
+    "slug": "teamlegno",
+    "sourceUrl": "https://www.teamlegnoserramenti.it/",
+    "place": "Rumo (TN), Val di Non",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#252525",
+    "accent": "#006666",
+    "background": "#ffffff",
+    "surface": "#f2f7f7",
+    "line": "#dae6e6",
+    "muted": "#535a5a",
+    "radius": "3px",
+    "fontHeading": "'Source Sans 3', system-ui, sans-serif",
+    "fontBody": "'Source Sans 3', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Dicci cosa ti serve, e da dove"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Che serramento ti serve?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "legno",
+          "label": "Serramenti in legno, profilo 70 mm"
+        },
+        {
+          "id": "pvc",
+          "label": "Serramenti in PVC"
+        },
+        {
+          "id": "antoni",
+          "label": "Persiane e antoni"
+        },
+        {
+          "id": "portoni",
+          "label": "Portoni in legno"
+        },
+        {
+          "id": "decidere",
+          "label": "Devo ancora decidere"
+        }
+      ]
+    },
+    {
+      "id": "prezzi",
+      "title": "Hai già guardato i prezzi sul sito?",
+      "summaryLabel": "Prezzi",
+      "hint": "Siete fra i pochi che i prezzi li scrivono: chi arriva qui li ha già visti, o no.",
+      "options": [
+        {
+          "id": "tornano",
+          "label": "Sì, e mi tornano"
+        },
+        {
+          "id": "misura",
+          "label": "Sì, ma devo capire per la mia misura"
+        },
+        {
+          "id": "no",
+          "label": "No, non ancora"
+        },
+        {
+          "id": "qualita",
+          "label": "Mi interessa più la qualità del prezzo"
+        }
+      ]
+    },
+    {
+      "id": "clima",
+      "title": "Cosa deve reggere?",
+      "summaryLabel": "Clima",
+      "options": [
+        {
+          "id": "neve",
+          "label": "Inverni lunghi e neve"
+        },
+        {
+          "id": "sole",
+          "label": "Il sole forte in quota d'estate"
+        },
+        {
+          "id": "marci",
+          "label": "Niente di speciale: i vecchi sono marci"
+        },
+        {
+          "id": "isolare",
+          "label": "Serve solo che isoli bene"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto è grande il lavoro?",
+      "summaryLabel": "Dimensione",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Uno o due serramenti"
+        },
+        {
+          "id": "p2",
+          "label": "Una parte della casa"
+        },
+        {
+          "id": "p3",
+          "label": "Tutta la casa"
+        },
+        {
+          "id": "p4",
+          "label": "Più unità o un condominio"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "data",
+          "label": "Ho già la data della posa"
+        },
+        {
+          "id": "t2",
+          "label": "Entro due mesi"
+        },
+        {
+          "id": "primavera",
+          "label": "La prossima primavera"
+        },
+        {
+          "id": "prezzi",
+          "label": "Sto confrontando i prezzi"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si monta?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "non",
+          "label": "Val di Non e Val di Sole"
+        },
+        {
+          "id": "trento",
+          "label": "Trento e valle dell'Adige"
+        },
+        {
+          "id": "bolzano",
+          "label": "Bolzano e Alto Adige"
+        },
+        {
+          "id": "fuori",
+          "label": "Verona, Brescia o Bergamo"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "data",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t2",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "primavera",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "non",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "trento",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "bolzano",
+        "points": 1
+      },
+      {
+        "question": "prezzi",
+        "option": "tornano",
+        "points": 3
+      },
+      {
+        "question": "prezzi",
+        "option": "misura",
+        "points": 2
+      },
+      {
+        "question": "prezzi",
+        "option": "qualita",
+        "points": 2
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}
