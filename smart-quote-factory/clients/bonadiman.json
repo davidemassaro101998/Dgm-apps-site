@@ -1,0 +1,262 @@
+{
+  "client": {
+    "name": "Bonadiman Serramenti",
+    "slug": "bonadiman",
+    "sourceUrl": "https://www.bonadiman-serramenti.it/",
+    "place": "Verona, dal 1956",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#27303c",
+    "accent": "#be2844",
+    "background": "#ffffff",
+    "surface": "#f6f5f6",
+    "line": "#e2dfe1",
+    "muted": "#565c66",
+    "radius": "2px",
+    "fontHeading": "'Open Sans', system-ui, sans-serif",
+    "fontBody": "'Open Sans', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Partiamo dal pezzo"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Su che pezzo lavoriamo?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "legno",
+          "label": "Finestre in legno"
+        },
+        {
+          "id": "misto",
+          "label": "Finestre in legno-alluminio"
+        },
+        {
+          "id": "interne",
+          "label": "Porte interne in legno o laminato"
+        },
+        {
+          "id": "vetro",
+          "label": "Porte in vetro e scorrevoli speciali"
+        },
+        {
+          "id": "portoncini",
+          "label": "Portoncini d'ingresso"
+        },
+        {
+          "id": "oscuranti",
+          "label": "Oscuranti"
+        }
+      ]
+    },
+    {
+      "id": "origine",
+      "title": "Quello che c'è adesso, l'avete fatto voi?",
+      "summaryLabel": "Origine",
+      "hint": "Dal 1956 a Verona: se sono vostri, l'ordine vecchio ce l'avete in archivio.",
+      "options": [
+        {
+          "id": "vostri",
+          "label": "Sì, sono vostri e vanno sostituiti"
+        },
+        {
+          "id": "altri",
+          "label": "No, sono di un'altra ditta"
+        },
+        {
+          "id": "nuova",
+          "label": "È una casa nuova, non c'è niente"
+        },
+        {
+          "id": "nonso",
+          "label": "Non lo so: ho comprato la casa così"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa conta di più?",
+      "summaryLabel": "Obiettivo",
+      "options": [
+        {
+          "id": "durata",
+          "label": "Che duri: l'ultimo cambio è stato trent'anni fa"
+        },
+        {
+          "id": "isolamento",
+          "label": "L'isolamento"
+        },
+        {
+          "id": "estetica",
+          "label": "L'estetica delle porte, stanza per stanza"
+        },
+        {
+          "id": "rumore",
+          "label": "Il rumore"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quanto è grande il lavoro?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Uno o due pezzi"
+        },
+        {
+          "id": "p2",
+          "label": "3–8 pezzi"
+        },
+        {
+          "id": "p3",
+          "label": "Tutta la casa"
+        },
+        {
+          "id": "p4",
+          "label": "Più unità, o un progetto"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "data",
+          "label": "C'è già una data"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "t6",
+          "label": "Entro sei mesi"
+        },
+        {
+          "id": "valuto",
+          "label": "Sto valutando"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove si lavora?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "verona",
+          "label": "Verona città"
+        },
+        {
+          "id": "est",
+          "label": "Est veronese e Valpolicella"
+        },
+        {
+          "id": "bassa",
+          "label": "Bassa e pianura"
+        },
+        {
+          "id": "fuori",
+          "label": "Trentino, Mantova o altra zona"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "data",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t6",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "verona",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "est",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "bassa",
+        "points": 1
+      },
+      {
+        "question": "origine",
+        "option": "vostri",
+        "points": 3
+      },
+      {
+        "question": "origine",
+        "option": "nuova",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

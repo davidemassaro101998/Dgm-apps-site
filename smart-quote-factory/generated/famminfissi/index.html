@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="it">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>FAMM Infissi — richiesta guidata (concept)</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%225%22%20fill%3D%22%23465574%22%2F%3E%3Cpath%20d%3D%22M9%2016.5l4.5%204.5L23%2011%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&amp;display=swap">
+
+<style>
+/* la pagina attorno serve solo a guardare il blocco: nel sito del
+   cliente questa parte non esiste, si incolla solo <div id="smart-quote"> */
+body { margin: 0; padding: clamp(16px, 5vw, 56px) clamp(14px, 4vw, 28px);
+       background: #f4f5f8; font-family: Rubik, system-ui, sans-serif; }
+.sq-prova { max-width: 760px; margin: 0 auto clamp(18px, 3vw, 28px); }
+.sq-prova p { margin: 0; font-size: 13px; color: #555b6b; line-height: 1.5; }
+.sq-prova b { color: #2a3145; }
+
+/* ============================================================
+   SMART QUOTE — il motore, parte visiva.
+
+   Una regola sola: il blocco deve sembrare nato nel sito del
+   cliente, non incollato sopra. Quindi qui dentro non c'è
+   NESSUN colore scritto a mano: tutto passa dalle variabili
+   che il file del cliente riempie. Il motore decide il ritmo,
+   il cliente decide l'aspetto.
+
+   Niente ombre pesanti, niente gradienti, niente angoli
+   diversi da quelli del sito ospite: le tre cose che fanno
+   capire in mezzo secondo che un pezzo è stato appiccicato.
+   ============================================================ */
+
+.sq {
+  /* riempite da config.theme — questi sono solo il ripiego */
+  --sq-primary:   #1d1d1b;
+  --sq-accent:    #b93626;
+  --sq-bg:        #ffffff;
+  --sq-surface:   #f7f7f7;
+  --sq-line:      #e2e2e4;
+  --sq-muted:     #6b6b70;
+  --sq-radius:    4px;
+  --sq-font-h:    system-ui, sans-serif;
+  --sq-font-b:    system-ui, sans-serif;
+
+  --sq-gap:  clamp(14px, 2.2vw, 22px);
+  --sq-pad:  clamp(18px, 3.4vw, 34px);
+
+  box-sizing: border-box;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--sq-pad);
+  background: var(--sq-bg);
+  color: var(--sq-primary);
+  font-family: var(--sq-font-b);
+  font-size: 16px;
+  line-height: 1.5;
+  border: 1px solid var(--sq-line);
+  border-radius: var(--sq-radius);
+}
+.sq *, .sq *::before, .sq *::after { box-sizing: border-box; }
+.sq :focus-visible { outline: 2px solid var(--sq-accent); outline-offset: 3px; }
+
+/* ---- testata: dove sei, quanto manca ---- */
+.sq__top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.sq__eyebrow {
+  font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--sq-accent); margin: 0;
+}
+.sq__count { font-size: 13px; color: var(--sq-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.sq__bar { height: 3px; background: var(--sq-line); border-radius: 3px; margin: 12px 0 var(--sq-gap); overflow: hidden; }
+.sq__bar i { display: block; height: 100%; background: var(--sq-accent); transition: width .28s cubic-bezier(.4,0,.2,1); }
+
+.sq__q {
+  font-family: var(--sq-font-h);
+  font-size: clamp(21px, 3.4vw, 27px);
+  font-weight: 700; line-height: 1.2; letter-spacing: -.01em;
+  margin: 0 0 4px;
+}
+.sq__hint { font-size: 14.5px; color: var(--sq-muted); margin: 0 0 var(--sq-gap); }
+
+/* ---- le risposte: bersagli grandi, si tocca col pollice ---- */
+.sq__opts { display: grid; gap: 10px; grid-template-columns: 1fr; margin: 0; padding: 0; border: 0; }
+@media (min-width: 560px) { .sq__opts { grid-template-columns: 1fr 1fr; } }
+
+.sq__opt {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; min-height: 60px; padding: 14px 16px;
+  background: var(--sq-bg); color: var(--sq-primary);
+  border: 1.5px solid var(--sq-line); border-radius: var(--sq-radius);
+  font: inherit; font-size: 16px; text-align: left; cursor: pointer;
+  transition: border-color .16s, background .16s;
+}
+.sq__opt:hover { border-color: var(--sq-accent); background: var(--sq-surface); }
+.sq__opt[aria-pressed="true"] { border-color: var(--sq-accent); border-width: 2px; background: var(--sq-surface); }
+.sq__opt b { font-weight: 600; }
+.sq__opt span { display: block; font-size: 13.5px; color: var(--sq-muted); margin-top: 2px; font-weight: 400; }
+.sq__tick {
+  flex: 0 0 auto; width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid var(--sq-line); position: relative;
+}
+.sq__opt[aria-pressed="true"] .sq__tick { border-color: var(--sq-accent); background: var(--sq-accent); }
+.sq__opt[aria-pressed="true"] .sq__tick::after {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: 6px; height: 10px; border: solid var(--sq-bg);
+  border-width: 0 2px 2px 0; transform: translateY(-1px) rotate(45deg);
+}
+
+/* ---- comandi ---- */
+.sq__nav { display: flex; align-items: center; gap: 12px; margin-top: var(--sq-gap); flex-wrap: wrap; }
+.sq__btn {
+  min-height: 52px; padding: 14px 24px; border-radius: var(--sq-radius);
+  border: 1.5px solid transparent; font: inherit; font-size: 15.5px; font-weight: 600;
+  cursor: pointer; transition: opacity .16s, background .16s;
+}
+.sq__btn--go { background: var(--sq-accent); color: #fff; margin-left: auto; }
+.sq__btn--go:hover { opacity: .88; }
+.sq__btn--go[disabled] { background: var(--sq-line); color: var(--sq-muted); cursor: default; opacity: 1; }
+.sq__btn--back { background: none; color: var(--sq-muted); border-color: var(--sq-line); }
+.sq__btn--back:hover { color: var(--sq-primary); border-color: var(--sq-muted); }
+.sq__restart {
+  background: none; border: 0; padding: 12px 0; min-height: 44px;
+  font: inherit; font-size: 14px; color: var(--sq-muted); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.sq__restart:hover { color: var(--sq-primary); }
+
+/* ---- il risultato: la scheda che vedrebbe l'azienda ---- */
+.sq__done { animation: sq-in .3s cubic-bezier(.3,.6,.2,1) both; }
+@keyframes sq-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .sq__done { animation: none; }
+  .sq__bar i { transition: none; }
+}
+
+.sq__card { border: 1.5px solid var(--sq-primary); border-radius: var(--sq-radius); overflow: hidden; margin: var(--sq-gap) 0; }
+.sq__card h3 {
+  font-family: var(--sq-font-h); font-size: 12px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  margin: 0; padding: 12px 16px; background: var(--sq-primary); color: var(--sq-bg);
+}
+.sq__rows { margin: 0; padding: 4px 16px 14px; }
+.sq__row { display: flex; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--sq-line); }
+.sq__row:last-child { border-bottom: 0; }
+.sq__row dt { flex: 0 0 38%; font-size: 13.5px; color: var(--sq-muted); margin: 0; }
+.sq__row dd { flex: 1 1 auto; margin: 0; font-size: 15.5px; font-weight: 600; }
+
+.sq__prio { display: flex; align-items: center; gap: 9px; padding: 12px 16px; background: var(--sq-surface); font-size: 14.5px; }
+.sq__prio i { width: 9px; height: 9px; border-radius: 50%; background: var(--sq-accent); flex: 0 0 auto; }
+.sq__prio b { font-weight: 700; }
+
+.sq__note { font-size: 13px; color: var(--sq-muted); line-height: 1.5; margin: 0 0 var(--sq-gap); }
+
+/* ---- la scritta che dice che è una dimostrazione ---- */
+.sq__demo {
+  display: block; margin-top: var(--sq-gap); padding-top: 14px;
+  border-top: 1px solid var(--sq-line);
+  font-size: 12.5px; color: var(--sq-muted); line-height: 1.5;
+}
+
+/* Il testo deve reggere lo zoom al 200% senza che niente esca di lato:
+   nessuna larghezza fissa, nessun min-width oltre lo schermo. */
+.sq img, .sq svg { max-width: 100%; height: auto; }
+
+
+/* Il tema dell'azienda viene DOPO il motore, non prima: i valori di
+   ripiego dentro styles.css hanno la stessa forza, quindi vince
+   l'ultimo che si legge. Messo sopra, il blocco usciva sempre coi
+   colori di ripiego — cioe' identico per ogni cliente, che e'
+   esattamente il contrario di quello che questo prodotto vende. */
+.sq {
+  --sq-primary: #2a3145; --sq-accent: #465574;
+  --sq-bg: #ffffff; --sq-surface: #f4f5f8;
+  --sq-line: #dee1e9; --sq-muted: #555b6b;
+  --sq-radius: 6px;
+  --sq-font-h: Rubik, system-ui, sans-serif; --sq-font-b: Rubik, system-ui, sans-serif;
+}
+</style>
+
+<div class="sq-prova">
+  <p><b>FAMM Infissi</b> — Padova, oltre 50 anni<br>
+  Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato.</p>
+</div>
+
+<div class="sq" id="smart-quote"></div>
+
+<div class="sq-prova" style="margin-top:clamp(18px,3vw,28px)">
+  <p>Questo blocco andrebbe al posto del modulo «nome, email, messaggio».
+  Si incolla nel sito come un pezzo solo: non richiede account, non salva niente
+  e non manda niente a nessuno.</p>
+</div>
+
+<script>window.SQ_CONFIG = {"client":{"name":"FAMM Infissi","slug":"famminfissi","sourceUrl":"https://famminfissi.it/","place":"Padova, oltre 50 anni","demoDisclaimer":"Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."},"theme":{"primary":"#2a3145","accent":"#465574","background":"#ffffff","surface":"#f4f5f8","line":"#dee1e9","muted":"#555b6b","radius":"6px","fontHeading":"Rubik, system-ui, sans-serif","fontBody":"Rubik, system-ui, sans-serif","webfont":"https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap"},"intro":{"eyebrow":"Richiesta guidata","title":"Raccontaci la stanza"},"questions":[{"id":"prodotto","title":"Da dove partiamo?","summaryLabel":"Prodotto","options":[{"id":"legno","label":"Finestre in legno su misura"},{"id":"misto","label":"Finestre in legno-alluminio"},{"id":"scuri","label":"Scuri e persiane"},{"id":"portoncini","label":"Portoncini d'ingresso"},{"id":"scorrevoli","label":"Scorrevoli e alzanti"},{"id":"interne","label":"Porte interne"}]},{"id":"luce","title":"Quanta luce entra adesso?","summaryLabel":"Luce","hint":"Un serramento più grande o più stretto cambia il preventivo prima del materiale.","options":[{"id":"poca","label":"Poca: le stanze restano buie"},{"id":"giusta","label":"Giusta, va bene così"},{"id":"troppa","label":"Troppa: d'estate si soffoca"},{"id":"mai","label":"Non ci ho mai fatto caso"}]},{"id":"esigenza","title":"Cosa conta di più?","summaryLabel":"Obiettivo","options":[{"id":"caldo","label":"Il caldo e il freddo"},{"id":"rumore","label":"Il rumore"},{"id":"sicurezza","label":"La sicurezza"},{"id":"aspetto","label":"L'aspetto della casa"}]},{"id":"quantita","title":"Quanto c'è da fare?","summaryLabel":"Quantità","options":[{"id":"p1","label":"Una stanza"},{"id":"p2","label":"Due o tre stanze"},{"id":"p3","label":"Tutta la casa"},{"id":"p4","label":"Più unità o un cantiere"}]},{"id":"tempi","title":"Per quando?","summaryLabel":"Tempi","options":[{"id":"data","label":"La posa ha già una data"},{"id":"t3","label":"Entro tre mesi"},{"id":"t6","label":"Entro sei mesi"},{"id":"informo","label":"Mi sto informando"}]},{"id":"zona","title":"Dove si lavora?","summaryLabel":"Zona","options":[{"id":"padova","label":"Padova e provincia"},{"id":"venezia","label":"Venezia e riviera"},{"id":"vicenza","label":"Vicenza e Treviso"},{"id":"altra","label":"Rovigo o altra zona"}]}],"result":{"title":"La richiesta è pronta","subtitle":"È questo che arriverebbe in azienda, al posto di un messaggio libero.","mode":"preview-only"},"leadScoring":{"enabledInDemo":true,"disclaimer":"La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.","rules":[{"question":"tempi","option":"data","points":4},{"question":"tempi","option":"t3","points":3},{"question":"tempi","option":"t6","points":1},{"question":"quantita","option":"p4","points":4},{"question":"quantita","option":"p3","points":3},{"question":"quantita","option":"p2","points":2},{"question":"quantita","option":"p1","points":1},{"question":"zona","option":"padova","points":2},{"question":"zona","option":"venezia","points":1},{"question":"zona","option":"vicenza","points":1},{"question":"luce","option":"poca","points":2},{"question":"luce","option":"troppa","points":2}],"bands":[{"min":8,"label":"Priorità alta","note":"vicino, definito e a breve"},{"min":4,"label":"Priorità media","note":"buon potenziale, meno urgente"},{"min":0,"label":"Fase esplorativa","note":"da accompagnare senza fretta"}]}};</script>
+<script>/* ============================================================
+   SMART QUOTE — il motore, parte logica.
+
+   Un solo file per tutte le aziende. Quello che cambia da un
+   cliente all'altro sta in SQ_CONFIG (il JSON), mai qui.
+
+   Cosa fa: porta il visitatore attraverso al massimo sei
+   domande e gli mostra la richiesta già scritta, come la
+   riceverebbe l'azienda. Nella dimostrazione non parte niente:
+   nessun invio, nessun dato salvato, nessuna chiamata di rete.
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var cfg = window.SQ_CONFIG;
+  var radice = document.getElementById("smart-quote");
+  if (!cfg || !radice) return;
+
+  var domande = cfg.questions || [];
+  var risposte = {};        // id domanda → id opzione
+  var passo = 0;            // 0..domande.length, l'ultimo è il risultato
+
+  /* ---------- attrezzi ---------- */
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  function opzioneScelta(d) {
+    var id = risposte[d.id];
+    if (!id) return null;
+    for (var i = 0; i < d.options.length; i++) if (d.options[i].id === id) return d.options[i];
+    return null;
+  }
+
+  /* Il punteggio serve solo a far vedere all'azienda come
+     potrebbe ordinare le richieste. Le regole vere le approva
+     lei: qui sono una proposta, e la pagina lo dice. */
+  function punteggio() {
+    var regole = (cfg.leadScoring && cfg.leadScoring.rules) || [];
+    var tot = 0;
+    for (var i = 0; i < regole.length; i++) {
+      var r = regole[i];
+      if (risposte[r.question] === r.option) tot += Number(r.points) || 0;
+    }
+    return tot;
+  }
+
+  function fascia() {
+    var p = punteggio();
+    var bande = (cfg.leadScoring && cfg.leadScoring.bands) || [];
+    for (var i = 0; i < bande.length; i++) if (p >= bande[i].min) return bande[i];
+    return bande[bande.length - 1] || { label: "Da valutare" };
+  }
+
+  /* L'avviso sta dentro il blocco, non nella pagina attorno: nel sito
+     del cliente si incolla solo questo, e la cornice di prova sparisce. */
+  function avviso() {
+    return '<small class="sq__demo">' + esc(cfg.client.demoDisclaimer) + '</small>';
+  }
+
+  /* ---------- le schermate ---------- */
+
+  function vistaDomanda(d, n) {
+    var scelta = risposte[d.id];
+    return '' +
+      '<div class="sq__top">' +
+        '<p class="sq__eyebrow">' + esc(cfg.intro.eyebrow) + '</p>' +
+        '<span class="sq__count">Domanda ' + (n + 1) + ' di ' + domande.length + '</span>' +
+      '</div>' +
+      '<div class="sq__bar"><i style="width:' + Math.round((n / domande.length) * 100) + '%"></i></div>' +
+      '<h2 class="sq__q" id="sq-q">' + esc(d.title) + '</h2>' +
+      (d.hint ? '<p class="sq__hint">' + esc(d.hint) + '</p>' : '') +
+      '<div class="sq__opts" role="group" aria-labelledby="sq-q">' +
+        d.options.map(function (o) {
+          return '<button type="button" class="sq__opt" data-opt="' + esc(o.id) + '"' +
+            ' aria-pressed="' + (scelta === o.id ? "true" : "false") + '">' +
+            '<span class="sq__tick" aria-hidden="true"></span>' +
+            '<span><b>' + esc(o.label) + '</b>' +
+            (o.note ? '<span>' + esc(o.note) + '</span>' : '') + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="sq__nav">' +
+        (n > 0 ? '<button type="button" class="sq__btn sq__btn--back" data-go="indietro">Indietro</button>' : '') +
+        '<button type="button" class="sq__btn sq__btn--go" data-go="avanti"' + (scelta ? '' : ' disabled') + '>' +
+          (n === domande.length - 1 ? 'Vedi la richiesta' : 'Avanti') +
+        '</button>' +
+      '</div>' +
+      avviso();
+  }
+
+  function vistaRisultato() {
+    var f = fascia();
+    return '' +
+      '<div class="sq__done">' +
+        '<div class="sq__top">' +
+          '<p class="sq__eyebrow">' + esc(cfg.intro.eyebrow) + '</p>' +
+          '<span class="sq__count">Completato</span>' +
+        '</div>' +
+        '<div class="sq__bar"><i style="width:100%"></i></div>' +
+        '<h2 class="sq__q">' + esc(cfg.result.title) + '</h2>' +
+        '<p class="sq__hint">' + esc(cfg.result.subtitle) + '</p>' +
+
+        '<div class="sq__card">' +
+          '<h3>Nuova richiesta dal sito</h3>' +
+          '<dl class="sq__rows">' +
+            domande.map(function (d) {
+              var o = opzioneScelta(d);
+              if (!o) return '';
+              return '<div class="sq__row"><dt>' + esc(d.summaryLabel || d.title) + '</dt>' +
+                     '<dd>' + esc(o.label) + '</dd></div>';
+            }).join('') +
+          '</dl>' +
+          (cfg.leadScoring && cfg.leadScoring.enabledInDemo
+            ? '<p class="sq__prio"><i aria-hidden="true"></i>' +
+              '<span><b>' + esc(f.label) + '</b> — ' + esc(f.note || '') + '</span></p>'
+            : '') +
+        '</div>' +
+
+        (cfg.leadScoring && cfg.leadScoring.enabledInDemo
+          ? '<p class="sq__note">' + esc(cfg.leadScoring.disclaimer) + '</p>' : '') +
+
+        '<div class="sq__nav">' +
+          '<button type="button" class="sq__restart" data-go="ricomincia">Ricomincia</button>' +
+        '</div>' +
+        avviso() +
+      '</div>';
+  }
+
+  function disegna(muoviIlFuoco) {
+    radice.innerHTML = passo < domande.length ? vistaDomanda(domande[passo], passo) : vistaRisultato();
+    /* Chi naviga da tastiera o con lo screen reader deve sapere che la
+       schermata è cambiata: il fuoco va sulla nuova domanda, non resta
+       su un bottone che non esiste più. */
+    if (muoviIlFuoco) {
+      var titolo = radice.querySelector('.sq__q');
+      if (titolo) { titolo.setAttribute('tabindex', '-1'); titolo.focus({ preventScroll: true }); }
+    }
+  }
+
+  /* ---------- i comandi ---------- */
+
+  radice.addEventListener('click', function (e) {
+    var opt = e.target.closest('[data-opt]');
+    if (opt) {
+      risposte[domande[passo].id] = opt.dataset.opt;
+      disegna(false);
+      return;
+    }
+    var go = e.target.closest('[data-go]');
+    if (!go) return;
+    if (go.dataset.go === 'avanti' && risposte[domande[passo].id]) { passo++; disegna(true); }
+    if (go.dataset.go === 'indietro' && passo > 0) { passo--; disegna(true); }
+    if (go.dataset.go === 'ricomincia') { risposte = {}; passo = 0; disegna(true); }
+  });
+
+  /* Le frecce scorrono le opzioni, come in un gruppo di scelte vero. */
+  radice.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    var opts = Array.prototype.slice.call(radice.querySelectorAll('[data-opt]'));
+    var i = opts.indexOf(document.activeElement);
+    if (i < 0) return;
+    e.preventDefault();
+    opts[(i + (e.key === 'ArrowDown' ? 1 : opts.length - 1)) % opts.length].focus();
+  });
+
+  disegna(false);
+})();
+</script>
+</html>

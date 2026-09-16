@@ -1,0 +1,267 @@
+{
+  "client": {
+    "name": "F.lli Scaccabarozzi — La Tapparella",
+    "slug": "latapparella",
+    "sourceUrl": "https://www.latapparella.it/",
+    "place": "Besana in Brianza (MB), dal 1990",
+    "demoDisclaimer": "Concept dimostrativo indipendente, non ufficiale. Nessun dato viene raccolto o inviato."
+  },
+  "theme": {
+    "primary": "#1f2933",
+    "accent": "#00708f",
+    "background": "#ffffff",
+    "surface": "#f1f6f8",
+    "line": "#d9e4e9",
+    "muted": "#4f5b64",
+    "radius": "4px",
+    "fontHeading": "'IBM Plex Sans', system-ui, sans-serif",
+    "fontBody": "'IBM Plex Sans', system-ui, sans-serif",
+    "webfont": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+  },
+  "intro": {
+    "eyebrow": "Richiesta guidata",
+    "title": "Dicci cosa non va"
+  },
+  "questions": [
+    {
+      "id": "prodotto",
+      "title": "Di che cosa parliamo?",
+      "summaryLabel": "Prodotto",
+      "options": [
+        {
+          "id": "tapparelle",
+          "label": "Tapparelle e avvolgibili"
+        },
+        {
+          "id": "veneziane",
+          "label": "Veneziane e frangisole"
+        },
+        {
+          "id": "zanzariere",
+          "label": "Zanzariere"
+        },
+        {
+          "id": "grate",
+          "label": "Grate di sicurezza"
+        },
+        {
+          "id": "blindate",
+          "label": "Porte blindate e portoncini"
+        },
+        {
+          "id": "finestre",
+          "label": "Finestre e serramenti"
+        }
+      ]
+    },
+    {
+      "id": "pezzo",
+      "title": "Serve tutto nuovo, o solo un pezzo?",
+      "summaryLabel": "Intervento",
+      "hint": "Vendete anche i singoli componenti: una richiesta di ricambio non è un preventivo.",
+      "options": [
+        {
+          "id": "nuovo",
+          "label": "Tutto nuovo, da rifare"
+        },
+        {
+          "id": "ricambio",
+          "label": "Solo un ricambio: argano, cinghia, cuscinetto"
+        },
+        {
+          "id": "riparare",
+          "label": "Va riparato, ma non so cosa si è rotto"
+        },
+        {
+          "id": "vedere",
+          "label": "Non lo so: venite a vedere"
+        }
+      ]
+    },
+    {
+      "id": "esigenza",
+      "title": "Cosa non va adesso?",
+      "summaryLabel": "Problema",
+      "options": [
+        {
+          "id": "bloccata",
+          "label": "Non si alza più, o si è rotta"
+        },
+        {
+          "id": "luce",
+          "label": "Entra troppa luce, o troppo caldo"
+        },
+        {
+          "id": "sicurezza",
+          "label": "Voglio più sicurezza"
+        },
+        {
+          "id": "vecchia",
+          "label": "È vecchia e si vede"
+        }
+      ]
+    },
+    {
+      "id": "quantita",
+      "title": "Quante ne riguarda?",
+      "summaryLabel": "Quantità",
+      "options": [
+        {
+          "id": "p1",
+          "label": "Una sola"
+        },
+        {
+          "id": "p2",
+          "label": "Due o quattro"
+        },
+        {
+          "id": "p3",
+          "label": "Tutte quelle di casa"
+        },
+        {
+          "id": "p4",
+          "label": "Un condominio o una palazzina"
+        }
+      ]
+    },
+    {
+      "id": "tempi",
+      "title": "Per quando?",
+      "summaryLabel": "Tempi",
+      "options": [
+        {
+          "id": "subito",
+          "label": "Subito: è bloccata"
+        },
+        {
+          "id": "t1",
+          "label": "Entro un mese"
+        },
+        {
+          "id": "t3",
+          "label": "Entro tre mesi"
+        },
+        {
+          "id": "chiedo",
+          "label": "Sto chiedendo"
+        }
+      ]
+    },
+    {
+      "id": "zona",
+      "title": "Dove?",
+      "summaryLabel": "Zona",
+      "options": [
+        {
+          "id": "besana",
+          "label": "Besana e Brianza centrale"
+        },
+        {
+          "id": "monza",
+          "label": "Monza e dintorni"
+        },
+        {
+          "id": "comolecco",
+          "label": "Como e Lecco"
+        },
+        {
+          "id": "altra",
+          "label": "Milano o altra zona"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "title": "La richiesta è pronta",
+    "subtitle": "È questo che arriverebbe in azienda, al posto di un messaggio libero.",
+    "mode": "preview-only"
+  },
+  "leadScoring": {
+    "enabledInDemo": true,
+    "disclaimer": "La classificazione qui sopra è dimostrativa: le regole vere le decidete voi, in base a come volete smistare le richieste internamente.",
+    "rules": [
+      {
+        "question": "tempi",
+        "option": "subito",
+        "points": 4
+      },
+      {
+        "question": "tempi",
+        "option": "t1",
+        "points": 3
+      },
+      {
+        "question": "tempi",
+        "option": "t3",
+        "points": 1
+      },
+      {
+        "question": "quantita",
+        "option": "p4",
+        "points": 4
+      },
+      {
+        "question": "quantita",
+        "option": "p3",
+        "points": 3
+      },
+      {
+        "question": "quantita",
+        "option": "p2",
+        "points": 2
+      },
+      {
+        "question": "quantita",
+        "option": "p1",
+        "points": 1
+      },
+      {
+        "question": "zona",
+        "option": "besana",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "monza",
+        "points": 2
+      },
+      {
+        "question": "zona",
+        "option": "comolecco",
+        "points": 1
+      },
+      {
+        "question": "pezzo",
+        "option": "nuovo",
+        "points": 3
+      },
+      {
+        "question": "pezzo",
+        "option": "vedere",
+        "points": 2
+      },
+      {
+        "question": "pezzo",
+        "option": "riparare",
+        "points": 1
+      }
+    ],
+    "bands": [
+      {
+        "min": 8,
+        "label": "Priorità alta",
+        "note": "vicino, definito e a breve"
+      },
+      {
+        "min": 4,
+        "label": "Priorità media",
+        "note": "buon potenziale, meno urgente"
+      },
+      {
+        "min": 0,
+        "label": "Fase esplorativa",
+        "note": "da accompagnare senza fretta"
+      }
+    ]
+  }
+}

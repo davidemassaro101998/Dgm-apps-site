@@ -26,6 +26,9 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-16 | Saderi Infissi | infissisaderi.it | Cagliari | 12 | `generated/saderiinfissi/` | da far vedere a Davide |
 | 2026-09-16 | FN Serramenti | fnserramenti.com | Genova, dal 1978 | 11 | `generated/fnserramenti/` | da far vedere a Davide |
 | 2026-09-16 | Team Legno Serramenti | teamlegnoserramenti.it | Rumo (TN), Val di Non | 10 | `generated/teamlegno/` | da far vedere a Davide |
+| 2026-09-16 | Bonadiman Serramenti | bonadiman-serramenti.it | Verona, dal 1956 | 12 | `generated/bonadiman/` | da far vedere a Davide |
+| 2026-09-16 | F.lli Scaccabarozzi — La Tapparella | latapparella.it | Besana in Brianza (MB) | 11 | `generated/latapparella/` | da far vedere a Davide |
+| 2026-09-16 | FAMM Infissi | famminfissi.it | Padova, oltre 50 anni | 10 | `generated/famminfissi/` | da far vedere a Davide |
 
 ## Scartati
 
@@ -49,6 +52,9 @@ Punteggio 0–12 secondo la tabella del documento master (§5.3).
 | 2026-09-16 | Matta Serramenti (mattaserramenti.it) | dal 1972 a Cagliari, ma la tavolozza è quella di serie di Divi. Riserva. |
 | 2026-09-16 | Apro Serramenti (aproserramenti.com) | i colori più frequenti del sito sono quelli dei bottoni social (Twitter, Dribbble): sotto non si vede il loro. Riserva. |
 | 2026-09-16 | AS Infissi (asinfissi.it) e Portecò (porteco.it) | la prima usa i colori di serie del tema, la seconda non espone un foglio di stile leggibile dal nostro proxy. Riserva. |
+| 2026-09-16 | Bernocchi Infissi (bernocchiinfissi.it) e De Ninis (deninisserramenti.com) | due buone aziende abruzzesi, ma i colori più usati sono quelli di serie di Elementor e di Ant Design. Riserva. |
+| 2026-09-16 | Leone Infissi (leoneinfissi.it), CVL Next (cvlnext.com), Senna Infissi (sennainfissi.it) | Abruzzo: tavolozze di serie o foglio di stile non leggibile. Riserva. |
+| 2026-09-16 | Giordani Serramenti (giordaniserramenti.it) | rosso #ea1f28 vero e catalogo largo, ma di rossi ne abbiamo già cinque su ventuno: scelta La Tapparella per non fare l'ennesima demo rossa. Riserva vera, da fare al prossimo giro. |
 
 ## Perché questi tre
 
@@ -244,3 +250,45 @@ Nota: anche FN e Saderi non caricano un carattere proprio. Libre Franklin
 e Plus Jakarta Sans sono scelte nostre, come Lora per Macor e Barlow per
 COA. Va detto a voce quando si mostra la demo: non stiamo copiando la loro
 tipografia, ne stiamo proponendo una.
+
+## Perché questi tre — sesto giro (16 settembre, mattina)
+
+**Bonadiman Serramenti** (12/12) — Verona dal 1956, legno di alta gamma,
+collezioni con un nome proprio e una pagina dedicata alle essenze. Il
+modulo chiede nome, email, telefono, città e messaggio. La seconda domanda
+è **«quello che c'è adesso, l'avete fatto voi?»** — sì e vanno sostituiti,
+no sono di un'altra ditta, è una casa nuova, non lo so ho comprato la casa
+così. Dopo settant'anni a Verona una parte del parco serramenti della
+città è roba loro: se la risposta è «sì», l'ordine vecchio ce l'hanno in
+archivio e il preventivo si scrive in mezz'ora invece che in una
+settimana. Nessun'altra azienda di questo elenco ha un'anzianità che
+rende sensata questa domanda.
+
+**F.lli Scaccabarozzi — La Tapparella** (11/12) — Besana in Brianza, dal
+1990. Sulla pagina contatti non c'è nessun modulo: due email e un numero.
+Ma la cosa che li rende diversi da tutti gli altri ventuno è il catalogo:
+accanto alle tapparelle vendono **argani, avvolgitori, calotte, cinghie,
+cuscinetti**. Cioè i pezzi singoli. Quindi la loro seconda domanda non è
+mai stata fatta da nessuna delle altre demo: **«serve tutto nuovo, o solo
+un pezzo?»** — tutto nuovo, solo un ricambio, va riparato ma non so cosa
+si è rotto, venite a vedere. Una richiesta di ricambio non è un
+preventivo, e oggi arrivano sullo stesso telefono.
+
+**FAMM Infissi** (10/12) — Padova, oltre cinquant'anni, legno su misura.
+Il loro blog ha un articolo intitolato «Poca luce in casa? Problemi e
+soluzione», ed è da lì che nasce la seconda domanda: **«quanta luce entra
+adesso?»** — poca e le stanze restano buie, giusta, troppa e d'estate si
+soffoca, non ci ho mai fatto caso. Un serramento più grande o più stretto
+cambia il preventivo prima ancora del materiale. Il modulo è un Elementor
+e dall'esterno non si leggono i campi: gli ho dato 1 e non 2 sul criterio
+del contatto, perché non l'ho visto.
+
+### Nota di questo giro: le tavolozze stanno finendo
+
+Delle dieci aziende guardate stanotte, sei usavano i colori di serie del
+loro tema (Elementor, Divi, Ant Design, Bootstrap). È il motivo per cui
+questo giro ha richiesto tre ricerche invece di due. Se serve più volume,
+la strada non è cercare più a lungo: è accettare che per un'azienda su tre
+la tavolozza gliela proponiamo noi, e dirlo quando si mostra la demo —
+come già succede per Macor, COA, FN, Saderi, Team Legno e adesso
+La Tapparella.
